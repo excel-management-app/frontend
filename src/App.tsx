@@ -1,5 +1,12 @@
+import { ExcelViewer } from "./components/ExcelViewer";
+
 function App() {
-  return <>Test</>;
+  return (
+    <>
+      Test
+      <ExcelViewer />
+    </>
+  );
 }
 
 export default App;
