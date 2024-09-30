@@ -91,31 +91,6 @@ export const ExcelViewer = () => {
   ) : (
     <div>
       Excel Viewer
-      {/* <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }}>
-          <TableHead>
-            <TableRow>
-              {headers.length && (
-                <>
-                  {headers.map((headerName) => (
-                    <TableCell key={headerName}>{headerName}</TableCell>
-                  ))}
-                </>
-              )}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.length &&
-              rows.map((row, rowIndex) => (
-                <TableRow key={rowIndex}>
-                  {row.map((value, colIndex) => (
-                    <TableCell key={colIndex}>{value}</TableCell>
-                  ))}
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </TableContainer> */}
       <Paper style={{ height: 600, width: "100%" }}>
         <TableVirtuoso
           data={rows}
