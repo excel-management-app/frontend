@@ -1,23 +1,47 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { readFileApi } from "../../apis/read";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { TableVirtuoso, TableComponents } from "react-virtuoso";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import React, { useEffect, useMemo, useState } from "react";
+import { TableVirtuoso } from "react-virtuoso";
+import { readFileApi } from "../../apis/read";
+import { VirtuosoTableComponents } from "./VirtuosoTableComponents";
+import { Box, Theme } from "@mui/material";
+import { makeStyles } from "tss-react/mui";
+import { SheetNameSelect } from "./SheetNamesSelector";
 
+const useStyles = makeStyles()((theme: Theme) => ({
+  root: {
+    padding: theme.spacing(2),
+    display: "flex",
+    flexDirection: "column",
+    gap: theme.spacing(2),
+    height: "100%",
+    width: "100%",
+  },
+  buttons: {
+    display: "flex",
+    justifyContent: "flex-end",
+    gap: theme.spacing(1),
+    paddingRight: theme.spacing(2),
+  },
+}));
 export const ExcelViewer = () => {
-  const [jsonData, setJsonData] = useState<string[][]>();
+  const { classes } = useStyles();
+
+  const [jsonData, setJsonData] = useState<{
+    data: string[][];
+    sheetNames: string[];
+  }>();
+  const [sheetName, setSheetName] = useState<string>("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const data = await readFileApi();
+        const data = await readFileApi({
+          sheetName,
+        });
         setJsonData(data);
       } catch (error) {
         console.log(error);
@@ -26,41 +50,24 @@ export const ExcelViewer = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [sheetName]);
 
   const headers = useMemo<string[]>(() => {
-    if (jsonData?.length) {
-      return jsonData[0];
-    } else {
-      return [];
-    }
-  }, [jsonData]);
-  const rows = useMemo(() => {
-    if (jsonData?.length) {
-      return jsonData.slice(1);
+    if (jsonData?.data?.length) {
+      return jsonData.data[0];
     } else {
       return [];
     }
   }, [jsonData]);
 
-  const VirtuosoTableComponents: TableComponents<string[]> = {
-    Scroller: React.forwardRef<HTMLDivElement>((props, ref) => (
-      <TableContainer component={Paper} {...props} ref={ref} />
-    )),
-    Table: (props) => (
-      <Table
-        {...props}
-        sx={{ borderCollapse: "separate", tableLayout: "fixed" }}
-      />
-    ),
-    TableHead: React.forwardRef<HTMLTableSectionElement>((props, ref) => (
-      <TableHead {...props} ref={ref} />
-    )),
-    TableRow,
-    TableBody: React.forwardRef<HTMLTableSectionElement>((props, ref) => (
-      <TableBody {...props} ref={ref} />
-    )),
-  };
+  const rows = useMemo(() => {
+    if (jsonData?.data?.length) {
+      return jsonData.data.slice(1);
+    } else {
+      return [];
+    }
+  }, [jsonData]);
+
   function fixedHeaderContent() {
     return (
       <TableRow>
@@ -78,20 +85,26 @@ export const ExcelViewer = () => {
   }
   function rowContent(_index: number, row: string[]) {
     return (
-      <React.Fragment>
+      <>
         {headers.map((column) => (
           <TableCell key={column}>{row[headers.indexOf(column)]}</TableCell>
         ))}
-      </React.Fragment>
+      </>
     );
   }
 
   return loading ? (
     <>Loading</>
   ) : (
-    <div>
-      Excel Viewer
-      <Paper style={{ height: 600, width: "100%" }}>
+    <Box className={classes.root}>
+      <Box className={classes.buttons}>
+        <SheetNameSelect
+          sheetNames={jsonData?.sheetNames || []}
+          onChange={setSheetName}
+          value={sheetName}
+        />
+      </Box>
+      <Paper style={{ height: "80vh", width: "100%" }}>
         <TableVirtuoso
           data={rows}
           components={VirtuosoTableComponents}
@@ -99,6 +112,6 @@ export const ExcelViewer = () => {
           itemContent={rowContent}
         />
       </Paper>
-    </div>
+    </Box>
   );
 };
