@@ -1,13 +1,14 @@
+import { Box, Theme } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { TableVirtuoso } from "react-virtuoso";
-import { readFileApi } from "../../apis/read";
-import { VirtuosoTableComponents } from "./VirtuosoTableComponents";
-import { Box, Theme } from "@mui/material";
 import { makeStyles } from "tss-react/mui";
+import { getFileData } from "../../apis/excel";
+import { FileData } from "../../apis/types";
 import { SheetNameSelect } from "./SheetNamesSelector";
+import { VirtuosoTableComponents } from "./VirtuosoTableComponents";
 
 const useStyles = makeStyles()((theme: Theme) => ({
   root: {
@@ -25,13 +26,14 @@ const useStyles = makeStyles()((theme: Theme) => ({
     paddingRight: theme.spacing(2),
   },
 }));
-export const ExcelViewer = () => {
+
+interface Props {
+  fileId: string;
+}
+export const ExcelViewer = ({ fileId }: Props) => {
   const { classes } = useStyles();
 
-  const [jsonData, setJsonData] = useState<{
-    data: string[][];
-    sheetNames: string[];
-  }>();
+  const [data, setData] = useState<FileData>();
   const [sheetName, setSheetName] = useState<string>("");
   const [loading, setLoading] = useState(true);
 
@@ -39,10 +41,8 @@ export const ExcelViewer = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const data = await readFileApi({
-          sheetName,
-        });
-        setJsonData(data);
+        const data = await getFileData({ fileId });
+        setData(data);
       } catch (error) {
         console.log(error);
       } finally {
@@ -50,28 +50,31 @@ export const ExcelViewer = () => {
       }
     };
     fetchData();
-  }, [sheetName]);
+  }, [fileId, sheetName]);
 
-  const headers = useMemo<string[]>(() => {
-    if (jsonData?.data?.length) {
-      return jsonData.data[0];
-    } else {
-      return [];
-    }
-  }, [jsonData]);
-
-  const rows = useMemo(() => {
-    if (jsonData?.data?.length) {
-      return jsonData.data.slice(1);
-    } else {
-      return [];
-    }
-  }, [jsonData]);
+  const {
+    sheetNames,
+    rows: sheetRows,
+    headers: sheetHeaders,
+  } = useMemo(() => {
+    const currentSheet = data?.sheets.find(
+      (sheet) => sheet.sheetName === sheetName
+    );
+    const headers = currentSheet?.headers || [];
+    const rows = currentSheet?.rows || [];
+    const sheetNames = data?.sheets.map((sheet) => sheet.sheetName) || [];
+    return {
+      sheetNames,
+      rows,
+      headers,
+    };
+  }, [data?.sheets, sheetName]);
+  console.log(data);
 
   function fixedHeaderContent() {
     return (
       <TableRow>
-        {headers.map((column) => (
+        {sheetHeaders.map((column) => (
           <TableCell
             key={column}
             variant="head"
@@ -86,8 +89,10 @@ export const ExcelViewer = () => {
   function rowContent(_index: number, row: string[]) {
     return (
       <>
-        {headers.map((column) => (
-          <TableCell key={column}>{row[headers.indexOf(column)]}</TableCell>
+        {sheetHeaders.map((column) => (
+          <TableCell key={column}>
+            {row[sheetHeaders.indexOf(column)]}
+          </TableCell>
         ))}
       </>
     );
@@ -99,14 +104,14 @@ export const ExcelViewer = () => {
     <Box className={classes.root}>
       <Box className={classes.buttons}>
         <SheetNameSelect
-          sheetNames={jsonData?.sheetNames || []}
+          sheetNames={sheetNames}
           onChange={setSheetName}
           value={sheetName}
         />
       </Box>
       <Paper style={{ height: "80vh", width: "100%" }}>
         <TableVirtuoso
-          data={rows}
+          data={sheetRows}
           components={VirtuosoTableComponents}
           fixedHeaderContent={fixedHeaderContent}
           itemContent={rowContent}

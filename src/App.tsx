@@ -3,7 +3,7 @@ import { ExcelViewer } from "./components/ExcelViewer";
 function App() {
   return (
     <>
-      <ExcelViewer />
+      <ExcelViewer fileId="66fd11663f570fe37f320c00" />
     </>
   );
 }
