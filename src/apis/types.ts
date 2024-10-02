@@ -1,3 +1,5 @@
+import { SheetRowData } from "../utils/types";
+
 export interface FileData {
   id: string;
   fileName: string;
@@ -9,5 +11,5 @@ export interface SheetData {
   id: string;
   sheetName: string;
   headers: string[];
-  rows: any[];
+  rows: SheetRowData[];
 }

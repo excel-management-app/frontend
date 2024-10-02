@@ -1,38 +1,39 @@
-import Box from "@mui/material/Box";
+import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+import { SheetData } from "../../apis/types";
 
 interface Props {
-  sheetNames: string[];
+  sheets: Pick<SheetData, "sheetName" | "id">[];
   onChange: (sheetName: string) => void;
   value: string;
 }
 
-export const SheetNameSelect = ({ sheetNames, onChange, value }: Props) => {
+export const SheetNameSelect = ({ sheets, onChange, value }: Props) => {
   const handleChange = (event: SelectChangeEvent) => {
-    onChange(event.target.value as string);
+    onChange(event.target.value);
   };
 
   return (
-    <Box sx={{ minWidth: 220 }}>
-      <FormControl fullWidth>
-        <InputLabel id="sheet-name-select">Sheet Name</InputLabel>
-        <Select
-          labelId="sheet-name-select"
-          id="demo-simple-select"
-          value={value}
-          label="Sheet Name"
-          onChange={handleChange}
-        >
-          {sheetNames.map((sheetName) => (
-            <MenuItem key={sheetName} value={sheetName}>
-              {sheetName}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    </Box>
+    <FormControl fullWidth>
+      <InputLabel id="sheet-name-select">Chọn Sheet</InputLabel>
+      <Select
+        labelId="sheet-name-select"
+        id="demo-simple-select"
+        value={value}
+        label="Chọn Sheet"
+        onChange={handleChange}
+      >
+        {sheets.map((sheet, index) => (
+          <MenuItem
+            key={`${sheet.sheetName}-${sheet.id}-${index}`}
+            value={sheet.sheetName}
+          >
+            {sheet.sheetName}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   );
 };

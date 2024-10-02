@@ -1,122 +1,137 @@
-import { Box, Theme } from "@mui/material";
+import { Box, Button, Theme } from "@mui/material";
 import Paper from "@mui/material/Paper";
-import TableCell from "@mui/material/TableCell";
-import TableRow from "@mui/material/TableRow";
-import { useEffect, useMemo, useState } from "react";
-import { TableVirtuoso } from "react-virtuoso";
+import { DataGrid } from "@mui/x-data-grid";
+import { useMemo, useState } from "react";
 import { makeStyles } from "tss-react/mui";
-import { getFileData } from "../../apis/excel";
-import { FileData } from "../../apis/types";
+import { FileListOption, SheetRowData } from "../../utils/types";
+import { useGetTableData } from "./hooks/useTableData";
 import { SheetNameSelect } from "./SheetNamesSelector";
-import { VirtuosoTableComponents } from "./VirtuosoTableComponents";
+import { useGetAllFiles } from "./hooks/useGetAllFiles";
+import { FileListSelect } from "./FileListSelect";
+import { Loading } from "../Loading";
+import AddRowDialog from "./AddRowDialog";
 
 const useStyles = makeStyles()((theme: Theme) => ({
   root: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(6, 4),
     display: "flex",
     flexDirection: "column",
     gap: theme.spacing(2),
     height: "100%",
-    width: "100%",
   },
-  buttons: {
+  selectors: {
     display: "flex",
+    alignItems: "center",
     justifyContent: "flex-end",
-    gap: theme.spacing(1),
+    gap: theme.spacing(2),
     paddingRight: theme.spacing(2),
+  },
+  selector: {
+    minWidth: "220px",
+  },
+  paper: {
+    width: "100%",
+    height: "100%",
+    overflow: "hidden",
+    display: "flex",
+    flexDirection: "column",
+    paddingRight: theme.spacing(2),
+    paddingTop: theme.spacing(2),
+  },
+  header: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
 }));
 
-interface Props {
-  fileId: string;
-}
-export const ExcelViewer = ({ fileId }: Props) => {
+export const ExcelViewer = () => {
   const { classes } = useStyles();
 
-  const [data, setData] = useState<FileData>();
-  const [sheetName, setSheetName] = useState<string>("");
-  const [loading, setLoading] = useState(true);
+  const [selectedFile, setSelectedFile] = useState<FileListOption | null>(null);
+  const fileId = useMemo(() => selectedFile?.id || "", [selectedFile]);
+  const [selectedSheetName, setSelectedSheetName] = useState("");
+  const [addingRow, setAddingRow] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const data = await getFileData({ fileId });
-        setData(data);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [fileId, sheetName]);
+  const { files } = useGetAllFiles();
 
-  const {
-    sheetNames,
-    rows: sheetRows,
-    headers: sheetHeaders,
-  } = useMemo(() => {
-    const currentSheet = data?.sheets.find(
-      (sheet) => sheet.sheetName === sheetName
-    );
-    const headers = currentSheet?.headers || [];
-    const rows = currentSheet?.rows || [];
-    const sheetNames = data?.sheets.map((sheet) => sheet.sheetName) || [];
-    return {
-      sheetNames,
-      rows,
-      headers,
-    };
-  }, [data?.sheets, sheetName]);
-  console.log(data);
+  const { sheets, sheetRows, sheetColumns, loading } = useGetTableData({
+    fileId,
+    sheetName: selectedSheetName,
+  });
 
-  function fixedHeaderContent() {
-    return (
-      <TableRow>
-        {sheetHeaders.map((column) => (
-          <TableCell
-            key={column}
-            variant="head"
-            sx={{ backgroundColor: "background.paper" }}
-          >
-            {column}
-          </TableCell>
-        ))}
-      </TableRow>
-    );
-  }
-  function rowContent(_index: number, row: string[]) {
-    return (
-      <>
-        {sheetHeaders.map((column) => (
-          <TableCell key={column}>
-            {row[sheetHeaders.indexOf(column)]}
-          </TableCell>
-        ))}
-      </>
-    );
-  }
+  const onSelectFile = (fileId: string) => {
+    setSelectedFile(files.find((file) => file.id === fileId) || null);
+  };
+
+  const paginationModel = { page: 0, pageSize: 20 };
+  const getRowId = (row: SheetRowData) => sheetRows.indexOf(row);
+
+  const onAddRow = (row: SheetRowData) => {
+    setAddingRow(false);
+  };
+
+  const onCloseAddRowDialog = () => {
+    setAddingRow(false);
+  };
+
+  const onOpenAddRowDialog = () => {
+    console.log(sheetRows);
+    setAddingRow(true);
+  };
 
   return loading ? (
-    <>Loading</>
+    <Loading />
   ) : (
-    <Box className={classes.root}>
-      <Box className={classes.buttons}>
-        <SheetNameSelect
-          sheetNames={sheetNames}
-          onChange={setSheetName}
-          value={sheetName}
-        />
+    <>
+      <Box className={classes.root}>
+        <Box className={classes.header}>
+          <h1>Excel Viewer</h1>
+          <Box sx={{ display: "flex", gap: "10px" }}>
+            <Button variant="contained">Tải file mới</Button>
+            <Button variant="contained">Xuất file</Button>
+          </Box>
+        </Box>
+
+        <Paper className={classes.paper} elevation={4}>
+          <Box className={classes.header} pl={2}>
+            <Box sx={{ display: "flex" }}>
+              <Button variant="contained" onClick={onOpenAddRowDialog}>
+                Thêm hàng
+              </Button>
+            </Box>
+            <Box className={classes.selectors}>
+              <Box className={classes.selector}>
+                <FileListSelect
+                  options={files}
+                  value={selectedFile}
+                  onChange={onSelectFile}
+                />
+              </Box>
+
+              <Box className={classes.selector}>
+                <SheetNameSelect
+                  sheets={sheets}
+                  onChange={setSelectedSheetName}
+                  value={selectedSheetName}
+                />
+              </Box>
+            </Box>
+          </Box>
+          <DataGrid
+            rows={sheetRows}
+            columns={sheetColumns}
+            initialState={{ pagination: { paginationModel } }}
+            pageSizeOptions={[5, 20]}
+            checkboxSelection
+            getRowId={getRowId}
+            sx={{ border: 0, mt: 2 }}
+          />
+        </Paper>
       </Box>
-      <Paper style={{ height: "80vh", width: "100%" }}>
-        <TableVirtuoso
-          data={sheetRows}
-          components={VirtuosoTableComponents}
-          fixedHeaderContent={fixedHeaderContent}
-          itemContent={rowContent}
-        />
-      </Paper>
-    </Box>
+      {addingRow && (
+        <AddRowDialog onClose={() => setAddingRow(false)} row={sheetRows[0]} />
+      )}
+    </>
   );
 };

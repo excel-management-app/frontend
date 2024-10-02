@@ -1,10 +1,11 @@
-import { ExcelViewer } from "./components/ExcelViewer";
+import { Box } from "@mui/material";
+import { Home } from "./pages/Home";
 
 function App() {
   return (
-    <>
-      <ExcelViewer fileId="66fd11663f570fe37f320c00" />
-    </>
+    <Box>
+      <Home />
+    </Box>
   );
 }
 
