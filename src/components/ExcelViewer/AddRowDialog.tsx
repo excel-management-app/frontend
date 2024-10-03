@@ -1,77 +1,94 @@
+import { Grid2 } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
-import * as React from "react";
-import { SheetRowData } from "../../utils/types";
+import { Controller, useForm } from "react-hook-form";
+import { makeStyles } from "tss-react/mui";
+import { addRowToSheet } from "../../apis/excel";
+
+const useStyles = makeStyles()(() => ({
+  root: {},
+}));
+
+interface FormData {
+  [k: string]: string;
+}
 
 interface AddRowDialogProps {
   onClose: () => void;
-  row: SheetRowData;
+  fieldNames: string[];
+  fileId: string;
+  sheetName: string;
+  refetch: () => void;
 }
-export default function AddRowDialog({ onClose, row }: AddRowDialogProps) {
-  const renderFormFields = () => {
-    return Object.entries(row).map(([key, value]) => {
-      if (typeof value === "string" || typeof value === "number") {
-        return (
-          <TextField
-            key={key}
-            margin="dense"
-            label={key}
-            defaultValue={value}
-            type={typeof value === "number" ? "number" : "text"}
-            fullWidth
-            name={key}
-          />
-        );
-      } else if (typeof value === "boolean") {
-        return (
-          <TextField
-            key={key}
-            margin="dense"
-            label={key}
-            type="checkbox"
-            defaultChecked={value}
-            name={key}
-            fullWidth
-          />
-        );
-      } else {
-        return (
-          <TextField
-            key={key}
-            margin="dense"
-            label={key}
-            defaultValue=""
-            fullWidth
-            name={key}
-          />
-        );
-      }
-    });
+
+export default function AddRowDialog({
+  onClose,
+  fieldNames,
+  fileId,
+  sheetName,
+  refetch,
+}: AddRowDialogProps) {
+  const { classes } = useStyles();
+
+  const { control, handleSubmit, reset } = useForm();
+
+  const onSubmit = async (data: FormData) => {
+    try {
+      await addRowToSheet({
+        fileId,
+        sheetName,
+        newRow: data,
+      });
+
+      refetch();
+      reset();
+    } catch (error) {
+      console.error(error);
+    }
   };
+
   return (
     <Dialog
+      fullWidth
+      maxWidth="lg"
       open
       onClose={onClose}
       PaperProps={{
+        className: classes.root,
         component: "form",
-        onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-          event.preventDefault();
-          const formData = new FormData(event.currentTarget);
-          const formJson = Object.fromEntries(formData.entries());
-          console.log(formJson);
-          onClose();
-        },
+        onSubmit: handleSubmit(onSubmit),
       }}
     >
-      <DialogTitle>Row Data</DialogTitle>
-      <DialogContent>{renderFormFields()}</DialogContent>
+      <DialogTitle>Thêm hàng</DialogTitle>
+      <DialogContent>
+        <Grid2 container columnSpacing={2}>
+          {fieldNames.map((value, key) => (
+            <Grid2 key={key} size={4}>
+              <Controller<FormData>
+                name={value}
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    margin="dense"
+                    label={value}
+                    type="text"
+                    fullWidth
+                  />
+                )}
+              />
+            </Grid2>
+          ))}
+        </Grid2>
+      </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button type="submit">Submit</Button>
+        <Button onClick={onClose}>Thoát</Button>
+        <Button type="submit">Thêm hàng</Button>
       </DialogActions>
     </Dialog>
   );

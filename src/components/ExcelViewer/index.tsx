@@ -8,7 +8,6 @@ import { useGetTableData } from "./hooks/useTableData";
 import { SheetNameSelect } from "./SheetNamesSelector";
 import { useGetAllFiles } from "./hooks/useGetAllFiles";
 import { FileListSelect } from "./FileListSelect";
-import { Loading } from "../Loading";
 import AddRowDialog from "./AddRowDialog";
 
 const useStyles = makeStyles()((theme: Theme) => ({
@@ -55,10 +54,11 @@ export const ExcelViewer = () => {
 
   const { files } = useGetAllFiles();
 
-  const { sheets, sheetRows, sheetColumns, loading } = useGetTableData({
-    fileId,
-    sheetName: selectedSheetName,
-  });
+  const { sheets, sheetRows, sheetColumns, loading, sheetHeaders, refetch } =
+    useGetTableData({
+      fileId,
+      sheetName: selectedSheetName,
+    });
 
   const onSelectFile = (fileId: string) => {
     setSelectedFile(files.find((file) => file.id === fileId) || null);
@@ -67,22 +67,11 @@ export const ExcelViewer = () => {
   const paginationModel = { page: 0, pageSize: 20 };
   const getRowId = (row: SheetRowData) => sheetRows.indexOf(row);
 
-  const onAddRow = (row: SheetRowData) => {
-    setAddingRow(false);
-  };
-
-  const onCloseAddRowDialog = () => {
-    setAddingRow(false);
-  };
-
   const onOpenAddRowDialog = () => {
-    console.log(sheetRows);
     setAddingRow(true);
   };
 
-  return loading ? (
-    <Loading />
-  ) : (
+  return (
     <>
       <Box className={classes.root}>
         <Box className={classes.header}>
@@ -118,7 +107,9 @@ export const ExcelViewer = () => {
               </Box>
             </Box>
           </Box>
+
           <DataGrid
+            loading={loading}
             rows={sheetRows}
             columns={sheetColumns}
             initialState={{ pagination: { paginationModel } }}
@@ -130,7 +121,13 @@ export const ExcelViewer = () => {
         </Paper>
       </Box>
       {addingRow && (
-        <AddRowDialog onClose={() => setAddingRow(false)} row={sheetRows[0]} />
+        <AddRowDialog
+          onClose={() => setAddingRow(false)}
+          fieldNames={sheetHeaders}
+          fileId={fileId}
+          sheetName={selectedSheetName}
+          refetch={refetch}
+        />
       )}
     </>
   );

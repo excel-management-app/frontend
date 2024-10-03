@@ -1,28 +1,23 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { FileData } from "../../../apis/types";
 import { getFileData } from "../../../apis/excel";
 
-export function useGetFileData(fileId: string) {
-  const [data, setData] = useState<FileData>();
-  const [loading, setLoading] = useState(false);
+const fetchFileData = async (fileId: string): Promise<FileData> => {
+  if (!fileId) throw new Error("File ID is required");
+  return getFileData({ fileId });
+};
 
-  useEffect(() => {
-    if (!fileId) return;
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const data = await getFileData({ fileId });
-        setData(data);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [fileId]);
+export function useGetFileData(fileId: string) {
+  const { data, isLoading, refetch } = useQuery<FileData>({
+    queryKey: ["fileData", fileId],
+    queryFn: () => fetchFileData(fileId),
+    enabled: !!fileId,
+    refetchInterval: 60000,
+  });
+
   return {
     data,
-    loading,
+    loading: isLoading,
+    refetch,
   };
 }

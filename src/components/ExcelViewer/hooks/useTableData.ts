@@ -9,7 +9,7 @@ interface Dependencies {
   sheetName: string;
 }
 export function useGetTableData({ fileId, sheetName }: Dependencies) {
-  const { data, loading } = useGetFileData(fileId);
+  const { data, loading, refetch } = useGetFileData(fileId);
   const {
     sheets,
     rows: sheetRows,
@@ -48,5 +48,6 @@ export function useGetTableData({ fileId, sheetName }: Dependencies) {
     sheetColumns: columns,
     sheetHeaders,
     loading,
+    refetch,
   };
 }

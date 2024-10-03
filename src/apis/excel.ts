@@ -14,3 +14,24 @@ export const getAllFiles = async (): Promise<FileData[]> => {
   const response = await axiosClient.get("/files");
   return response.data;
 };
+
+interface AddRowProps {
+  fileId: string;
+  sheetName: string;
+  newRow: {
+    [k: string]: FormDataEntryValue;
+  };
+}
+export const addRowToSheet = async ({
+  fileId,
+  sheetName,
+  newRow,
+}: AddRowProps): Promise<FileData> => {
+  const response = await axiosClient.post(
+    `/files/${fileId}/sheets/${sheetName}/rows`,
+    {
+      data: newRow,
+    }
+  );
+  return response.data;
+};
