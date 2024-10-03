@@ -31,7 +31,15 @@ export const addRowToSheet = async ({
     `/files/${fileId}/sheets/${sheetName}/rows`,
     {
       data: newRow,
-    }
+    },
   );
   return response.data;
+};
+
+export const uploadExcelFile = async (formData: FormData): Promise<void> => {
+  await axiosClient.post("/files/upload", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 };

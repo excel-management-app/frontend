@@ -20,7 +20,7 @@ export function useGetTableData({ fileId, sheetName }: Dependencies) {
     headers: string[];
   }>(() => {
     const currentSheet = data?.sheets.find(
-      (sheet) => sheet.sheetName === sheetName
+      (sheet) => sheet.sheetName === sheetName,
     );
     const headers = currentSheet?.headers || [];
     const rows = currentSheet?.rows || [];
@@ -39,7 +39,7 @@ export function useGetTableData({ fileId, sheetName }: Dependencies) {
         headerName: header,
         width: 200,
       })),
-    [sheetHeaders]
+    [sheetHeaders],
   );
 
   return {
