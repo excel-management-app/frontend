@@ -83,7 +83,7 @@ export const ExcelViewer = () => {
           <Box sx={{ display: "flex", gap: "10px" }}>
             <FileUploadButton />
 
-            {selectedFile && <FileExportButton />}
+            {selectedFile && <FileExportButton fileId={fileId} />}
           </Box>
         </Box>
 
