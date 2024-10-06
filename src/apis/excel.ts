@@ -31,7 +31,7 @@ export const addRowToSheet = async ({
     `/files/${fileId}/sheets/${sheetName}/rows`,
     {
       data: newRow,
-    }
+    },
   );
   return response.data;
 };
@@ -42,8 +42,4 @@ export const uploadExcelFile = async (formData: FormData): Promise<void> => {
       "Content-Type": "multipart/form-data",
     },
   });
-};
-
-export const exportFile = async (fileId: string) => {
-  return await axiosClient.get(`/files/${fileId}/export`);
 };
