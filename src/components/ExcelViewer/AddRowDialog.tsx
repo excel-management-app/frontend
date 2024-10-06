@@ -1,4 +1,4 @@
-import { Grid2 } from "@mui/material";
+import { colors, Divider, Grid2, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -8,9 +8,25 @@ import TextField from "@mui/material/TextField";
 import { Controller, useForm } from "react-hook-form";
 import { makeStyles } from "tss-react/mui";
 import { addRowToSheet } from "../../apis/excel";
+import CloseIcon from "@mui/icons-material/Close";
+import { toast } from "react-toastify";
 
 const useStyles = makeStyles()(() => ({
-  root: {},
+  exitButton: {
+    height: 40,
+    backgroundColor: colors.grey["100"],
+    color: colors.grey["900"],
+  },
+  addButton: {
+    height: 40,
+    backgroundColor: colors.grey["900"],
+    color: colors.grey["100"],
+  },
+  title: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
 }));
 
 interface FormData {
@@ -43,7 +59,7 @@ export default function AddRowDialog({
         sheetName,
         newRow: data,
       });
-
+      toast.success("Thêm hàng thành công");
       refetch();
       reset();
     } catch (error) {
@@ -53,17 +69,19 @@ export default function AddRowDialog({
 
   return (
     <Dialog
-      fullWidth
-      maxWidth="lg"
+      fullScreen
       open
       onClose={onClose}
       PaperProps={{
-        className: classes.root,
         component: "form",
         onSubmit: handleSubmit(onSubmit),
       }}
     >
-      <DialogTitle>Thêm hàng</DialogTitle>
+      <DialogTitle className={classes.title}>
+        <Typography variant="h6">Thêm hàng</Typography>
+        <CloseIcon sx={{ cursor: "pointer" }} onClick={onClose} />
+      </DialogTitle>
+      <Divider />
       <DialogContent>
         <Grid2 container columnSpacing={2}>
           {fieldNames.map((value, key) => (
@@ -86,9 +104,18 @@ export default function AddRowDialog({
           ))}
         </Grid2>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Thoát</Button>
-        <Button type="submit">Thêm hàng</Button>
+      <Divider />
+      <DialogActions
+        sx={{
+          p: 2,
+        }}
+      >
+        <Button onClick={onClose} size="small" className={classes.exitButton}>
+          Thoát
+        </Button>
+        <Button size="small" type="submit" className={classes.addButton}>
+          Thêm hàng
+        </Button>
       </DialogActions>
     </Dialog>
   );

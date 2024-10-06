@@ -92,13 +92,15 @@ export const ExcelViewer = () => {
               />
             </Box>
 
-            <Box className={classes.selector}>
-              <SheetNameSelect
-                sheets={sheets}
-                onChange={setSelectedSheetName}
-                value={selectedSheetName}
-              />
-            </Box>
+            {selectedFile && (
+              <Box className={classes.selector}>
+                <SheetNameSelect
+                  sheets={sheets}
+                  onChange={setSelectedSheetName}
+                  value={selectedSheetName}
+                />
+              </Box>
+            )}
           </Box>
 
           {!!sheetRows.length && (
@@ -120,6 +122,12 @@ export const ExcelViewer = () => {
             initialState={{ pagination: { paginationModel } }}
             pageSizeOptions={[5, 10, 20]}
             getRowId={getRowId}
+            localeText={{
+              noRowsLabel: "Không có dữ liệu",
+              footerRowSelected(count) {
+                return `${count} dòng đã được chọn`;
+              },
+            }}
           />
         </Box>
       </Box>
