@@ -1,11 +1,20 @@
-import FileDownloadIcon from "@mui/icons-material/FileDownload";
-import { Button } from "@mui/material";
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
+import { Button, colors, Tooltip } from "@mui/material";
 import { toast } from "react-toastify";
+import { makeStyles } from "tss-react/mui";
 
+const useStyles = makeStyles()(() => ({
+  button: {
+    height: 40,
+    backgroundColor: colors.grey["100"],
+    color: colors.grey["900"],
+  },
+}));
 interface Props {
   fileId: string;
 }
 export function FileExportButton({ fileId }: Props) {
+  const { classes } = useStyles();
   const downloadExcelFile = async (fileId: string): Promise<void> => {
     try {
       const url = `${import.meta.env.VITE_API_URL}/files/${fileId}/export`;
@@ -18,13 +27,16 @@ export function FileExportButton({ fileId }: Props) {
   };
 
   return (
-    <Button
-      role={undefined}
-      variant="contained"
-      startIcon={<FileDownloadIcon />}
-      onClick={() => downloadExcelFile(fileId)}
-    >
-      Xuất file
-    </Button>
+    <Tooltip title="Xuất file excel">
+      <Button
+        className={classes.button}
+        role={undefined}
+        variant="contained"
+        startIcon={<FileDownloadOutlinedIcon />}
+        onClick={() => downloadExcelFile(fileId)}
+      >
+        Xuất file
+      </Button>
+    </Tooltip>
   );
 }

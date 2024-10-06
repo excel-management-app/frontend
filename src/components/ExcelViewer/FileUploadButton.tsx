@@ -1,8 +1,10 @@
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { colors } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { ChangeEvent } from "react";
 import { toast } from "react-toastify";
+import { makeStyles } from "tss-react/mui";
 import { useUploadFile } from "./hooks/useUploadFile";
 
 const VisuallyHiddenInput = styled("input")({
@@ -17,7 +19,16 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
+const useStyles = makeStyles()(() => ({
+  button: {
+    height: 40,
+    backgroundColor: colors.grey["900"],
+  },
+}));
+
 export default function FileUploadButton() {
+  const { classes } = useStyles();
+
   const { mutate, isPending } = useUploadFile();
 
   const uploadFile = (event: ChangeEvent<HTMLInputElement>) => {
@@ -40,13 +51,14 @@ export default function FileUploadButton() {
 
   return (
     <LoadingButton
+      className={classes.button}
       loadingPosition="start"
       loading={isPending}
       component="label"
       role={undefined}
       variant="contained"
       tabIndex={-1}
-      startIcon={<CloudUploadIcon />}
+      startIcon={<FileUploadOutlinedIcon />}
     >
       Tải file mới
       <VisuallyHiddenInput

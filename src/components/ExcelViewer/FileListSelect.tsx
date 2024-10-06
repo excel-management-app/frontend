@@ -11,7 +11,7 @@ interface Props {
 }
 export const FileListSelect = ({ options, onChange, value }: Props) => {
   return (
-    <FormControl fullWidth>
+    <FormControl fullWidth size="small">
       <InputLabel id="select-file-label">Chọn File</InputLabel>
       <Select
         labelId="select-file-label"

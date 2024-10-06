@@ -1,20 +1,19 @@
-import { Box, Button, Theme } from "@mui/material";
-import Paper from "@mui/material/Paper";
+import { Box, Theme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useMemo, useState } from "react";
 import { makeStyles } from "tss-react/mui";
 import { FileListOption, SheetRowData } from "../../utils/types";
-import AddRowDialog from "./AddRowDialog";
+import { AddRowButton } from "./AddRowButton";
+import { FileExportButton } from "./FileExportButton";
 import { FileListSelect } from "./FileListSelect";
 import FileUploadButton from "./FileUploadButton";
 import { useGetAllFiles } from "./hooks/useGetAllFiles";
 import { useGetTableData } from "./hooks/useTableData";
 import { SheetNameSelect } from "./SheetNamesSelector";
-import { FileExportButton } from "./FileExportButton";
 
 const useStyles = makeStyles()((theme: Theme) => ({
   root: {
-    padding: theme.spacing(6, 4),
+    padding: theme.spacing(0, 2),
     display: "flex",
     flexDirection: "column",
     gap: theme.spacing(2),
@@ -29,7 +28,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
     paddingRight: theme.spacing(2),
   },
   selector: {
-    minWidth: "220px",
+    width: 220,
   },
   paper: {
     width: "100%",
@@ -44,6 +43,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
+    padding: theme.spacing(0, 1),
   },
 }));
 
@@ -53,7 +53,6 @@ export const ExcelViewer = () => {
   const [selectedFile, setSelectedFile] = useState<FileListOption | null>(null);
   const fileId = useMemo(() => selectedFile?.id || "", [selectedFile]);
   const [selectedSheetName, setSelectedSheetName] = useState("");
-  const [addingRow, setAddingRow] = useState(false);
 
   const { files } = useGetAllFiles();
 
@@ -67,12 +66,8 @@ export const ExcelViewer = () => {
     setSelectedFile(files.find((file) => file.id === fileId) || null);
   };
 
-  const paginationModel = { page: 0, pageSize: 10 };
+  const paginationModel = { page: 0, pageSize: 20 };
   const getRowId = (row: SheetRowData) => sheetRows.indexOf(row);
-
-  const onOpenAddRowDialog = () => {
-    setAddingRow(true);
-  };
 
   return (
     <>
@@ -87,55 +82,47 @@ export const ExcelViewer = () => {
           </Box>
         </Box>
 
-        <Paper className={classes.paper} elevation={4}>
-          <Box className={classes.header} pl={2}>
-            <Box>
-              {!!sheetRows.length && (
-                <Button variant="contained" onClick={onOpenAddRowDialog}>
-                  Thêm hàng
-                </Button>
-              )}
+        <Box className={classes.header} pl={2} px={1}>
+          <Box className={classes.selectors}>
+            <Box className={classes.selector}>
+              <FileListSelect
+                options={files}
+                value={selectedFile}
+                onChange={onSelectFile}
+              />
             </Box>
-            <Box className={classes.selectors}>
-              <Box className={classes.selector}>
-                <FileListSelect
-                  options={files}
-                  value={selectedFile}
-                  onChange={onSelectFile}
-                />
-              </Box>
 
-              <Box className={classes.selector}>
-                <SheetNameSelect
-                  sheets={sheets}
-                  onChange={setSelectedSheetName}
-                  value={selectedSheetName}
-                />
-              </Box>
+            <Box className={classes.selector}>
+              <SheetNameSelect
+                sheets={sheets}
+                onChange={setSelectedSheetName}
+                value={selectedSheetName}
+              />
             </Box>
           </Box>
 
+          {!!sheetRows.length && (
+            <AddRowButton
+              sheetHeaders={sheetHeaders}
+              fileId={fileId}
+              selectedSheetName={selectedSheetName}
+              refetch={refetch}
+            />
+          )}
+        </Box>
+
+        <Box sx={{ height: "calc(100vh - 220px)", p: 1 }}>
           <DataGrid
             scrollbarSize={2}
             loading={loading}
             rows={sheetRows}
             columns={sheetColumns}
             initialState={{ pagination: { paginationModel } }}
-            pageSizeOptions={[5, 10]}
+            pageSizeOptions={[5, 10, 20]}
             getRowId={getRowId}
-            sx={{ border: 0, mt: 2, height: "70%", px: 1 }}
           />
-        </Paper>
+        </Box>
       </Box>
-      {addingRow && (
-        <AddRowDialog
-          onClose={() => setAddingRow(false)}
-          fieldNames={sheetHeaders}
-          fileId={fileId}
-          sheetName={selectedSheetName}
-          refetch={refetch}
-        />
-      )}
     </>
   );
 };

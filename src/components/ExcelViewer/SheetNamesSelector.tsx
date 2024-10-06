@@ -16,7 +16,7 @@ export const SheetNameSelect = ({ sheets, onChange, value }: Props) => {
   };
 
   return (
-    <FormControl fullWidth>
+    <FormControl fullWidth size="small">
       <InputLabel id="sheet-name-select">Chọn Sheet</InputLabel>
       <Select
         labelId="sheet-name-select"
