@@ -1,5 +1,5 @@
 import { Box, Theme } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridRowSelectionModel } from "@mui/x-data-grid";
 import { useMemo, useState } from "react";
 import { makeStyles } from "tss-react/mui";
 import { FileListOption, SheetRowData } from "../../utils/types";
@@ -10,6 +10,7 @@ import FileUploadButton from "./FileUploadButton";
 import { useGetAllFiles } from "./hooks/useGetAllFiles";
 import { useGetTableData } from "./hooks/useTableData";
 import { SheetNameSelect } from "./SheetNamesSelector";
+import { EditRowDialogButton } from "./EditRowDialogButton";
 
 const useStyles = makeStyles()((theme: Theme) => ({
   root: {
@@ -53,6 +54,9 @@ export const ExcelViewer = () => {
   const [selectedFile, setSelectedFile] = useState<FileListOption | null>(null);
   const fileId = useMemo(() => selectedFile?.id || "", [selectedFile]);
   const [selectedSheetName, setSelectedSheetName] = useState("");
+  const [rowSelectionModel, setRowSelectionModel] =
+    useState<GridRowSelectionModel>([]);
+  console.log(rowSelectionModel);
 
   const { files } = useGetAllFiles();
 
@@ -68,6 +72,13 @@ export const ExcelViewer = () => {
 
   const paginationModel = { page: 0, pageSize: 20 };
   const getRowId = (row: SheetRowData) => sheetRows.indexOf(row);
+
+  const selectedRowData = useMemo(() => {
+    if (rowSelectionModel.length === 0) {
+      return null;
+    }
+    return sheetRows[rowSelectionModel[0] as number];
+  }, [rowSelectionModel, sheetRows]);
 
   return (
     <>
@@ -103,19 +114,32 @@ export const ExcelViewer = () => {
             )}
           </Box>
 
-          {!!sheetRows.length && (
-            <AddRowButton
-              sheetHeaders={sheetHeaders}
-              fileId={fileId}
-              selectedSheetName={selectedSheetName}
-              refetch={refetch}
-            />
-          )}
+          <Box sx={{ display: "flex", gap: "10px" }}>
+            {selectedRowData && (
+              <EditRowDialogButton
+                sheetHeaders={sheetHeaders}
+                fileId={fileId}
+                sheetName={selectedSheetName}
+                rowIndex={rowSelectionModel[0] as number}
+                refetch={refetch}
+                selectedRowData={selectedRowData}
+              />
+            )}
+            {!!sheetRows.length && (
+              <AddRowButton
+                sheetHeaders={sheetHeaders}
+                fileId={fileId}
+                selectedSheetName={selectedSheetName}
+                refetch={refetch}
+              />
+            )}
+          </Box>
         </Box>
 
         <Box sx={{ height: "calc(100vh - 220px)", p: 1 }}>
           <DataGrid
             scrollbarSize={2}
+            rowHeight={40}
             loading={loading}
             rows={sheetRows}
             columns={sheetColumns}
@@ -128,6 +152,13 @@ export const ExcelViewer = () => {
                 return `${count} dòng đã được chọn`;
               },
             }}
+            checkboxSelection
+            disableRowSelectionOnClick
+            disableMultipleRowSelection
+            onRowSelectionModelChange={(newRowSelectionModel) => {
+              setRowSelectionModel(newRowSelectionModel);
+            }}
+            rowSelectionModel={rowSelectionModel}
           />
         </Box>
       </Box>

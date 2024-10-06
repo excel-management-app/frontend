@@ -31,7 +31,25 @@ export const addRowToSheet = async ({
     `/files/${fileId}/sheets/${sheetName}/rows`,
     {
       data: newRow,
-    },
+    }
+  );
+  return response.data;
+};
+
+interface EditRowProps extends AddRowProps {
+  rowIndex: number;
+}
+export const editRow = async ({
+  fileId,
+  sheetName,
+  rowIndex,
+  newRow,
+}: EditRowProps): Promise<FileData> => {
+  const response = await axiosClient.put(
+    `/files/${fileId}/sheets/${sheetName}/rows/${rowIndex}`,
+    {
+      data: newRow,
+    }
   );
   return response.data;
 };
