@@ -12,6 +12,7 @@ import { useGetTableData } from "./hooks/useTableData";
 import { SheetNameSelect } from "./SheetNamesSelector";
 import { EditRowDialogButton } from "./EditRowDialogButton";
 import { countRowsByDeviceId } from "../../apis/excel";
+import { DeviceName } from "./DeviceName";
 
 const useStyles = makeStyles()((theme: Theme) => ({
   root: {
@@ -45,7 +46,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: theme.spacing(0, 1),
+    padding: theme.spacing(2, 1),
   },
 }));
 
@@ -96,7 +97,7 @@ export const ExcelViewer = () => {
     <>
       <Box className={classes.root}>
         <Box className={classes.header}>
-          <h1>Excel Viewer</h1>
+          <DeviceName />
 
           <Box sx={{ display: "flex", gap: "10px" }}>
             <FileUploadButton />

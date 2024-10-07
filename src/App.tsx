@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 function App() {
   return (
     <QueryClientProvider client={new QueryClient()}>
-      <ToastContainer position="bottom-left" autoClose={2000} />
+      <ToastContainer position="bottom-left" autoClose={2000} closeOnClick />
       <Home />
     </QueryClientProvider>
   );
