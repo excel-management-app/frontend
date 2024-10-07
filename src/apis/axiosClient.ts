@@ -8,6 +8,8 @@ const axiosClient = axios.create({
     Accept: "application/json",
   },
 });
+axiosClient.defaults.withCredentials = true;
+
 // Add a request interceptor
 axiosClient.interceptors.request.use(
   function (config) {
@@ -19,7 +21,7 @@ axiosClient.interceptors.request.use(
   },
   function (error) {
     return Promise.reject(error);
-  },
+  }
 );
 
 // Add a response interceptor
@@ -31,7 +33,7 @@ axiosClient.interceptors.response.use(
   },
   function (error) {
     return Promise.reject(error);
-  },
+  }
 );
 
 export default axiosClient;

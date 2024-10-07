@@ -61,3 +61,16 @@ export const uploadExcelFile = async (formData: FormData): Promise<void> => {
     },
   });
 };
+
+export const countRowsByDeviceId = async ({
+  fileId,
+  sheetName,
+}: {
+  fileId: string;
+  sheetName: string;
+}): Promise<number> => {
+  const response = await axiosClient.get(
+    `/files/${fileId}/sheets/${sheetName}/count`
+  );
+  return response.data;
+};
