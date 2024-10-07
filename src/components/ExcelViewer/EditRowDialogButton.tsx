@@ -7,7 +7,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
-import { isAxiosError } from "axios";
+import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -81,7 +81,7 @@ export const EditRowDialogButton = ({
       toast.success("Cập nhật hàng thành công");
       refetch();
     } catch (error: unknown) {
-      if (isAxiosError(error)) {
+      if (error instanceof AxiosError) {
         toast.error(error.response?.data);
       } else {
         console.error(error);

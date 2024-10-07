@@ -16,9 +16,11 @@ axiosClient.interceptors.request.use(
       config.data = qs.stringify(config.data);
       config.params = qs.stringify(config.params);
     }
-    config.headers["device-id"] = JSON.parse(
-      window.localStorage.getItem("deviceId") || "",
-    );
+    const deviceId = window.localStorage.getItem("deviceId");
+    if (deviceId) {
+      config.headers["device-id"] = deviceId.replace(/^"(.*)"$/, "$1");
+    }
+
     return config;
   },
   function (error) {

@@ -2,57 +2,34 @@ import {
   Box,
   Button,
   colors,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Divider,
   FormControl,
   TextField,
   Typography,
 } from "@mui/material";
-import Dialog from "@mui/material/Dialog";
-import { isAxiosError } from "axios";
-import { useEffect, useState } from "react";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import { AxiosError } from "axios";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useLocalStorage } from "react-use";
 import { makeStyles } from "tss-react/mui";
 import axiosClient from "../../apis/axiosClient";
 
 const useStyles = makeStyles()(() => ({
-  exitButton: {
-    height: 40,
-    backgroundColor: colors.grey["100"],
-    color: colors.grey["900"],
-  },
   updateButton: {
     height: 40,
     backgroundColor: colors.grey["900"],
     color: colors.grey["100"],
   },
-  title: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  editRowButton: {
-    height: 40,
-    backgroundColor: colors.grey["900"],
-  },
 }));
 export const DeviceInfo = () => {
   const { classes } = useStyles();
   // get device id from local storage
-  const [deviceId, setDeviceId] = useLocalStorage("deviceId", "");
-  const [open, setOpen] = useState(false);
+  const [, setDeviceId] = useLocalStorage("deviceId", "");
   const [deviceName, setDeviceName] = useState("");
 
-  useEffect(() => {
-    if (!deviceId) {
-      setOpen(true);
-    } else {
-      setOpen(false);
-    }
-  }, [deviceId]);
+  const navigate = useNavigate();
 
   const handleCreate = async () => {
     try {
@@ -63,36 +40,48 @@ export const DeviceInfo = () => {
       });
       if (res.data) {
         setDeviceId(res.data._id);
+        toast.success("Cập nhật thành công");
+        navigate("/");
       }
     } catch (error) {
-      if (isAxiosError(error)) {
-        toast.error(error.response?.data.message);
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data);
+      } else {
+        console.error(error);
       }
-      console.error(error);
     }
   };
-
-  return open ? (
-    <Dialog open fullScreen disableEscapeKeyDown>
-      <DialogTitle className={classes.title}>
-        <Typography variant="h6">Nhập tên máy của bạn</Typography>
-      </DialogTitle>
-      <Divider />
-      <DialogContent>
-        <Box
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        width: "100%",
+        height: "100vh",
+      }}
+    >
+      <Card
+        variant="outlined"
+        sx={{
+          width: 448,
+          height: 284,
+        }}
+      >
+        <CardContent
           sx={{
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            gap: "10px",
-            width: "100%",
+            justifyContent: "center",
           }}
         >
-          <Typography variant="h2">Thay đổi tên máy</Typography>
-          <Typography color="error" variant="h6">
+          <Typography variant="h5">Nhập tên máy của bạn</Typography>
+          <Typography color="error" variant="body2">
             Bạn phải nhập tên máy để có thể tiếp tục
           </Typography>
-          <FormControl size="medium">
+          <FormControl size="medium" margin="normal" fullWidth>
             <TextField
               variant="outlined"
               label="Tên máy"
@@ -100,23 +89,19 @@ export const DeviceInfo = () => {
               onChange={(event) => setDeviceName(event.target.value)}
               fullWidth
             />
+            <Box mt={2}>
+              <Button
+                fullWidth
+                size="small"
+                onClick={handleCreate}
+                className={classes.updateButton}
+              >
+                Cập nhật tên máy
+              </Button>
+            </Box>
           </FormControl>
-        </Box>
-      </DialogContent>
-      <Divider />
-      <DialogActions
-        sx={{
-          p: 2,
-        }}
-      >
-        <Button
-          size="small"
-          onClick={handleCreate}
-          className={classes.updateButton}
-        >
-          Cập nhật tên máy
-        </Button>
-      </DialogActions>
-    </Dialog>
-  ) : null;
+        </CardContent>
+      </Card>
+    </Box>
+  );
 };
