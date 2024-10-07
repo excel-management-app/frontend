@@ -10,6 +10,7 @@ import { makeStyles } from "tss-react/mui";
 import { addRowToSheet } from "../../apis/excel";
 import CloseIcon from "@mui/icons-material/Close";
 import { toast } from "react-toastify";
+import { AxiosError } from "axios";
 
 const useStyles = makeStyles()(() => ({
   exitButton: {
@@ -62,11 +63,14 @@ export default function AddRowDialog({
       toast.success("Thêm hàng thành công");
       refetch();
       reset();
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data);
+      } else {
+        console.error(error);
+      }
     }
   };
-
   return (
     <Dialog
       fullScreen

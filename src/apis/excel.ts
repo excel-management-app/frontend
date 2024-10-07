@@ -31,7 +31,7 @@ export const addRowToSheet = async ({
     `/files/${fileId}/sheets/${sheetName}/rows`,
     {
       data: newRow,
-    }
+    },
   );
   return response.data;
 };
@@ -49,7 +49,7 @@ export const editRow = async ({
     `/files/${fileId}/sheets/${sheetName}/rows/${rowIndex}`,
     {
       data: newRow,
-    }
+    },
   );
   return response.data;
 };
@@ -70,7 +70,7 @@ export const countRowsByDeviceId = async ({
   sheetName: string;
 }): Promise<number> => {
   const response = await axiosClient.get(
-    `/files/${fileId}/sheets/${sheetName}/count`
+    `/files/${fileId}/sheets/${sheetName}/count`,
   );
   return response.data;
 };
