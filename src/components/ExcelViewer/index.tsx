@@ -12,7 +12,7 @@ import { useGetTableData } from "./hooks/useTableData";
 import { SheetNameSelect } from "./SheetNamesSelector";
 import { EditRowDialogButton } from "./EditRowDialogButton";
 import { countRowsByDeviceId } from "../../apis/excel";
-import { DeviceName } from "./DeviceName";
+import { DeviceName } from "../DeviceInfo/DeviceName";
 import { ExportToWordButton } from "./ExportToWordButton";
 
 const useStyles = makeStyles()((theme: Theme) => ({

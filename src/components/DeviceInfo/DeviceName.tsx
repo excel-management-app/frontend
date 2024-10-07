@@ -3,6 +3,7 @@ import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axiosClient from "../../apis/axiosClient";
+import { useLocalStorage } from "react-use";
 
 interface Device {
   name: string;
@@ -12,10 +13,13 @@ export const DeviceName = () => {
   const [deviceName, setDeviceName] = useState("");
   const [editing, setEditing] = useState(false);
   const [initialized, setInitialized] = useState("");
+  const [deviceId] = useLocalStorage("deviceId", "");
 
   useEffect(() => {
     const getDeviceName = async () => {
-      const response = await axiosClient.get<Device>("/device");
+      const response = await axiosClient.get<Device>("/devices", {
+        data: { deviceId },
+      });
 
       setDeviceName(response.data.name);
 
@@ -30,7 +34,7 @@ export const DeviceName = () => {
       return;
     }
     try {
-      await axiosClient.put<Device>("/device", { name: deviceName });
+      await axiosClient.put<Device>("/devices", { name: deviceName });
 
       setEditing(false);
 

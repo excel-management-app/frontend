@@ -8,7 +8,6 @@ const axiosClient = axios.create({
     Accept: "application/json",
   },
 });
-axiosClient.defaults.withCredentials = true;
 
 // Add a request interceptor
 axiosClient.interceptors.request.use(
@@ -17,11 +16,14 @@ axiosClient.interceptors.request.use(
       config.data = qs.stringify(config.data);
       config.params = qs.stringify(config.params);
     }
+    config.headers["device-id"] = JSON.parse(
+      window.localStorage.getItem("deviceId") || "",
+    );
     return config;
   },
   function (error) {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Add a response interceptor
@@ -33,7 +35,7 @@ axiosClient.interceptors.response.use(
   },
   function (error) {
     return Promise.reject(error);
-  }
+  },
 );
 
 export default axiosClient;
