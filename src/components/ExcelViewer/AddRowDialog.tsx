@@ -60,6 +60,7 @@ export default function AddRowDialog({
         sheetName,
         newRow: data,
       });
+      onClose();
       toast.success("Thêm hàng thành công");
       refetch();
       reset();

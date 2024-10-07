@@ -13,6 +13,7 @@ import { SheetNameSelect } from "./SheetNamesSelector";
 import { EditRowDialogButton } from "./EditRowDialogButton";
 import { countRowsByDeviceId } from "../../apis/excel";
 import { DeviceName } from "./DeviceName";
+import { ExportToWordButton } from "./ExportToWordButton";
 
 const useStyles = makeStyles()((theme: Theme) => ({
   root: {
@@ -128,16 +129,6 @@ export const ExcelViewer = () => {
           </Box>
 
           <Box sx={{ display: "flex", gap: "10px" }}>
-            {selectedRowData && (
-              <EditRowDialogButton
-                sheetHeaders={sheetHeaders}
-                fileId={fileId}
-                sheetName={selectedSheetName}
-                rowIndex={rowSelectionModel[0] as number}
-                refetch={refetch}
-                selectedRowData={selectedRowData}
-              />
-            )}
             {!!sheetRows.length && (
               <AddRowButton
                 sheetHeaders={sheetHeaders}
@@ -145,6 +136,23 @@ export const ExcelViewer = () => {
                 selectedSheetName={selectedSheetName}
                 refetch={refetch}
               />
+            )}
+            {selectedRowData && (
+              <>
+                <EditRowDialogButton
+                  sheetHeaders={sheetHeaders}
+                  fileId={fileId}
+                  sheetName={selectedSheetName}
+                  rowIndex={rowSelectionModel[0] as number}
+                  refetch={refetch}
+                  selectedRowData={selectedRowData}
+                />
+                <ExportToWordButton
+                  fileId={fileId}
+                  sheetName={selectedSheetName}
+                  rowIndex={rowSelectionModel[0] as number}
+                />
+              </>
             )}
           </Box>
         </Box>

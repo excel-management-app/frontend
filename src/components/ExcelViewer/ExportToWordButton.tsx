@@ -12,12 +12,14 @@ const useStyles = makeStyles()(() => ({
 }));
 interface Props {
   fileId: string;
+  sheetName: string;
+  rowIndex: number;
 }
-export function FileExportButton({ fileId }: Props) {
+export function ExportToWordButton({ fileId, sheetName, rowIndex }: Props) {
   const { classes } = useStyles();
-  const downloadExcelFile = async (fileId: string): Promise<void> => {
+  const exportToWord = async (): Promise<void> => {
     try {
-      const url = `${import.meta.env.VITE_API_URL}/files/${fileId}/export`;
+      const url = `${import.meta.env.VITE_API_URL}/words/${fileId}/sheets/${sheetName}/rows/${rowIndex}`;
       window.location.href = url;
 
       toast.success("Xuất file thành công");
@@ -27,15 +29,15 @@ export function FileExportButton({ fileId }: Props) {
   };
 
   return (
-    <Tooltip title="Xuất file excel">
+    <Tooltip title="Xuất file word">
       <Button
         className={classes.button}
         role={undefined}
         variant="contained"
         startIcon={<FileDownloadOutlinedIcon />}
-        onClick={() => downloadExcelFile(fileId)}
+        onClick={exportToWord}
       >
-        Xuất Excel
+        Xuất Word
       </Button>
     </Tooltip>
   );
