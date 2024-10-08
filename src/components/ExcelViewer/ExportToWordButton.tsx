@@ -2,6 +2,7 @@ import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import { Button, colors, Tooltip } from "@mui/material";
 import { toast } from "react-toastify";
 import { makeStyles } from "tss-react/mui";
+import axiosClient from "../../apis/axiosClient";
 
 const useStyles = makeStyles()(() => ({
   button: {
@@ -14,14 +15,19 @@ interface Props {
   fileId: string;
   sheetName: string;
   rowIndex: number;
+  listRowIndex: string;
 }
-export function ExportToWordButton({ fileId, sheetName, rowIndex }: Props) {
+export function ExportToWordButton({ fileId, sheetName, rowIndex, listRowIndex }: Props) {
   const { classes } = useStyles();
+  
   const exportToWord = async (): Promise<void> => {
     try {
-      const url = `${import.meta.env.VITE_API_URL}/words/${fileId}/sheets/${sheetName}/rows/${rowIndex}`;
-      window.location.href = url;
-
+      const response = await axiosClient.get(
+        `/words/${fileId}/sheets/${sheetName}/rows/`,
+        {
+          data: listRowIndex,
+        },
+      );
       toast.success("Xuất file thành công");
     } catch (error) {
       console.error("Error during file download:", error);

@@ -151,6 +151,7 @@ export const ExcelViewer = () => {
                   fileId={fileId}
                   sheetName={selectedSheetName}
                   rowIndex={rowSelectionModel[0] as number}
+                  listRowIndex={rowSelectionModel.join(',')}              
                 />
               </>
             )}
@@ -175,7 +176,7 @@ export const ExcelViewer = () => {
             }}
             checkboxSelection
             disableRowSelectionOnClick
-            disableMultipleRowSelection
+            // disableMultipleRowSelection
             onRowSelectionModelChange={(newRowSelectionModel) => {
               setRowSelectionModel(newRowSelectionModel);
             }}
