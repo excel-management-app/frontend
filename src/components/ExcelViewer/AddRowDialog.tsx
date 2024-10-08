@@ -1,4 +1,11 @@
-import { colors, Divider, Grid2, Typography } from "@mui/material";
+import {
+  CircularProgress,
+  colors,
+  Divider,
+  Grid2,
+  Stack,
+  Typography,
+} from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -11,6 +18,7 @@ import { addRowToSheet } from "../../apis/excel";
 import CloseIcon from "@mui/icons-material/Close";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import { useLayoutEffect, useMemo, useState } from "react";
 
 const useStyles = makeStyles()(() => ({
   exitButton: {
@@ -60,7 +68,7 @@ export default function AddRowDialog({
         sheetName,
         newRow: data,
       });
-      onClose();
+
       toast.success("Thêm hàng thành công");
       refetch();
       reset();
@@ -72,6 +80,41 @@ export default function AddRowDialog({
       }
     }
   };
+  const [loadingFormFields, setLoadingFormFields] = useState(true);
+  useLayoutEffect(() => {
+    setLoadingFormFields(true);
+    const timeoutId = setTimeout(() => {
+      setLoadingFormFields(false); // Render form fields after delay
+    }, 300); // Small delay for smoother loading
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [reset]);
+
+  // Memoize the form fields so that they do not re-render unnecessarily
+  const MemoizedFormFields = useMemo(() => {
+    return fieldNames
+      .filter((value) => value !== "tamY") // Exclude tamY field
+      .map((value, key) => (
+        <Grid2 key={key} size={4}>
+          <Controller
+            name={value}
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                margin="dense"
+                label={value}
+                type="text"
+                fullWidth
+              />
+            )}
+          />
+        </Grid2>
+      ));
+  }, [fieldNames, control]);
+
   return (
     <Dialog
       fullScreen
@@ -88,26 +131,23 @@ export default function AddRowDialog({
       </DialogTitle>
       <Divider />
       <DialogContent>
-        <Grid2 container columnSpacing={2}>
-          {fieldNames.map((value, key) => (
-            <Grid2 key={key} size={4}>
-              <Controller<FormData>
-                name={value}
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    margin="dense"
-                    label={value}
-                    type="text"
-                    fullWidth
-                  />
-                )}
-              />
-            </Grid2>
-          ))}
-        </Grid2>
+        {loadingFormFields ? (
+          <Stack
+            spacing={2}
+            direction="row"
+            alignItems="center"
+            justifyContent="center"
+            height="100%"
+            width="100%"
+            zIndex={999}
+          >
+            <CircularProgress size="3rem" />
+          </Stack>
+        ) : (
+          <Grid2 container columnSpacing={2}>
+            {MemoizedFormFields}
+          </Grid2>
+        )}
       </DialogContent>
       <Divider />
       <DialogActions
