@@ -19,7 +19,7 @@ interface AddRowProps {
   fileId: string;
   sheetName: string;
   newRow: {
-    [k: string]: FormDataEntryValue;
+    [k: string]: FormDataEntryValue | number;
   };
 }
 export const addRowToSheet = async ({

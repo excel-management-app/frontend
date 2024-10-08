@@ -113,4 +113,5 @@ export const GIAY_TO = {
   HDCN: "Hợp đồng chuyển nhượng",
   PCTS: "Văn bản phân chia tài sản",
   GKS: "giấy khai sinh",
+  CCCD: "Căn cước công dân",
 };
