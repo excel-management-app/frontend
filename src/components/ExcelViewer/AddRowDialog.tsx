@@ -114,6 +114,7 @@ export default function AddRowDialog({
         </Grid2>
       ));
   }, [fieldNames, control]);
+  console.log(fieldNames.filter((value) => value !== "tamY"));
 
   return (
     <Dialog
