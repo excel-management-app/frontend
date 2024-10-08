@@ -20,14 +20,17 @@ interface Props {
 export function ExportToWordButton({ fileId, sheetName, rowIndex, listRowIndex }: Props) {
   const { classes } = useStyles();
   
+  
   const exportToWord = async (): Promise<void> => {
     try {
-      const response = await axiosClient.get(
+      const response = await axiosClient.post(
         `/words/${fileId}/sheets/${sheetName}/rows/`,
         {
           data: listRowIndex,
         },
       );
+      const url = `${import.meta.env.VITE_API_URL}/files/${fileId}/downloadWord`;
+      window.location.href = url;
       toast.success("Xuất file thành công");
     } catch (error) {
       console.error("Error during file download:", error);
