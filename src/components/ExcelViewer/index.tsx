@@ -5,6 +5,7 @@ import { makeStyles } from "tss-react/mui";
 import { FileListOption, SheetRowData } from "../../utils/types";
 import { AddRowButton } from "./AddRowButton";
 import { FileExportButton } from "./FileExportButton";
+import { StatisticButton } from "./StatisticButton";
 import { FileListSelect } from "./FileListSelect";
 import FileUploadButton from "./FileUploadButton";
 import { useGetAllFiles } from "./hooks/useGetAllFiles";
@@ -104,6 +105,7 @@ export const ExcelViewer = () => {
             <FileUploadButton />
 
             {selectedFile && <FileExportButton fileId={fileId} />}
+            <StatisticButton />
           </Box>
         </Box>
 
