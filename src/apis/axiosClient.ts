@@ -2,7 +2,7 @@ import axios from "axios";
 import qs from "qs";
 
 const axiosClient = axios.create({
-  baseURL: "api",
+  baseURL: "http://localhost:3001",
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
