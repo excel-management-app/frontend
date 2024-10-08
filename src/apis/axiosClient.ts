@@ -2,10 +2,11 @@ import axios from "axios";
 import qs from "qs";
 
 const axiosClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: "api",
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
+    "Access-Control-Allow-Origin": "*",
   },
 });
 
@@ -25,7 +26,7 @@ axiosClient.interceptors.request.use(
   },
   function (error) {
     return Promise.reject(error);
-  },
+  }
 );
 
 // Add a response interceptor
@@ -37,7 +38,7 @@ axiosClient.interceptors.response.use(
   },
   function (error) {
     return Promise.reject(error);
-  },
+  }
 );
 
 export default axiosClient;

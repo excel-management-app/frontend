@@ -34,7 +34,9 @@ export const DeviceName = () => {
       return;
     }
     try {
-      await axiosClient.put<Device>("/devices", { name: deviceName });
+      await axiosClient.put<Device>("/devices", {
+        data: { name: deviceName, id: deviceId },
+      });
 
       setEditing(false);
 
