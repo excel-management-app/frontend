@@ -19,6 +19,7 @@ import { ControlledTextField } from "./ControlledTextField";
 import dayjs from "dayjs";
 import { SheetRowData } from "../../utils/types";
 import { convertToFormData } from "./functions";
+import { useEffect } from "react";
 
 interface FormData {
   [k: string]: string | number;
@@ -39,9 +40,15 @@ export default function CurrentDataForm({
   refetch,
   selectedRowData,
 }: Props) {
-  const { control, handleSubmit, reset } = useForm({
-    defaultValues: convertToFormData(selectedRowData),
-  });
+  const { control, handleSubmit, reset } = useForm();
+
+  useEffect(() => {
+    if (selectedRowData) {
+      reset(convertToFormData(selectedRowData));
+    } else {
+      reset();
+    }
+  }, [reset, selectedRowData]);
 
   const onSubmit = async (data: FormData) => {
     const newRow = {
