@@ -63,11 +63,12 @@ export const ExcelViewer = () => {
 
   const { files } = useGetAllFiles();
 
-  const { sheets, sheetRows, sheetColumns, loading, sheetHeaders, refetch } =
-    useGetTableData({
+  const { sheets, sheetRows, sheetColumns, loading, refetch } = useGetTableData(
+    {
       fileId,
       sheetName: selectedSheetName,
-    });
+    },
+  );
 
   const onSelectFile = (fileId: string) => {
     setSelectedFile(files.find((file) => file.id === fileId) || null);
@@ -131,9 +132,8 @@ export const ExcelViewer = () => {
           </Box>
 
           <Box sx={{ display: "flex", gap: "10px" }}>
-            {!!sheetRows.length && (
+            {!!sheetRows.length && !selectedRowData && (
               <AddRowButton
-                sheetHeaders={sheetHeaders}
                 fileId={fileId}
                 selectedSheetName={selectedSheetName}
                 refetch={refetch}
@@ -142,7 +142,6 @@ export const ExcelViewer = () => {
             {selectedRowData && (
               <>
                 <EditRowDialogButton
-                  sheetHeaders={sheetHeaders}
                   fileId={fileId}
                   sheetName={selectedSheetName}
                   rowIndex={rowSelectionModel[0] as number}

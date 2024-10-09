@@ -2,6 +2,7 @@ import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import { Button, colors, Tooltip } from "@mui/material";
 import { toast } from "react-toastify";
 import { makeStyles } from "tss-react/mui";
+import { API_URL } from "../../utils/consts";
 
 const useStyles = makeStyles()(() => ({
   button: {
@@ -17,7 +18,7 @@ export function FileExportButton({ fileId }: Props) {
   const { classes } = useStyles();
   const downloadExcelFile = async (fileId: string): Promise<void> => {
     try {
-      const url = `${import.meta.env.VITE_API_URL}/files/${fileId}/export`;
+      const url = `${API_URL}/files/${fileId}/export`;
       window.location.href = url;
 
       toast.success("Xuất file thành công");

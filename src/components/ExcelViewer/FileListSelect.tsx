@@ -16,7 +16,7 @@ export const FileListSelect = ({ options, onChange, value }: Props) => {
       <Select
         labelId="select-file-label"
         id="select-file"
-        value={value?.id}
+        value={value?.id || ""}
         label="Chọn File"
         onChange={(e) => onChange(e.target.value)}
       >

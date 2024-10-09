@@ -2,6 +2,7 @@ import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import { Button, colors, Tooltip } from "@mui/material";
 import { toast } from "react-toastify";
 import { makeStyles } from "tss-react/mui";
+import { API_URL } from "../../utils/consts";
 import axiosClient from "../../apis/axiosClient";
 
 const useStyles = makeStyles()(() => ({
@@ -14,23 +15,18 @@ const useStyles = makeStyles()(() => ({
 interface Props {
   fileId: string;
   sheetName: string;
-  rowIndex: number;
   listRowIndex: string;
 }
-export function ExportToWordButton({ fileId, sheetName, rowIndex, listRowIndex }: Props) {
+export function ExportToWordButton({ fileId, sheetName, listRowIndex }: Props) {
   const { classes } = useStyles();
-  
-  
+
   const exportToWord = async (): Promise<void> => {
     try {
-      const response = await axiosClient.post(
-        `/words/${fileId}/sheets/${sheetName}/rows/`,
-        {
-          data: listRowIndex,
-        },
-      );
-      const url = `${import.meta.env.VITE_API_URL}/files/${fileId}/downloadWord`;
-      window.location.href = url;
+      await axiosClient.post(`/words/${fileId}/sheets/${sheetName}/rows/`, {
+        data: listRowIndex,
+      });
+
+      window.location.href = `${API_URL}/files/${fileId}/downloadWord`;
       toast.success("Xuất file thành công");
     } catch (error) {
       console.error("Error during file download:", error);
