@@ -21,14 +21,14 @@ export const Home = () => {
       getDeviceName()
         .then((response) => {
           setDeviceId(response.data.id);
-          navigate("/");
         })
         .catch((error) => {
           setDeviceId(undefined);
           console.error(error);
+          navigate("/deviceInfo");
         });
     }
-  }, []);
+  }, [deviceId, navigate, setDeviceId]);
   return (
     <Box>
       <ExcelViewer />
