@@ -98,11 +98,13 @@ export const ExcelViewer = () => {
         <Box className={classes.header} pl={2} px={1}>
           <Box className={classes.selectors}>
             <Box className={classes.selector}>
-              <FileListSelect
-                options={files}
-                value={selectedFile}
-                onChange={onSelectFile}
-              />
+              {!!files.length && (
+                <FileListSelect
+                  options={files}
+                  value={selectedFile}
+                  onChange={onSelectFile}
+                />
+              )}
             </Box>
 
             {selectedFile && (
