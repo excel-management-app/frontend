@@ -41,7 +41,7 @@ export default function TableStatisticDialog({
   onClose
 }: StatisticProps) {
   const { classes } = useStyles();
-  const [dataRows, setDataRow]   = useState();
+  const [dataRows, setDataRow]   = useState<{_id: String, name: String, count: Number, createdAt: Date }[]>([]);
   const formatDate = (dateString: Date) => {
     const date = new Date(dateString);
 
@@ -57,7 +57,8 @@ export default function TableStatisticDialog({
   useEffect(() => {
     async function fetchData() {
       const response = await axiosClient.get(
-        `/devices/getAll`
+        // `/devices/getAll/${date}`
+        `/devices/getAll/`
       );
       console.log(response);
       setDataRow(response.data);
@@ -66,7 +67,7 @@ export default function TableStatisticDialog({
   }, []);
 
   // const dataRows = getAllData();
-  const sheetRows = dataRows.map((row: { createdAt: Date; }) => ({...row, createdAt: formatDate(row.createdAt)}));
+  const sheetRows = dataRows.map((row: { createdAt: Date }) => ({...row, createdAt: formatDate(row.createdAt)}));
   const sheetColumns = [
     { field: 'createdAt', headerName: 'Ngày', width: 150 },
     { field: 'name', headerName: 'Tên thiết bị', width: 150 },
