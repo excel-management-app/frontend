@@ -1,19 +1,18 @@
 import { Box, Theme } from "@mui/material";
 import { DataGrid, GridRowSelectionModel } from "@mui/x-data-grid";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { makeStyles } from "tss-react/mui";
 import { FileListOption, SheetRowData } from "../../utils/types";
+import { DeviceName } from "../DeviceInfo/DeviceName";
 import { AddRowButton } from "./AddRowButton";
+import { EditRowDialogButton } from "./EditRowDialogButton";
+import { ExportToWordButton } from "./ExportToWordButton";
 import { FileExportButton } from "./FileExportButton";
 import { FileListSelect } from "./FileListSelect";
 import FileUploadButton from "./FileUploadButton";
 import { useGetAllFiles } from "./hooks/useGetAllFiles";
 import { useGetTableData } from "./hooks/useTableData";
 import { SheetNameSelect } from "./SheetNamesSelector";
-import { EditRowDialogButton } from "./EditRowDialogButton";
-import { countRowsByDeviceId } from "../../apis/excel";
-import { DeviceName } from "../DeviceInfo/DeviceName";
-import { ExportToWordButton } from "./ExportToWordButton";
 
 const useStyles = makeStyles()((theme: Theme) => ({
   root: {
@@ -66,7 +65,7 @@ export const ExcelViewer = () => {
     {
       fileId,
       sheetName: selectedSheetName,
-    },
+    }
   );
 
   const onSelectFile = (fileId: string) => {
@@ -82,18 +81,6 @@ export const ExcelViewer = () => {
     }
     return sheetRows[rowSelectionModel[0] as number];
   }, [rowSelectionModel, sheetRows]);
-  useEffect(() => {
-    async function fetchData() {
-      const response = await countRowsByDeviceId({
-        fileId,
-        sheetName: selectedSheetName,
-      });
-      console.log(response);
-    }
-    if (fileId && selectedSheetName) {
-      fetchData();
-    }
-  }, [fileId, selectedSheetName]);
 
   return (
     <>
