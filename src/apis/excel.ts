@@ -62,6 +62,15 @@ export const uploadExcelFile = async (formData: FormData): Promise<void> => {
   });
 };
 
+
+export const uploadWordFile = async (formData: FormData): Promise<void> => {
+  await axiosClient.post("/files/uploadTemplateWord", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
 export const countRowsByDeviceId = async ({
   fileId,
   sheetName,

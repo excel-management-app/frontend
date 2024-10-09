@@ -1,19 +1,17 @@
-import { colors, Divider, Grid2, Typography } from "@mui/material";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-import TextField from "@mui/material/TextField";
-import { Controller, useForm } from "react-hook-form";
-import { makeStyles } from "tss-react/mui";
-import { addRowToSheet } from "../../apis/excel";
 import CloseIcon from "@mui/icons-material/Close";
-import { toast } from "react-toastify";
-import { AxiosError } from "axios";
+import { colors, Typography } from "@mui/material";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
 import { DataGrid } from "@mui/x-data-grid";
-import axiosClient from "../../apis/axiosClient";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { makeStyles } from "tss-react/mui";
+import axiosClient from "../../apis/axiosClient";
+import { ControlledDatePicker } from "../Form/ControlledDatePicker";
+import { IFormData } from "../Form/types";
 
 const useStyles = makeStyles()(() => ({
   exitButton: {
@@ -42,6 +40,15 @@ export default function TableStatisticDialog({
 }: StatisticProps) {
   const { classes } = useStyles();
   const [dataRows, setDataRow]   = useState<{_id: String, name: String, count: Number, createdAt: Date }[]>([]);
+
+  const [selectedDate, setSelectedDate] = useState(null);
+
+  const handleDateChange = async (date: any) => {
+    setSelectedDate(date);
+    console.log('Selected date:', dayjs(date).format("YYYY-MM-DD"));
+  };
+
+
   const formatDate = (dateString: Date) => {
     const date = new Date(dateString);
 
@@ -53,18 +60,20 @@ export default function TableStatisticDialog({
 
     return formattedDate;
   }
+        
 
   useEffect(() => {
     async function fetchData() {
+      console.log('selectedDateaaa', selectedDate);
       const response = await axiosClient.get(
-        // `/devices/getAll/${date}`
-        `/devices/getAll/`
+        `/devices/getAll/${dayjs(selectedDate).format("YYYY-MM-DD")}`
+        // `/devices/getAll/2024-10-09`
       );
       console.log(response);
       setDataRow(response.data);
     }
     fetchData()
-  }, []);
+  }, [selectedDate]);
 
   // const dataRows = getAllData();
   const sheetRows = dataRows.map((row: { createdAt: Date }) => ({...row, createdAt: formatDate(row.createdAt)}));
@@ -73,6 +82,9 @@ export default function TableStatisticDialog({
     { field: 'name', headerName: 'Tên thiết bị', width: 150 },
     { field: 'count', headerName: 'Số bản đã xuất file', width: 200 },
   ];
+
+  
+
   return (
     <Dialog
       fullScreen
@@ -80,8 +92,15 @@ export default function TableStatisticDialog({
       onClose={onClose}
     >
       <DialogTitle className={classes.title}>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
         <Typography variant="h6"> Thống kê</Typography>
+        <DatePicker
+          label="Chọn ngày"
+          value={selectedDate}
+          onChange={handleDateChange} // Log date on selection
+        />
         <CloseIcon sx={{ cursor: "pointer" }} onClick={onClose} />
+      </LocalizationProvider>
       </DialogTitle>
       <DataGrid
             scrollbarSize={2}

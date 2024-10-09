@@ -15,6 +15,7 @@ import { EditRowDialogButton } from "./EditRowDialogButton";
 import { countRowsByDeviceId } from "../../apis/excel";
 import { DeviceName } from "../DeviceInfo/DeviceName";
 import { ExportToWordButton } from "./ExportToWordButton";
+import TemplateUploadButton from "./TemplateUploadButton";
 
 const useStyles = makeStyles()((theme: Theme) => ({
   root: {
@@ -148,6 +149,7 @@ export const ExcelViewer = () => {
                   refetch={refetch}
                   selectedRowData={selectedRowData}
                 />
+                <TemplateUploadButton />
                 <ExportToWordButton
                   fileId={fileId}
                   sheetName={selectedSheetName}
