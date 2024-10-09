@@ -21,7 +21,7 @@ export const SheetNameSelect = ({ sheets, onChange, value }: Props) => {
       <Select
         labelId="sheet-name-select"
         id="demo-simple-select"
-        value={value}
+        value={value || ""}
         label="Chọn Sheet"
         onChange={handleChange}
       >

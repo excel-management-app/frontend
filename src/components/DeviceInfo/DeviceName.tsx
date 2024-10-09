@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import axiosClient from "../../apis/axiosClient";
 import { useLocalStorage } from "react-use";
 
-interface Device {
+export interface Device {
   name: string;
   id: string;
 }
