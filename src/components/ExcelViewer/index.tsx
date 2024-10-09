@@ -13,6 +13,8 @@ import FileUploadButton from "./FileUploadButton";
 import { useGetAllFiles } from "./hooks/useGetAllFiles";
 import { useGetTableData } from "./hooks/useTableData";
 import { SheetNameSelect } from "./SheetNamesSelector";
+import { StatisticButton } from "./StatisticButton";
+import TemplateUploadButton from "./TemplateUploadButton";
 
 const useStyles = makeStyles()((theme: Theme) => ({
   root: {
@@ -92,6 +94,7 @@ export const ExcelViewer = () => {
             <FileUploadButton />
 
             {selectedFile && <FileExportButton fileId={fileId} />}
+            <StatisticButton />
           </Box>
         </Box>
 
@@ -135,10 +138,11 @@ export const ExcelViewer = () => {
                   refetch={refetch}
                   selectedRowData={selectedRowData}
                 />
+                <TemplateUploadButton />
                 <ExportToWordButton
                   fileId={fileId}
                   sheetName={selectedSheetName}
-                  rowIndex={rowSelectionModel[0] as number}
+                  listRowIndex={rowSelectionModel.join(",")}
                 />
               </>
             )}
@@ -163,7 +167,7 @@ export const ExcelViewer = () => {
             }}
             checkboxSelection
             disableRowSelectionOnClick
-            disableMultipleRowSelection
+            // disableMultipleRowSelection
             onRowSelectionModelChange={(newRowSelectionModel) => {
               setRowSelectionModel(newRowSelectionModel);
             }}
