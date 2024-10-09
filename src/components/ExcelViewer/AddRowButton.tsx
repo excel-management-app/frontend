@@ -11,18 +11,12 @@ const useStyles = makeStyles()(() => ({
   },
 }));
 interface Props {
-  sheetHeaders: string[];
   fileId: string;
   refetch: () => void;
   selectedSheetName: string;
 }
 
-export const AddRowButton = ({
-  sheetHeaders,
-  fileId,
-  selectedSheetName,
-  refetch,
-}: Props) => {
+export const AddRowButton = ({ fileId, selectedSheetName, refetch }: Props) => {
   const { classes } = useStyles();
   const [addingRow, setAddingRow] = useState(false);
 
@@ -39,7 +33,6 @@ export const AddRowButton = ({
       {addingRow && (
         <AddRowDialog
           onClose={() => setAddingRow(false)}
-          fieldNames={sheetHeaders}
           fileId={fileId}
           sheetName={selectedSheetName}
           refetch={refetch}

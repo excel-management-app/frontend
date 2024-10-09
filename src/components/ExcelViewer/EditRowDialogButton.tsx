@@ -32,6 +32,7 @@ interface Props {
   sheetName: string;
   selectedRowData: SheetRowData;
   refetch: () => void;
+  rowIndex: number;
 }
 
 export const EditRowDialogButton = ({
@@ -39,6 +40,7 @@ export const EditRowDialogButton = ({
   sheetName,
   selectedRowData,
   refetch,
+  rowIndex,
 }: Props) => {
   const { classes } = useStyles();
 
@@ -65,6 +67,7 @@ export const EditRowDialogButton = ({
           sheetName={sheetName}
           refetch={refetch}
           selectedRowData={selectedRowData}
+          rowIndex={rowIndex}
         />
       )}
     </>

@@ -19,6 +19,7 @@ export const ControlledTextField = ({
         label={label}
         variant="outlined"
         size="small"
+        value={field.value || ""}
       />
     )}
   />

@@ -9,7 +9,7 @@ export const ControlledSelect = ({ control, name, label, options }: any) => (
     render={({ field }) => (
       <FormControl fullWidth size="small">
         <InputLabel>{label}</InputLabel>
-        <Select {...field} fullWidth label={label}>
+        <Select {...field} fullWidth label={label} value={field.value || ""}>
           {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {options.map((option: any) => (
             <MenuItem key={option.value} value={option.value}>

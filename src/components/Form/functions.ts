@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { SheetRowData } from "../../utils/types";
-const fieldNames = [
+export const fieldNames = [
   "hoTen",
   "namSinh",
   "gioiTinh",
@@ -22,22 +22,60 @@ const fieldNames = [
   "xuDong",
   "dienTichMDSD1",
   "nguonGocSuDung1",
+  // old fields
+  "tenChuCu",
+  "namSinhCu",
+  "gioiTinhCu",
+  "hoGiaDinhCu",
+  "loaiGiayToCu",
+  "soGiayToCu",
+  "ngayCapCu",
+  "noiCapCu",
+  "diaChiChuCu",
+  "hoTenCu2",
+  "namSinhCu2",
+  "gioiTinhCu2",
+  "inHoOngBaCu",
+  "loaiGiayToCu2",
+  "soGiayToCu2",
+  "ngayCapCu2",
+  "noiCapCu2",
+  "diaChiChuCu2",
+  "soToCu",
+  "soThuaCu",
+  "dienTichCu",
+  "xuDong",
+  "soPhatHanhCu",
+  "soVaoSoCu",
+  "ngayCapGiayCu",
+  "loaiDatCu1",
+  "dtmdsdcu1",
+  "thmdsdcu1",
+  "ngmdsdcu1",
+  "suDungChung1",
 ];
+
+const format = "DD/MM/YYYY";
 dayjs.extend(customParseFormat);
 interface FormData {
   [k: string]: string | number;
 }
-export function convertToFormData(data?: SheetRowData) {
+
+interface ConvertToFormDataProps {
+  data?: SheetRowData;
+}
+export function convertToFormData({ data }: ConvertToFormDataProps): FormData {
   if (!data) return {};
   const formData: FormData = {};
+
   fieldNames.forEach((fieldName) => {
     if (fieldName === "ngayCap" || fieldName === "ngayCap2") {
       // Check if data[fieldName] is valid
       if (data[fieldName]) {
         // Ensure the input date is parsed with the expected format
-        const parsedDate = dayjs(data[fieldName], "DD/MM/YYYY"); // Adjust format as per actual data
+        const parsedDate = dayjs(data[fieldName], format); // Adjust format as per actual data
         formData[fieldName] = parsedDate.isValid()
-          ? parsedDate.format("DD/MM/YYYY")
+          ? parsedDate.format(format)
           : "";
       } else {
         formData[fieldName] = "";
