@@ -62,7 +62,6 @@ export const uploadExcelFile = async (formData: FormData): Promise<void> => {
   });
 };
 
-
 export const uploadWordFile = async (formData: FormData): Promise<void> => {
   await axiosClient.post("/files/uploadTemplateWord", formData, {
     headers: {

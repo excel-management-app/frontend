@@ -1,18 +1,32 @@
 import { Checkbox, FormControlLabel, Grid2, Typography } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { Control, Controller } from "react-hook-form";
-import { GIAY_TO, LOAI_DAT } from "../../utils/formFields";
-import { ControlledDatePicker } from "./ControlledDatePicker";
-import { ControlledSelect } from "./ControlledSelect";
-import { ControlledTextField } from "./ControlledTextField";
-import { IFormData } from "./types";
+import {
+  Control,
+  Controller,
+  UseFormRegister,
+  UseFormResetField,
+  UseFormWatch,
+} from "react-hook-form";
+import { GIAY_TO } from "../../../utils/formFields";
+import { ControlledDatePicker } from "../ControlledDatePicker";
+import ControlledNumberField from "../ControlledNumberField";
+import { ControlledSelect } from "../ControlledSelect";
+import { ControlledTextField } from "../ControlledTextField";
+import { IFormData } from "../types";
+import { OldPurposeOfUseTable } from "./OldPurposeOfUseTable";
 
-export default function CurrentDataForm({
+export default function OldDataForm({
   control,
+  register,
+  watch,
+  resetField,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<IFormData, any>;
+  register: UseFormRegister<IFormData>;
+  watch: UseFormWatch<IFormData>;
+  resetField: UseFormResetField<IFormData>;
 }) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -26,7 +40,7 @@ export default function CurrentDataForm({
           <Grid2 size={4}>
             <ControlledTextField
               control={control}
-              name="hoTen"
+              name="tenChuCu"
               label="Họ tên"
               size="small"
             />
@@ -34,7 +48,7 @@ export default function CurrentDataForm({
           <Grid2 size={4}>
             <ControlledTextField
               control={control}
-              name="namSinh"
+              name="namSinhCu"
               label="Năm sinh"
               size="small"
             />
@@ -43,7 +57,7 @@ export default function CurrentDataForm({
             <Grid2 size={6}>
               <ControlledSelect
                 control={control}
-                name="gioiTinh"
+                name="gioiTinhCu"
                 label="Giới tính"
                 options={[
                   { label: "Nam", value: "Nam" },
@@ -53,7 +67,7 @@ export default function CurrentDataForm({
             </Grid2>
             <Grid2 size={6}>
               <Controller
-                name="hoGiaDinh"
+                name="hoGiaDinhCu"
                 control={control}
                 render={({ field }) => (
                   <FormControlLabel
@@ -72,7 +86,7 @@ export default function CurrentDataForm({
             <Grid2 size={6}>
               <ControlledSelect
                 control={control}
-                name="loaiGiayTo"
+                name="loaiGiayToCu"
                 label="Giấy tờ"
                 options={Object.entries(GIAY_TO).map(([key, value]) => ({
                   label: `${value} (${key})`,
@@ -81,26 +95,25 @@ export default function CurrentDataForm({
               />
             </Grid2>
             <Grid2 size={6}>
-              <ControlledTextField
+              <ControlledNumberField
                 control={control}
-                name="soGiayTo"
+                name="soGiayToCu"
                 label="Số giấy tờ"
                 size="small"
-                type="number"
               />
             </Grid2>
           </Grid2>
           <Grid2 size={4}>
             <ControlledDatePicker
               control={control}
-              name="ngayCap"
+              name="ngayCapCu"
               label="Ngày cấp"
             />
           </Grid2>
           <Grid2 size={4}>
             <ControlledTextField
               control={control}
-              name="noiCap"
+              name="noiCapCu"
               label="Nơi cấp"
               size="small"
             />
@@ -110,7 +123,7 @@ export default function CurrentDataForm({
         <Grid2 size={12}>
           <ControlledTextField
             control={control}
-            name="diaChiChu"
+            name="diaChiChuCu"
             label="Địa chỉ"
           />
         </Grid2>
@@ -126,7 +139,7 @@ export default function CurrentDataForm({
           <Grid2 size={4}>
             <ControlledTextField
               control={control}
-              name="hoTen2"
+              name="hoTenCu2"
               label="Họ tên"
               size="small"
             />
@@ -134,7 +147,7 @@ export default function CurrentDataForm({
           <Grid2 size={4}>
             <ControlledTextField
               control={control}
-              name="namSinh2"
+              name="namSinhCu2"
               label="Năm sinh"
               size="small"
             />
@@ -143,7 +156,7 @@ export default function CurrentDataForm({
             <Grid2 size={6}>
               <ControlledSelect
                 control={control}
-                name="gioiTinh2"
+                name="gioiTinhCu2"
                 label="Giới tính"
                 options={[
                   { label: "Nam", value: "Nam" },
@@ -153,7 +166,7 @@ export default function CurrentDataForm({
             </Grid2>
             <Grid2 size={6}>
               <Controller
-                name="inHoOngBa"
+                name="inHoOngBaCu"
                 control={control}
                 render={({ field }) => (
                   <FormControlLabel
@@ -172,7 +185,7 @@ export default function CurrentDataForm({
             <Grid2 size={6}>
               <ControlledSelect
                 control={control}
-                name="loaiGiayTo2"
+                name="loaiGiayToCu2"
                 label="Giấy tờ"
                 options={Object.entries(GIAY_TO).map(([key, value]) => ({
                   label: `${value} (${key})`,
@@ -181,12 +194,11 @@ export default function CurrentDataForm({
               />
             </Grid2>
             <Grid2 size={6}>
-              <ControlledTextField
+              <ControlledNumberField
                 control={control}
-                name="soGiayTo2"
+                name="soGiayToCu2"
                 label="Số giấy tờ"
                 size="small"
-                type="number"
               />
             </Grid2>
           </Grid2>
@@ -194,14 +206,14 @@ export default function CurrentDataForm({
           <Grid2 size={4}>
             <ControlledDatePicker
               control={control}
-              name="ngayCap2"
+              name="ngayCapCu2"
               label="Ngày cấp"
             />
           </Grid2>
           <Grid2 size={4}>
             <ControlledTextField
               control={control}
-              name="noiCap2"
+              name="noiCapCu2"
               label="Nơi cấp"
               size="small"
             />
@@ -211,7 +223,7 @@ export default function CurrentDataForm({
         <Grid2 size={12}>
           <ControlledTextField
             control={control}
-            name="diaChiChu2"
+            name="diaChiChuCu2"
             label="Địa chỉ"
             fullWidth
           />
@@ -219,40 +231,33 @@ export default function CurrentDataForm({
         {/* Thông tin thửa đất */}
         <Grid2 size={12}>
           <Typography height={25} variant="body1" fontWeight={600}>
-            Thông tin thửa đất
+            Thông tin thửa đất cũ
           </Typography>
         </Grid2>
 
         <Grid2 container size={12} spacing={2}>
           <Grid2 size={4}>
-            <ControlledTextField
+            <ControlledNumberField
               control={control}
-              name="soHieuToBanDo"
+              name="soToCu"
               label="Số tờ"
               size="small"
-              type="number"
-              required
-              helperText="Yêu cầu nhập trường này"
             />
           </Grid2>
           <Grid2 size={4}>
-            <ControlledTextField
+            <ControlledNumberField
               control={control}
-              name="soThuTuThua"
+              name="soThuaCu"
               label="Số thửa"
               size="small"
-              type="number"
-              required
-              helperText="Yêu cầu nhập trường này"
             />
           </Grid2>
           <Grid2 size={4}>
-            <ControlledTextField
+            <ControlledNumberField
               control={control}
-              name="dienTich"
+              name="dienTichCu"
               label="Diện tích"
               size="small"
-              type="number"
             />
           </Grid2>
         </Grid2>
@@ -265,70 +270,51 @@ export default function CurrentDataForm({
             fullWidth
           />
         </Grid2>
-
-        {/* Mục đích sử dụng */}
+        {/*Thông tin giấy chứng nhận cũ */}
         <Grid2 size={12}>
           <Typography height={25} variant="body1" fontWeight={600}>
-            Mục đích sử dụng
+            Thông tin giấy chứng nhận cũ
+          </Typography>
+        </Grid2>
+        <Grid2 container size={12} spacing={2}>
+          <Grid2 size={3}>
+            <ControlledTextField
+              control={control}
+              name="soPhatHanhCu"
+              label="Số phát hành"
+              size="small"
+            />
+          </Grid2>
+          <Grid2 size={3}>
+            <ControlledTextField
+              control={control}
+              name="soVaoSoCu"
+              label="Số vào sổ "
+              size="small"
+            />
+          </Grid2>
+          <Grid2 size={3}>
+            <ControlledDatePicker
+              control={control}
+              name="ngayCapGiayCu"
+              label="Ngày cấp"
+            />
+          </Grid2>
+        </Grid2>
+
+        {/* Mục đích sử dụng cũ*/}
+        <Grid2 size={12}>
+          <Typography height={25} variant="body1" fontWeight={600}>
+            Mục đích sử dụng cũ
           </Typography>
         </Grid2>
 
-        <Grid2 container size={12} spacing={2}>
-          <Grid2 size={3}>
-            <ControlledSelect
-              control={control}
-              name="loaiDat1"
-              label="Loại đất"
-              options={Object.entries(LOAI_DAT).map(([key, value]) => ({
-                label: `${value} (${key})`,
-                value: key,
-              }))}
-            />
-          </Grid2>
-
-          <Grid2 size={3}>
-            <ControlledTextField
-              control={control}
-              name="dienTichMDSD1"
-              label="Diện tích"
-              size="small"
-              type="number"
-            />
-          </Grid2>
-
-          <Grid2 size={3}>
-            <ControlledTextField
-              control={control}
-              name="thoiHanSuDung1"
-              label="Thời hạn"
-            />
-          </Grid2>
-        </Grid2>
-
-        <Grid2 container size={12} spacing={2}>
-          <Grid2 size={3}>
-            <ControlledTextField
-              control={control}
-              name="nguonGocSuDung1"
-              label="Nguồn gốc"
-              size="small"
-            />
-          </Grid2>
-
-          <Grid2 size={3}>
-            <Controller
-              name="suDungChung1"
-              control={control}
-              render={({ field }) => (
-                <FormControlLabel
-                  control={<Checkbox {...field} />}
-                  label="Sử dụng chung"
-                  labelPlacement="start"
-                />
-              )}
-            />
-          </Grid2>
-        </Grid2>
+        <OldPurposeOfUseTable
+          control={control}
+          register={register}
+          watch={watch}
+          resetField={resetField}
+        />
       </Grid2>
     </LocalizationProvider>
   );

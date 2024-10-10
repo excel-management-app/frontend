@@ -13,8 +13,8 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import * as React from "react";
 import { makeStyles } from "tss-react/mui";
-import CurrentDataForm from "./CurrentDataForm";
-import OldDataForm from "./OldDataForm";
+import CurrentDataForm from "./CurrentDataForm/CurrentDataForm";
+import OldDataForm from "./OldDataForm/OldDataForm";
 import { SheetRowData } from "../../utils/types";
 import { useForm } from "react-hook-form";
 import { convertToFormData } from "./functions";
@@ -23,6 +23,8 @@ import { IFormData } from "./types";
 import { addRowToSheet, editRow } from "../../apis/excel";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import { CertificateForm } from "./CertificateFrom";
+import { FormulaireForm } from "./FormulaireForm";
 
 const useStyles = makeStyles()(() => ({
   exitButton: {
@@ -65,7 +67,8 @@ export default function MyForm({
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-  const { control, handleSubmit, reset } = useForm<IFormData>();
+  const { control, handleSubmit, reset, register, watch, resetField } =
+    useForm<IFormData>();
 
   React.useLayoutEffect(() => {
     if (selectedRowData) {
@@ -137,6 +140,8 @@ export default function MyForm({
           >
             <Tab label="Dữ liệu hiện trạng" {...a11yProps(0)} />
             <Tab label="Dữ liệu cũ" {...a11yProps(1)} />
+            <Tab label="Giấy chứng nhận" {...a11yProps(2)} />
+            <Tab label="Đơn đăng ký" {...a11yProps(3)} />
           </Tabs>
         </Box>
 
@@ -147,10 +152,36 @@ export default function MyForm({
           }}
         >
           <CustomTabPanel value={value} index={0}>
-            <CurrentDataForm control={control} />
+            <CurrentDataForm
+              control={control}
+              register={register}
+              watch={watch}
+              resetField={resetField}
+            />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
-            <OldDataForm control={control} />
+            <OldDataForm
+              control={control}
+              register={register}
+              watch={watch}
+              resetField={resetField}
+            />
+          </CustomTabPanel>
+          <CustomTabPanel value={value} index={2}>
+            <CertificateForm
+              control={control}
+              register={register}
+              watch={watch}
+              resetField={resetField}
+            />
+          </CustomTabPanel>
+          <CustomTabPanel value={value} index={3}>
+            <FormulaireForm
+              control={control}
+              register={register}
+              watch={watch}
+              resetField={resetField}
+            />
           </CustomTabPanel>
         </DialogContent>
         <DialogActions>

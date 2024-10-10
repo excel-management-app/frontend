@@ -26,14 +26,13 @@ export function useUploadFile() {
   return mutation;
 }
 
-
 export function useUploadFileWord() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation<void, Error, FormData>({
     mutationFn: (formData) => uploadWordFile(formData),
     onSuccess: () => {
-      console.log("queryClient----",queryClient);
+      console.log("queryClient----", queryClient);
       queryClient.invalidateQueries({
         queryKey: ["allFiles"],
       });

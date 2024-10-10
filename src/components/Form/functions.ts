@@ -20,8 +20,14 @@ export const fieldNames = [
   "soThuTuThua",
   "dienTich",
   "xuDong",
+  "loaiDat1",
   "dienTichMDSD1",
   "nguonGocSuDung1",
+  "thoiHanSuDung1",
+  "loaiDat2",
+  "dienTichMDSD2",
+  "nguonGocSuDung2",
+  "thoiHanSuDung2",
   // old fields
   "tenChuCu",
   "namSinhCu",
@@ -52,7 +58,23 @@ export const fieldNames = [
   "dtmdsdcu1",
   "thmdsdcu1",
   "ngmdsdcu1",
-  "suDungChung1",
+  "loaiDatCu2",
+  "dtmdsdcu2",
+  "thmdsdcu2",
+  "ngmdsdcu2",
+
+  // certificate
+  "giayChungNhanSo",
+  "dotCapGCN",
+  "loaiGCN",
+  "maVachGCN",
+  "soPhatHanhGCN",
+  "donViCapGCN",
+  "soVaoSoCapGCN",
+
+  // formulaire
+  "loaiDon",
+  "ghiChuDonDangKy",
 ];
 
 const format = "DD/MM/YYYY";

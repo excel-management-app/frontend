@@ -5,6 +5,7 @@ export const ControlledTextField = ({
   control,
   name,
   label,
+  register,
   ...props
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }: any) => (

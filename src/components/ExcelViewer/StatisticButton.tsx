@@ -11,23 +11,17 @@ const useStyles = makeStyles()(() => ({
   },
 }));
 
-
 export const StatisticButton = () => {
   const { classes } = useStyles();
   const [showTable, setShowTable] = useState(false);
-  
+
   return (
     <>
-      <Button
-        variant="contained"
-        onClick={() => setShowTable(true)}
-      >
+      <Button variant="contained" onClick={() => setShowTable(true)}>
         Xem thống kê
       </Button>
       {showTable && (
-        <TableStatisticDialog
-          onClose={() => setShowTable(false)}
-        />
+        <TableStatisticDialog onClose={() => setShowTable(false)} />
       )}
     </>
   );
