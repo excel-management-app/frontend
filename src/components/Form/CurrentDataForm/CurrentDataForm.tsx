@@ -5,7 +5,6 @@ import {
   Control,
   Controller,
   UseFormRegister,
-  UseFormReset,
   UseFormResetField,
   UseFormWatch,
 } from "react-hook-form";

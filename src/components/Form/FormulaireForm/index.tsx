@@ -1,24 +1,13 @@
-import {
-  Control,
-  UseFormRegister,
-  UseFormResetField,
-  UseFormWatch,
-} from "react-hook-form";
-import { IFormData } from "../types";
 import { Grid2 } from "@mui/material";
+import { Control } from "react-hook-form";
 import { ControlledTextField } from "../ControlledTextField";
+import { IFormData } from "../types";
 
 export const FormulaireForm = ({
   control,
-  register,
-  watch,
-  resetField,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<IFormData, any>;
-  register: UseFormRegister<IFormData>;
-  watch: UseFormWatch<IFormData>;
-  resetField: UseFormResetField<IFormData>;
 }) => {
   return (
     <Grid2 container spacing={1}>

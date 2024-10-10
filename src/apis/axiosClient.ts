@@ -1,8 +1,9 @@
 import axios from "axios";
 import qs from "qs";
+import { API_URL } from "../utils/consts";
 
 const axiosClient = axios.create({
-  baseURL: "http://localhost:3001",
+  baseURL: API_URL,
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -26,7 +27,7 @@ axiosClient.interceptors.request.use(
   },
   function (error) {
     return Promise.reject(error);
-  },
+  }
 );
 
 // Add a response interceptor
@@ -38,7 +39,7 @@ axiosClient.interceptors.response.use(
   },
   function (error) {
     return Promise.reject(error);
-  },
+  }
 );
 
 export default axiosClient;

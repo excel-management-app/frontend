@@ -168,20 +168,10 @@ export default function MyForm({
             />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={2}>
-            <CertificateForm
-              control={control}
-              register={register}
-              watch={watch}
-              resetField={resetField}
-            />
+            <CertificateForm control={control} />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={3}>
-            <FormulaireForm
-              control={control}
-              register={register}
-              watch={watch}
-              resetField={resetField}
-            />
+            <FormulaireForm control={control} />
           </CustomTabPanel>
         </DialogContent>
         <DialogActions>

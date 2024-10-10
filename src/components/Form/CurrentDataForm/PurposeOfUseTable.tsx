@@ -16,7 +16,6 @@ import {
   TableRow,
   Tooltip,
 } from "@mui/material";
-import { cloneDeep } from "lodash";
 import { useMemo, useState } from "react";
 import {
   Control,
@@ -24,12 +23,12 @@ import {
   UseFormResetField,
   UseFormWatch,
 } from "react-hook-form";
+import { makeStyles } from "tss-react/mui";
 import { LOAI_DAT } from "../../../utils/formFields";
 import ControlledNumberField from "../ControlledNumberField";
 import { ControlledSelect } from "../ControlledSelect";
 import { ControlledTextField } from "../ControlledTextField";
 import { IFormData } from "../types";
-import { makeStyles } from "tss-react/mui";
 
 const useStyles = makeStyles()(() => ({
   rowButton: {

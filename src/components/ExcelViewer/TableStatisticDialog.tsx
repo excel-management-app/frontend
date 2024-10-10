@@ -7,11 +7,8 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import { makeStyles } from "tss-react/mui";
 import axiosClient from "../../apis/axiosClient";
-import { ControlledDatePicker } from "../Form/ControlledDatePicker";
-import { IFormData } from "../Form/types";
 
 const useStyles = makeStyles()(() => ({
   exitButton: {
@@ -38,7 +35,7 @@ interface StatisticProps {
 export default function TableStatisticDialog({ onClose }: StatisticProps) {
   const { classes } = useStyles();
   const [dataRows, setDataRow] = useState<
-    { _id: String; name: String; count: Number; createdAt: Date }[]
+    { _id: string; name: string; count: number; createdAt: Date }[]
   >([]);
 
   const [selectedDate, setSelectedDate] = useState(null);
@@ -64,7 +61,7 @@ export default function TableStatisticDialog({ onClose }: StatisticProps) {
     async function fetchData() {
       console.log("selectedDateaaa", selectedDate);
       const response = await axiosClient.get(
-        `/devices/getAll/${dayjs(selectedDate).format("YYYY-MM-DD")}`,
+        `/devices/getAll/${dayjs(selectedDate).format("YYYY-MM-DD")}`
         // `/devices/getAll/2024-10-09`
       );
       console.log(response);
@@ -73,8 +70,7 @@ export default function TableStatisticDialog({ onClose }: StatisticProps) {
     fetchData();
   }, [selectedDate]);
 
-  // const dataRows = getAllData();
-  const sheetRows = dataRows.map((row: { createdAt: Date }) => ({
+  const sheetRows = dataRows.map((row: { createdAt: Date; _id: string }) => ({
     ...row,
     createdAt: formatDate(row.createdAt),
   }));
@@ -99,7 +95,7 @@ export default function TableStatisticDialog({ onClose }: StatisticProps) {
       </DialogTitle>
       <DataGrid
         scrollbarSize={2}
-        getRowId={(row) => row._id}
+        getRowId={(row) => row._id as string}
         rowHeight={40}
         rows={sheetRows}
         columns={sheetColumns}
