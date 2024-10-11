@@ -30,7 +30,7 @@ export function ExportToWordButton({ fileId, sheetName, listRowIndex }: Props) {
       toast.success("Xuất file thành công");
     } catch (error) {
       console.error("Error during file download:", error);
-      toast.error(" Không có file template word. Hãy tải lên file word")
+      toast.error(" Không có file template word. Hãy tải lên file word");
     }
   };
 

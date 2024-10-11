@@ -75,6 +75,7 @@ export default function MyForm({
       reset(convertToFormData({ data: selectedRowData }));
     }
   }, [reset, selectedRowData]);
+
   const onSubmit = async (data: IFormData) => {
     const newRow = {
       ...data,
@@ -115,7 +116,8 @@ export default function MyForm({
   const isEdit = !!selectedRowData && !!rowIndex;
 
   const handleClearForm = () => {
-    reset();
+    reset({});
+    reset({});
   };
 
   return (
@@ -157,6 +159,9 @@ export default function MyForm({
               register={register}
               watch={watch}
               resetField={resetField}
+              fileId={fileId}
+              sheetName={sheetName}
+              reset={reset}
             />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>

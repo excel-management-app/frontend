@@ -1,10 +1,20 @@
-import { Checkbox, FormControlLabel, Grid2, Typography } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import { LoadingButton } from "@mui/lab";
+import {
+  Checkbox,
+  FormControlLabel,
+  Grid2,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { useEffect } from "react";
 import {
   Control,
   Controller,
   UseFormRegister,
+  UseFormReset,
   UseFormResetField,
   UseFormWatch,
 } from "react-hook-form";
@@ -13,21 +23,44 @@ import { ControlledDatePicker } from "../ControlledDatePicker";
 import ControlledNumberField from "../ControlledNumberField";
 import { ControlledSelect } from "../ControlledSelect";
 import { ControlledTextField } from "../ControlledTextField";
-import { PurposeOfUseTable } from "./PurposeOfUseTable";
+import { convertToFormData } from "../functions";
+import { useSearchRowInSheet } from "../hooks/useSearchRowInSheet";
 import { IFormData } from "../types";
+import { PurposeOfUseTable } from "./PurposeOfUseTable";
 
 export default function CurrentDataForm({
   control,
   register,
   watch,
   resetField,
+  reset,
+  fileId,
+  sheetName,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<IFormData, any>;
   register: UseFormRegister<IFormData>;
   watch: UseFormWatch<IFormData>;
   resetField: UseFormResetField<IFormData>;
+  reset: UseFormReset<IFormData>;
+  fileId: string;
+  sheetName: string;
 }) {
+  const [soHieuToBanDo, soThuTuThua] = watch(["soHieuToBanDo", "soThuTuThua"]);
+
+  const { data, loading, handleSearch } = useSearchRowInSheet({
+    fileId,
+    sheetName,
+    soHieuToBanDo,
+    soThuTuThua,
+  });
+
+  useEffect(() => {
+    if (data) {
+      reset(convertToFormData({ data }));
+    }
+  }, [data]);
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Grid2 container spacing={1.5}>
@@ -232,7 +265,6 @@ export default function CurrentDataForm({
             Thông tin thửa đất
           </Typography>
         </Grid2>
-
         <Grid2 container size={12} spacing={2}>
           <Grid2 size={1}>
             <ControlledNumberField
@@ -241,6 +273,8 @@ export default function CurrentDataForm({
               label="Số tờ"
               rules={{
                 required: "Yêu cầu nhập trường này",
+                validate: (value: number) =>
+                  value > 0 || "Không được nhập số âm",
               }}
             />
           </Grid2>
@@ -251,9 +285,29 @@ export default function CurrentDataForm({
               label="Số thửa"
               rules={{
                 required: "Yêu cầu nhập trường này",
+                validate: (value: number) =>
+                  value > 0 || "Không được nhập số âm",
               }}
             />
           </Grid2>
+
+          <Tooltip title="Nhập số tờ và số thửa để tìm kiếm" placement="right">
+            <Grid2 size={1}>
+              <LoadingButton
+                size="small"
+                startIcon={<SearchIcon />}
+                onClick={handleSearch}
+                loading={loading}
+                variant="contained"
+                disabled={loading || !soHieuToBanDo || !soThuTuThua}
+              >
+                Tìm thửa đất
+              </LoadingButton>
+            </Grid2>
+          </Tooltip>
+        </Grid2>
+
+        <Grid2 container size={12} spacing={2}>
           <Grid2 size={1}>
             <ControlledNumberField
               control={control}

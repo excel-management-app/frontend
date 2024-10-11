@@ -8,7 +8,11 @@ import { Home } from "./pages/Home";
 function App() {
   return (
     <QueryClientProvider client={new QueryClient()}>
-      <ToastContainer position="bottom-left" autoClose={2000} closeOnClick />
+      <ToastContainer
+        position="bottom-left"
+        autoClose={2000}
+        pauseOnHover={false}
+      />
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
