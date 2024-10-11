@@ -8,6 +8,7 @@ interface Dependencies {
   soThuTuThua: string | number;
   fileId: string;
   sheetName: string;
+  isOld?: boolean;
 }
 
 export function useSearchRowInSheet({
@@ -15,6 +16,7 @@ export function useSearchRowInSheet({
   soThuTuThua,
   fileId,
   sheetName,
+  isOld = false,
 }: Dependencies) {
   const [data, setData] = useState<SheetRowData>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -22,7 +24,7 @@ export function useSearchRowInSheet({
     setLoading(true);
     try {
       const { data } = await axiosClient.get(
-        `/files/${fileId}/sheets/${sheetName}/soHieuToBanDo/${soHieuToBanDo}/soThuTuThua/${soThuTuThua}`,
+        `/files/${fileId}/sheets/${sheetName}/soHieuToBanDo/${soHieuToBanDo}/soThuTuThua/${soThuTuThua}${isOld ? "/?old=true" : ""}`
       );
       setData(data);
     } catch (error) {

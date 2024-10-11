@@ -170,6 +170,9 @@ export default function MyForm({
               register={register}
               watch={watch}
               resetField={resetField}
+              fileId={fileId}
+              sheetName={sheetName}
+              reset={reset}
             />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={2}>

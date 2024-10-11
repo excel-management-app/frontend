@@ -1,10 +1,17 @@
-import { Checkbox, FormControlLabel, Grid2, Typography } from "@mui/material";
+import {
+  Checkbox,
+  FormControlLabel,
+  Grid2,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import {
   Control,
   Controller,
   UseFormRegister,
+  UseFormReset,
   UseFormResetField,
   UseFormWatch,
 } from "react-hook-form";
@@ -15,19 +22,45 @@ import { ControlledSelect } from "../ControlledSelect";
 import { ControlledTextField } from "../ControlledTextField";
 import { IFormData } from "../types";
 import { OldPurposeOfUseTable } from "./OldPurposeOfUseTable";
+import { LoadingButton } from "@mui/lab";
+import { useSearchRowInSheet } from "../hooks/useSearchRowInSheet";
+import { useEffect } from "react";
+import { convertToFormData } from "../functions";
+import SearchIcon from "@mui/icons-material/Search";
 
 export default function OldDataForm({
   control,
   register,
   watch,
   resetField,
+  fileId,
+  sheetName,
+  reset,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<IFormData, any>;
   register: UseFormRegister<IFormData>;
   watch: UseFormWatch<IFormData>;
   resetField: UseFormResetField<IFormData>;
+  reset: UseFormReset<IFormData>;
+  fileId: string;
+  sheetName: string;
 }) {
+  const [soToCu, soThuaCu] = watch(["soToCu", "soThuaCu"]);
+
+  const { data, loading, handleSearch } = useSearchRowInSheet({
+    fileId,
+    sheetName,
+    soHieuToBanDo: soToCu,
+    soThuTuThua: soThuaCu,
+    isOld: true,
+  });
+
+  useEffect(() => {
+    if (data) {
+      reset(convertToFormData({ data }));
+    }
+  }, [data]);
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Grid2 container spacing={1.5}>
@@ -228,48 +261,84 @@ export default function OldDataForm({
             fullWidth
           />
         </Grid2>
-        {/* Thông tin thửa đất */}
+        {/*   Thông tin thửa đất cũ */}
         <Grid2 size={12}>
           <Typography height={25} variant="body1" fontWeight={600}>
             Thông tin thửa đất cũ
           </Typography>
         </Grid2>
-
         <Grid2 container size={12} spacing={2}>
-          <Grid2 size={4}>
+          <Grid2 size={1}>
             <ControlledNumberField
               control={control}
               name="soToCu"
               label="Số tờ"
-              size="small"
+              rules={{
+                required: "Yêu cầu nhập trường này",
+                validate: (value: number) =>
+                  value > 0 || "Không được nhập số âm",
+              }}
             />
           </Grid2>
-          <Grid2 size={4}>
+          <Grid2 size={1}>
             <ControlledNumberField
               control={control}
               name="soThuaCu"
               label="Số thửa"
-              size="small"
+              rules={{
+                required: "Yêu cầu nhập trường này",
+                validate: (value: number) =>
+                  value > 0 || "Không được nhập số âm",
+              }}
             />
           </Grid2>
-          <Grid2 size={4}>
+
+          <Tooltip title="Nhập số tờ và số thửa để tìm kiếm" placement="right">
+            <Grid2 size={1}>
+              <LoadingButton
+                size="small"
+                startIcon={<SearchIcon />}
+                onClick={handleSearch}
+                loading={loading}
+                variant="contained"
+                disabled={loading || !soToCu || !soThuaCu}
+              >
+                Tìm thửa đất
+              </LoadingButton>
+            </Grid2>
+          </Tooltip>
+        </Grid2>
+
+        <Grid2 container size={12} spacing={2}>
+          <Grid2 size={1}>
             <ControlledNumberField
               control={control}
               name="dienTichCu"
               label="Diện tích"
-              size="small"
+            />
+          </Grid2>
+          <Grid2 size={4}>
+            <ControlledTextField
+              control={control}
+              name="xuDong"
+              label="Địa chỉ"
+              fullWidth
+              multiline
+              maxRows={3}
+            />
+          </Grid2>
+          <Grid2 size={5}>
+            <ControlledTextField
+              control={control}
+              name="ghiChuThuaDat"
+              label="Ghi chú thửa đất"
+              fullWidth
+              multiline
+              maxRows={3}
             />
           </Grid2>
         </Grid2>
 
-        <Grid2 size={12}>
-          <ControlledTextField
-            control={control}
-            name="xuDong"
-            label="Địa chỉ"
-            fullWidth
-          />
-        </Grid2>
         {/*Thông tin giấy chứng nhận cũ */}
         <Grid2 size={12}>
           <Typography height={25} variant="body1" fontWeight={600}>
