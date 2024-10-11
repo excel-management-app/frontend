@@ -26,6 +26,7 @@ const ControlledNumberField = ({
           helperText={error ? error.message : ""}
           variant="outlined"
           fullWidth
+          size="small"
           {...props}
         />
       )}
@@ -38,6 +39,7 @@ const ControlledNumberField = ({
       type="number"
       variant="outlined"
       fullWidth
+      size="small"
       {...props}
     />
   );

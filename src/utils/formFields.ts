@@ -105,13 +105,6 @@ export const LOAI_DAT = {
 };
 
 export const GIAY_TO = {
-  GCN: "giấy chứng nhận quyền sử dụng đất",
-  SHK: "Sổ hộ khẩu",
   CMND: "Chứng minh nhân dân",
-  GTMB: "giấy tờ mua bán viết tay",
-  HDCT: "giấy tờ mua bán viết tay",
-  HDCN: "Hợp đồng chuyển nhượng",
-  PCTS: "Văn bản phân chia tài sản",
-  GKS: "giấy khai sinh",
   CCCD: "Căn cước công dân",
 };
