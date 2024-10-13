@@ -206,7 +206,7 @@ export default function MyForm({
                 style={{ marginRight: "10px" }}
                 startIcon={<SaveOutlinedIcon />}
               >
-                Lưu thông tin
+                Lưu dữ liệu
               </Button>
 
               {listRowIndex && (
