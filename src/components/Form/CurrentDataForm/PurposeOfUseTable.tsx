@@ -208,7 +208,7 @@ export const PurposeOfUseTable = ({
         </Box>
       </Grid2>
       {currentFields.landType === "loaiDat1" && numRows > 0 && (
-        <Grid2 size={3} spacing={1} container>
+        <Grid2 size={3} spacing={2} container>
           <Grid2 size={12}>
             <ControlledSelect
               control={control}
@@ -248,7 +248,7 @@ export const PurposeOfUseTable = ({
         </Grid2>
       )}
       {currentFields.landType === "loaiDat2" && numRows > 1 && (
-        <Grid2 size={3} spacing={1} container>
+        <Grid2 size={3} spacing={2} container>
           <Grid2 size={12}>
             <ControlledSelect
               control={control}

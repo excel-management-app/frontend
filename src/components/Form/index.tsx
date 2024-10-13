@@ -12,7 +12,6 @@ import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import { AxiosError } from "axios";
-import dayjs from "dayjs";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -22,7 +21,7 @@ import { SheetRowData } from "../../utils/types";
 import { CertificateForm } from "./CertificateFrom";
 import CurrentDataForm from "./CurrentDataForm/CurrentDataForm";
 import { FormulaireForm } from "./FormulaireForm";
-import { convertToFormData } from "./functions";
+import { convertToFormData, formatDate } from "./functions";
 import OldDataForm from "./OldDataForm/OldDataForm";
 import { IFormData } from "./types";
 
@@ -49,8 +48,9 @@ interface Props {
   fileId: string;
   sheetName: string;
   refetch: () => void;
-  selectedRowData?: SheetRowData;
+  selectedRowData: SheetRowData | null;
   rowIndex?: number;
+  setSearchKey: (key: string) => void;
 }
 
 export default function MyForm({
@@ -60,6 +60,7 @@ export default function MyForm({
   selectedRowData,
   refetch,
   rowIndex,
+  setSearchKey,
 }: Props) {
   const { classes } = useStyles();
   const [value, setValue] = React.useState(0);
@@ -75,23 +76,27 @@ export default function MyForm({
       reset(convertToFormData({ data: selectedRowData }));
     }
   }, [reset, selectedRowData]);
-
+  console.log("selectedRowData", selectedRowData);
   const onSubmit = async (data: IFormData) => {
     const newRow = {
       ...data,
-      ngayCap: dayjs(data.ngayCap).format("DD/MM/YYYY"),
-      ngayCap2: dayjs(data.ngayCap2).format("DD/MM/YYYY"),
+      ngayCap: formatDate(data.ngayCap),
+      ngayCap2: formatDate(data.ngayCap2),
+      ngayCapCu: formatDate(data.ngayCapCu),
+      ngayCapCu2: formatDate(data.ngayCapCu2),
+      ngayCapGiayCu: formatDate(data.ngayCapGiayCu),
       inHoOngBa: data.inHoOngBa ? "l" : "",
       hoGiaDinh: data.hoGiaDinh ? "ho" : "",
       suDungChung: data.suDungChung ? "chung" : "",
     };
+
     try {
       if (selectedRowData && rowIndex) {
         await editRow({
           fileId,
           sheetName,
           rowIndex,
-          newRow: data,
+          newRow,
         });
         toast.success("Cập nhật hàng thành công");
         refetch();
@@ -113,7 +118,6 @@ export default function MyForm({
       }
     }
   };
-  const isEdit = !!selectedRowData && !!rowIndex;
 
   return (
     <Dialog open maxWidth="xl" fullScreen>
@@ -154,9 +158,7 @@ export default function MyForm({
               register={register}
               watch={watch}
               resetField={resetField}
-              fileId={fileId}
-              sheetName={sheetName}
-              reset={reset}
+              setSearchKey={setSearchKey}
             />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
@@ -165,9 +167,7 @@ export default function MyForm({
               register={register}
               watch={watch}
               resetField={resetField}
-              fileId={fileId}
-              sheetName={sheetName}
-              reset={reset}
+              setSearchKey={setSearchKey}
             />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={2}>
@@ -191,7 +191,7 @@ export default function MyForm({
                 type="submit"
                 style={{ marginRight: "10px" }}
               >
-                {isEdit ? "Lưu thông tin" : "Thêm hàng"}
+                Lưu thông tin
               </Button>
             </Box>
             <Button variant="contained" onClick={onClose}>

@@ -1,3 +1,5 @@
+import SearchIcon from "@mui/icons-material/Search";
+import { LoadingButton } from "@mui/lab";
 import {
   Checkbox,
   FormControlLabel,
@@ -11,7 +13,6 @@ import {
   Control,
   Controller,
   UseFormRegister,
-  UseFormReset,
   UseFormResetField,
   UseFormWatch,
 } from "react-hook-form";
@@ -22,45 +23,27 @@ import { ControlledSelect } from "../ControlledSelect";
 import { ControlledTextField } from "../ControlledTextField";
 import { IFormData } from "../types";
 import { OldPurposeOfUseTable } from "./OldPurposeOfUseTable";
-import { LoadingButton } from "@mui/lab";
-import { useSearchRowInSheet } from "../hooks/useSearchRowInSheet";
-import { useEffect } from "react";
-import { convertToFormData } from "../functions";
-import SearchIcon from "@mui/icons-material/Search";
 
 export default function OldDataForm({
   control,
   register,
   watch,
   resetField,
-  fileId,
-  sheetName,
-  reset,
+  setSearchKey,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<IFormData, any>;
   register: UseFormRegister<IFormData>;
   watch: UseFormWatch<IFormData>;
   resetField: UseFormResetField<IFormData>;
-  reset: UseFormReset<IFormData>;
-  fileId: string;
-  sheetName: string;
+  setSearchKey: (key: string) => void;
 }) {
   const [soToCu, soThuaCu] = watch(["soToCu", "soThuaCu"]);
 
-  const { data, loading, handleSearch } = useSearchRowInSheet({
-    fileId,
-    sheetName,
-    soHieuToBanDo: soToCu,
-    soThuTuThua: soThuaCu,
-    isOld: true,
-  });
+  const handleSearch = async () => {
+    setSearchKey(`${soToCu}_${soThuaCu}`);
+  };
 
-  useEffect(() => {
-    if (data) {
-      reset(convertToFormData({ data }));
-    }
-  }, [data]);
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Grid2 container spacing={1.5}>
@@ -240,7 +223,7 @@ export default function OldDataForm({
             <ControlledDatePicker
               control={control}
               name="ngayCapCu2"
-              label="Ngày cấp chủ cũ"
+              label="Ngày cấp chủ cũ 2"
             />
           </Grid2>
           <Grid2 size={4}>
@@ -294,22 +277,21 @@ export default function OldDataForm({
           </Grid2>
 
           <Tooltip title="Nhập số tờ và số thửa để tìm kiếm" placement="right">
-            <Grid2 size={1}>
+            <Grid2 size={1.5}>
               <LoadingButton
+                sx={{
+                  minWidth: "120px",
+                }}
                 size="small"
                 startIcon={<SearchIcon />}
                 onClick={handleSearch}
-                loading={loading}
                 variant="contained"
-                disabled={loading || !soToCu || !soThuaCu}
+                disabled={!soToCu || !soThuaCu}
               >
-                Tìm thửa đất
+                Tìm thửa
               </LoadingButton>
             </Grid2>
           </Tooltip>
-        </Grid2>
-
-        <Grid2 container size={12} spacing={2}>
           <Grid2 size={1}>
             <ControlledNumberField
               control={control}
@@ -327,6 +309,9 @@ export default function OldDataForm({
               maxRows={3}
             />
           </Grid2>
+        </Grid2>
+
+        <Grid2 container size={12} spacing={2}>
           {/* <Grid2 size={5}>
             <ControlledTextField
               control={control}

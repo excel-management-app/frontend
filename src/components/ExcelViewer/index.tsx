@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 import { makeStyles } from "tss-react/mui";
 import { FileListOption, SheetRowData } from "../../utils/types";
 import { DeviceName } from "../DeviceInfo/DeviceName";
-import { AddRowButton } from "./AddRowButton";
 import { EditRowDialogButton } from "./EditRowDialogButton";
 import { ExportToWordButton } from "./ExportToWordButton";
 import { FileExportButton } from "./FileExportButton";
@@ -67,7 +66,7 @@ export const ExcelViewer = () => {
     {
       fileId,
       sheetName: selectedSheetName,
-    },
+    }
   );
 
   const onSelectFile = (fileId: string) => {
@@ -77,12 +76,32 @@ export const ExcelViewer = () => {
   const paginationModel = { page: 0, pageSize: 20 };
   const getRowId = (row: SheetRowData) => sheetRows.indexOf(row);
 
+  const [searchKey, setSearchKey] = useState<string>("");
+
   const selectedRowData = useMemo(() => {
+    if (searchKey) {
+      return (
+        sheetRows.find((row) => {
+          const { soToCu, soThuaCu, soHieuToBanDo, soThuTuThua } = row;
+          return (
+            searchKey === `${soToCu}_${soThuaCu}` ||
+            searchKey === `${soHieuToBanDo}_${soThuTuThua}`
+          );
+        }) || null
+      );
+    }
     if (rowSelectionModel.length === 0) {
       return null;
     }
     return sheetRows[rowSelectionModel[0] as number];
-  }, [rowSelectionModel, sheetRows]);
+  }, [rowSelectionModel, sheetRows, searchKey]);
+
+  const rowIndex = useMemo(() => {
+    if (selectedRowData) {
+      return sheetRows.indexOf(selectedRowData);
+    }
+    return -1;
+  }, [selectedRowData, sheetRows]);
 
   return (
     <>
@@ -122,22 +141,16 @@ export const ExcelViewer = () => {
           </Box>
 
           <Box sx={{ display: "flex", gap: "10px" }}>
-            {!!sheetRows.length && !selectedRowData && (
-              <AddRowButton
-                fileId={fileId}
-                selectedSheetName={selectedSheetName}
-                refetch={refetch}
-              />
-            )}
+            <EditRowDialogButton
+              fileId={fileId}
+              sheetName={selectedSheetName}
+              rowIndex={rowIndex}
+              refetch={refetch}
+              selectedRowData={selectedRowData}
+              setSearchKey={setSearchKey}
+            />
             {selectedRowData && (
               <>
-                <EditRowDialogButton
-                  fileId={fileId}
-                  sheetName={selectedSheetName}
-                  rowIndex={rowSelectionModel[0] as number}
-                  refetch={refetch}
-                  selectedRowData={selectedRowData}
-                />
                 <TemplateUploadButton />
                 <ExportToWordButton
                   fileId={fileId}

@@ -9,12 +9,10 @@ import {
 } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { useEffect } from "react";
 import {
   Control,
   Controller,
   UseFormRegister,
-  UseFormReset,
   UseFormResetField,
   UseFormWatch,
 } from "react-hook-form";
@@ -23,8 +21,6 @@ import { ControlledDatePicker } from "../ControlledDatePicker";
 import ControlledNumberField from "../ControlledNumberField";
 import { ControlledSelect } from "../ControlledSelect";
 import { ControlledTextField } from "../ControlledTextField";
-import { convertToFormData } from "../functions";
-import { useSearchRowInSheet } from "../hooks/useSearchRowInSheet";
 import { IFormData } from "../types";
 import { PurposeOfUseTable } from "./PurposeOfUseTable";
 
@@ -33,33 +29,20 @@ export default function CurrentDataForm({
   register,
   watch,
   resetField,
-  reset,
-  fileId,
-  sheetName,
+  setSearchKey,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<IFormData, any>;
   register: UseFormRegister<IFormData>;
   watch: UseFormWatch<IFormData>;
   resetField: UseFormResetField<IFormData>;
-  reset: UseFormReset<IFormData>;
-  fileId: string;
-  sheetName: string;
+  setSearchKey: (key: string) => void;
 }) {
   const [soHieuToBanDo, soThuTuThua] = watch(["soHieuToBanDo", "soThuTuThua"]);
 
-  const { data, loading, handleSearch } = useSearchRowInSheet({
-    fileId,
-    sheetName,
-    soHieuToBanDo,
-    soThuTuThua,
-  });
-
-  useEffect(() => {
-    if (data) {
-      reset(convertToFormData({ data }));
-    }
-  }, [data]);
+  const handleSearch = async () => {
+    setSearchKey(`${soHieuToBanDo}_${soThuTuThua}`);
+  };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -292,27 +275,29 @@ export default function CurrentDataForm({
           </Grid2>
 
           <Tooltip title="Nhập số tờ và số thửa để tìm kiếm" placement="right">
-            <Grid2 size={1}>
+            <Grid2 size={1.2}>
               <LoadingButton
+                sx={{
+                  minWidth: "120px",
+                }}
                 size="small"
                 startIcon={<SearchIcon />}
                 onClick={handleSearch}
-                loading={loading}
                 variant="contained"
-                disabled={loading || !soHieuToBanDo || !soThuTuThua}
+                disabled={!soHieuToBanDo || !soThuTuThua}
               >
-                Tìm thửa đất
+                Tìm thửa
               </LoadingButton>
             </Grid2>
           </Tooltip>
-          <Grid2 size={1}>
+          <Grid2 size={1.5}>
             <ControlledNumberField
               control={control}
               name="dienTich"
               label="Diện tích"
             />
           </Grid2>
-          <Grid2 size={1.5}>
+          <Grid2 size={2}>
             <ControlledNumberField
               control={control}
               name="Dientichtangthem"
