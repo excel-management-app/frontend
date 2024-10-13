@@ -66,7 +66,7 @@ export const ExcelViewer = () => {
     {
       fileId,
       sheetName: selectedSheetName,
-    },
+    }
   );
 
   const onSelectFile = (fileId: string) => {
@@ -79,14 +79,14 @@ export const ExcelViewer = () => {
   const [searchKey, setSearchKey] = useState<string>("");
 
   const selectedRowData = useMemo(() => {
+    let data = null;
     if (searchKey) {
-      return (
+      return (data =
         sheetRows.find(
           (row) =>
             searchKey === `${row.soToCu}_${row.soThuaCu}` ||
-            searchKey === `${row.soHieuToBanDo}_${row.soThuTuThua}`,
-        ) || null
-      );
+            searchKey === `${row.soHieuToBanDo}_${row.soThuTuThua}`
+        ) || null);
     }
     return rowSelectionModel.length > 0
       ? sheetRows[rowSelectionModel[0] as number]
@@ -95,12 +95,12 @@ export const ExcelViewer = () => {
 
   const rowIndex = useMemo(
     () => (selectedRowData ? sheetRows.indexOf(selectedRowData) : -1),
-    [selectedRowData, sheetRows],
+    [selectedRowData, sheetRows]
   );
 
   const listRowIndex = useMemo(
     () => (rowIndex >= 0 ? String(rowIndex) : ""),
-    [rowIndex, sheetRows.length],
+    [rowIndex, sheetRows.length]
   );
 
   return (
