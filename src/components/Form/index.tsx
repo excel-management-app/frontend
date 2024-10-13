@@ -18,12 +18,14 @@ import { toast } from "react-toastify";
 import { makeStyles } from "tss-react/mui";
 import { addRowToSheet, editRow } from "../../apis/excel";
 import { SheetRowData } from "../../utils/types";
+import { ExportToWordButton } from "../ExcelViewer/ExportToWordButton";
 import { CertificateForm } from "./CertificateFrom";
 import CurrentDataForm from "./CurrentDataForm/CurrentDataForm";
 import { FormulaireForm } from "./FormulaireForm";
 import { convertToFormData, formatDate } from "./functions";
 import OldDataForm from "./OldDataForm/OldDataForm";
 import { IFormData } from "./types";
+import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 
 const useStyles = makeStyles()(() => ({
   exitButton: {
@@ -51,6 +53,7 @@ interface Props {
   selectedRowData: SheetRowData | null;
   rowIndex?: number;
   setSearchKey: (key: string) => void;
+  listRowIndex: string;
 }
 
 export default function MyForm({
@@ -61,6 +64,7 @@ export default function MyForm({
   refetch,
   rowIndex,
   setSearchKey,
+  listRowIndex,
 }: Props) {
   const { classes } = useStyles();
   const [value, setValue] = React.useState(0);
@@ -76,10 +80,14 @@ export default function MyForm({
       reset(convertToFormData({ data: selectedRowData }));
     }
   }, [reset, selectedRowData]);
-  console.log("selectedRowData", selectedRowData);
+
   const onSubmit = async (data: IFormData) => {
     const newRow = {
       ...data,
+      soHieuToBanDo: data.soHieuToBanDo,
+      soThuTuThua: data.soThuTuThua,
+      soToCu: data.soToCu,
+      soThuaCu: data.soThuaCu,
       ngayCap: formatDate(data.ngayCap),
       ngayCap2: formatDate(data.ngayCap2),
       ngayCapCu: formatDate(data.ngayCapCu),
@@ -100,6 +108,7 @@ export default function MyForm({
         });
         toast.success("Cập nhật hàng thành công");
         refetch();
+
         onClose();
       } else {
         await addRowToSheet({
@@ -109,6 +118,11 @@ export default function MyForm({
         });
         toast.success("Thêm hàng thành công");
         refetch();
+        const newSearchKey = newRow.soHieuToBanDo
+          ? `${newRow.soHieuToBanDo}_${newRow.soThuTuThua}`
+          : `${newRow.soToCu}_${newRow.soThuaCu}`;
+
+        setSearchKey(newSearchKey);
       }
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -184,15 +198,24 @@ export default function MyForm({
             width="100%"
             mt={3}
           >
-            <Box>
+            <Box display="flex" alignItems="center" gap={1}>
               <Button
                 variant="contained"
                 color="primary"
                 type="submit"
                 style={{ marginRight: "10px" }}
+                startIcon={<SaveOutlinedIcon />}
               >
                 Lưu thông tin
               </Button>
+
+              {listRowIndex && (
+                <ExportToWordButton
+                  fileId={fileId}
+                  sheetName={sheetName}
+                  listRowIndex={listRowIndex}
+                />
+              )}
             </Box>
             <Button variant="contained" onClick={onClose}>
               Thoát

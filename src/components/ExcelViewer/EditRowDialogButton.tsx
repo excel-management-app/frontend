@@ -34,6 +34,7 @@ interface Props {
   refetch: () => void;
   rowIndex: number;
   setSearchKey: (key: string) => void;
+  listRowIndex: string;
 }
 
 export const EditRowDialogButton = ({
@@ -43,6 +44,7 @@ export const EditRowDialogButton = ({
   refetch,
   rowIndex,
   setSearchKey,
+  listRowIndex,
 }: Props) => {
   const { classes } = useStyles();
 
@@ -61,7 +63,7 @@ export const EditRowDialogButton = ({
         className={classes.editRowButton}
         startIcon={<EditOutlinedIcon />}
       >
-        Nhập dữ liệu
+        Đơn đăng ký
       </Button>
       {editingRow && (
         <MyForm
@@ -72,6 +74,7 @@ export const EditRowDialogButton = ({
           selectedRowData={selectedRowData}
           rowIndex={rowIndex}
           setSearchKey={setSearchKey}
+          listRowIndex={listRowIndex}
         />
       )}
     </>
