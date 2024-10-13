@@ -4,6 +4,7 @@ import { SheetRowData } from "../../utils/types";
 export const fieldNames = [
   "hoTen",
   "namSinh",
+  "diaChiNha",
   "gioiTinh",
   "soGiayTo",
   "ngayCap",
@@ -19,6 +20,8 @@ export const fieldNames = [
   "soHieuToBanDo",
   "soThuTuThua",
   "dienTich",
+  "Dientichtangthem",
+  "Donvicapcu",
   "xuDong",
   "loaiDat1",
   "dienTichMDSD1",
@@ -77,6 +80,13 @@ export const fieldNames = [
   "ghiChuDonDangKy",
 ];
 
+const DATE_FIELD_NAMES = [
+  "ngayCap",
+  "ngayCap2",
+  "ngayCapCu",
+  "ngayCapCu2",
+  "ngayCapGiayCu",
+];
 const format = "DD/MM/YYYY";
 dayjs.extend(customParseFormat);
 interface FormData {
@@ -91,7 +101,7 @@ export function convertToFormData({ data }: ConvertToFormDataProps): FormData {
   const formData: FormData = {};
 
   fieldNames.forEach((fieldName) => {
-    if (fieldName === "ngayCap" || fieldName === "ngayCap2") {
+    if (DATE_FIELD_NAMES.includes(fieldName)) {
       // Check if data[fieldName] is valid
       if (data[fieldName]) {
         // Ensure the input date is parsed with the expected format
@@ -108,3 +118,6 @@ export function convertToFormData({ data }: ConvertToFormDataProps): FormData {
   });
   return formData;
 }
+
+export const formatDate = (date: any) =>
+  date ? dayjs(date).format("DD/MM/YYYY") : "";

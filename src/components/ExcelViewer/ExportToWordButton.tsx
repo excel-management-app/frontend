@@ -1,15 +1,13 @@
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
-import { Button, colors, Tooltip } from "@mui/material";
+import { Button, Tooltip } from "@mui/material";
 import { toast } from "react-toastify";
 import { makeStyles } from "tss-react/mui";
-import { API_URL } from "../../utils/consts";
 import axiosClient from "../../apis/axiosClient";
+import { API_URL } from "../../utils/consts";
 
 const useStyles = makeStyles()(() => ({
   button: {
     height: 40,
-    backgroundColor: colors.grey["100"],
-    color: colors.grey["900"],
   },
 }));
 interface Props {
@@ -30,20 +28,21 @@ export function ExportToWordButton({ fileId, sheetName, listRowIndex }: Props) {
       toast.success("Xuất file thành công");
     } catch (error) {
       console.error("Error during file download:", error);
-      toast.error(" Không có file template word. Hãy tải lên file word")
+      toast.error(" Không có file template word. Hãy tải lên file word");
     }
   };
 
   return (
-    <Tooltip title="Xuất file word">
+    <Tooltip title="Xuất đơn ra file word">
       <Button
         className={classes.button}
         role={undefined}
         variant="contained"
+        color="primary"
         startIcon={<FileDownloadOutlinedIcon />}
         onClick={exportToWord}
       >
-        Xuất Word
+        Xuất đơn
       </Button>
     </Tooltip>
   );

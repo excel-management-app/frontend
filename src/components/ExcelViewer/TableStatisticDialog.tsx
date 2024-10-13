@@ -61,7 +61,7 @@ export default function TableStatisticDialog({ onClose }: StatisticProps) {
     async function fetchData() {
       console.log("selectedDateaaa", selectedDate);
       const response = await axiosClient.get(
-        `/devices/getAll/${dayjs(selectedDate).format("YYYY-MM-DD")}`
+        `/devices/getAll/${dayjs(selectedDate).format("YYYY-MM-DD")}`,
         // `/devices/getAll/2024-10-09`
       );
       console.log(response);

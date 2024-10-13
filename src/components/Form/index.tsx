@@ -11,20 +11,21 @@ import {
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
-import * as React from "react";
-import { makeStyles } from "tss-react/mui";
-import CurrentDataForm from "./CurrentDataForm/CurrentDataForm";
-import OldDataForm from "./OldDataForm/OldDataForm";
-import { SheetRowData } from "../../utils/types";
-import { useForm } from "react-hook-form";
-import { convertToFormData } from "./functions";
-import dayjs from "dayjs";
-import { IFormData } from "./types";
-import { addRowToSheet, editRow } from "../../apis/excel";
-import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import * as React from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { makeStyles } from "tss-react/mui";
+import { addRowToSheet, editRow } from "../../apis/excel";
+import { SheetRowData } from "../../utils/types";
+import { ExportToWordButton } from "../ExcelViewer/ExportToWordButton";
 import { CertificateForm } from "./CertificateFrom";
+import CurrentDataForm from "./CurrentDataForm/CurrentDataForm";
 import { FormulaireForm } from "./FormulaireForm";
+import { convertToFormData, formatDate } from "./functions";
+import OldDataForm from "./OldDataForm/OldDataForm";
+import { IFormData } from "./types";
+import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 
 const useStyles = makeStyles()(() => ({
   exitButton: {
@@ -49,8 +50,10 @@ interface Props {
   fileId: string;
   sheetName: string;
   refetch: () => void;
-  selectedRowData?: SheetRowData;
+  selectedRowData: SheetRowData | null;
   rowIndex?: number;
+  setSearchKey: (key: string) => void;
+  listRowIndex: string;
 }
 
 export default function MyForm({
@@ -60,6 +63,8 @@ export default function MyForm({
   selectedRowData,
   refetch,
   rowIndex,
+  setSearchKey,
+  listRowIndex,
 }: Props) {
   const { classes } = useStyles();
   const [value, setValue] = React.useState(0);
@@ -75,25 +80,35 @@ export default function MyForm({
       reset(convertToFormData({ data: selectedRowData }));
     }
   }, [reset, selectedRowData]);
+
   const onSubmit = async (data: IFormData) => {
     const newRow = {
       ...data,
-      ngayCap: dayjs(data.ngayCap).format("DD/MM/YYYY"),
-      ngayCap2: dayjs(data.ngayCap2).format("DD/MM/YYYY"),
+      soHieuToBanDo: data.soHieuToBanDo,
+      soThuTuThua: data.soThuTuThua,
+      soToCu: data.soToCu,
+      soThuaCu: data.soThuaCu,
+      ngayCap: formatDate(data.ngayCap),
+      ngayCap2: formatDate(data.ngayCap2),
+      ngayCapCu: formatDate(data.ngayCapCu),
+      ngayCapCu2: formatDate(data.ngayCapCu2),
+      ngayCapGiayCu: formatDate(data.ngayCapGiayCu),
       inHoOngBa: data.inHoOngBa ? "l" : "",
       hoGiaDinh: data.hoGiaDinh ? "ho" : "",
       suDungChung: data.suDungChung ? "chung" : "",
     };
+
     try {
       if (selectedRowData && rowIndex) {
         await editRow({
           fileId,
           sheetName,
           rowIndex,
-          newRow: data,
+          newRow,
         });
         toast.success("Cập nhật hàng thành công");
         refetch();
+
         onClose();
       } else {
         await addRowToSheet({
@@ -103,6 +118,11 @@ export default function MyForm({
         });
         toast.success("Thêm hàng thành công");
         refetch();
+        const newSearchKey = newRow.soHieuToBanDo
+          ? `${newRow.soHieuToBanDo}_${newRow.soThuTuThua}`
+          : `${newRow.soToCu}_${newRow.soThuaCu}`;
+
+        setSearchKey(newSearchKey);
       }
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -111,11 +131,6 @@ export default function MyForm({
         console.error(error);
       }
     }
-  };
-  const isEdit = !!selectedRowData && !!rowIndex;
-
-  const handleClearForm = () => {
-    reset();
   };
 
   return (
@@ -157,6 +172,7 @@ export default function MyForm({
               register={register}
               watch={watch}
               resetField={resetField}
+              setSearchKey={setSearchKey}
             />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
@@ -165,6 +181,7 @@ export default function MyForm({
               register={register}
               watch={watch}
               resetField={resetField}
+              setSearchKey={setSearchKey}
             />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={2}>
@@ -181,24 +198,23 @@ export default function MyForm({
             width="100%"
             mt={3}
           >
-            <Box>
+            <Box display="flex" alignItems="center" gap={1}>
               <Button
                 variant="contained"
                 color="primary"
                 type="submit"
                 style={{ marginRight: "10px" }}
+                startIcon={<SaveOutlinedIcon />}
               >
-                {isEdit ? "Lưu thông tin" : "Thêm hàng"}
+                Lưu thông tin
               </Button>
-              {!isEdit && (
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  style={{ marginRight: "10px" }}
-                  onClick={handleClearForm}
-                >
-                  Xóa dữ liệu đã nhập
-                </Button>
+
+              {listRowIndex && (
+                <ExportToWordButton
+                  fileId={fileId}
+                  sheetName={sheetName}
+                  listRowIndex={listRowIndex}
+                />
               )}
             </Box>
             <Button variant="contained" onClick={onClose}>

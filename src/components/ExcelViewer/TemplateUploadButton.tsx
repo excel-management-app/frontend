@@ -26,7 +26,7 @@ const useStyles = makeStyles()(() => ({
   },
 }));
 
-export default function FileUploadButton() {
+export const TemplateUploadButton = () => {
   const { classes } = useStyles();
 
   const { mutate, isPending } = useUploadFileWord();
@@ -69,4 +69,4 @@ export default function FileUploadButton() {
       />
     </LoadingButton>
   );
-}
+};

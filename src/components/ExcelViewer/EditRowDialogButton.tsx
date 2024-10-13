@@ -30,9 +30,11 @@ const useStyles = makeStyles()(() => ({
 interface Props {
   fileId: string;
   sheetName: string;
-  selectedRowData: SheetRowData;
+  selectedRowData: SheetRowData | null;
   refetch: () => void;
   rowIndex: number;
+  setSearchKey: (key: string) => void;
+  listRowIndex: string;
 }
 
 export const EditRowDialogButton = ({
@@ -41,6 +43,8 @@ export const EditRowDialogButton = ({
   selectedRowData,
   refetch,
   rowIndex,
+  setSearchKey,
+  listRowIndex,
 }: Props) => {
   const { classes } = useStyles();
 
@@ -48,6 +52,7 @@ export const EditRowDialogButton = ({
 
   const onClose = () => {
     setEditingRow(false);
+    setSearchKey("");
   };
 
   return (
@@ -58,7 +63,7 @@ export const EditRowDialogButton = ({
         className={classes.editRowButton}
         startIcon={<EditOutlinedIcon />}
       >
-        Sửa hàng
+        Đơn đăng ký
       </Button>
       {editingRow && (
         <MyForm
@@ -68,6 +73,8 @@ export const EditRowDialogButton = ({
           refetch={refetch}
           selectedRowData={selectedRowData}
           rowIndex={rowIndex}
+          setSearchKey={setSearchKey}
+          listRowIndex={listRowIndex}
         />
       )}
     </>

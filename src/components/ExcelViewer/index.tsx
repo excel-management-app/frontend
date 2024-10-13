@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 import { makeStyles } from "tss-react/mui";
 import { FileListOption, SheetRowData } from "../../utils/types";
 import { DeviceName } from "../DeviceInfo/DeviceName";
-import { AddRowButton } from "./AddRowButton";
 import { EditRowDialogButton } from "./EditRowDialogButton";
 import { ExportToWordButton } from "./ExportToWordButton";
 import { FileExportButton } from "./FileExportButton";
@@ -14,7 +13,7 @@ import { useGetAllFiles } from "./hooks/useGetAllFiles";
 import { useGetTableData } from "./hooks/useTableData";
 import { SheetNameSelect } from "./SheetNamesSelector";
 import { StatisticButton } from "./StatisticButton";
-import TemplateUploadButton from "./TemplateUploadButton";
+import { TemplateUploadButton } from "./TemplateUploadButton";
 
 const useStyles = makeStyles()((theme: Theme) => ({
   root: {
@@ -77,12 +76,32 @@ export const ExcelViewer = () => {
   const paginationModel = { page: 0, pageSize: 20 };
   const getRowId = (row: SheetRowData) => sheetRows.indexOf(row);
 
+  const [searchKey, setSearchKey] = useState<string>("");
+
   const selectedRowData = useMemo(() => {
-    if (rowSelectionModel.length === 0) {
-      return null;
+    if (searchKey) {
+      return (
+        sheetRows.find(
+          (row) =>
+            searchKey === `${row.soToCu}_${row.soThuaCu}` ||
+            searchKey === `${row.soHieuToBanDo}_${row.soThuTuThua}`,
+        ) || null
+      );
     }
-    return sheetRows[rowSelectionModel[0] as number];
-  }, [rowSelectionModel, sheetRows]);
+    return rowSelectionModel.length > 0
+      ? sheetRows[rowSelectionModel[0] as number]
+      : null;
+  }, [rowSelectionModel, sheetRows.length, searchKey]);
+
+  const rowIndex = useMemo(
+    () => (selectedRowData ? sheetRows.indexOf(selectedRowData) : -1),
+    [selectedRowData, sheetRows],
+  );
+
+  const listRowIndex = useMemo(
+    () => (rowIndex >= 0 ? String(rowIndex) : ""),
+    [rowIndex, sheetRows.length],
+  );
 
   return (
     <>
@@ -122,27 +141,25 @@ export const ExcelViewer = () => {
           </Box>
 
           <Box sx={{ display: "flex", gap: "10px" }}>
-            {!!sheetRows.length && !selectedRowData && (
-              <AddRowButton
+            {selectedFile && selectedSheetName && (
+              <EditRowDialogButton
                 fileId={fileId}
-                selectedSheetName={selectedSheetName}
+                sheetName={selectedSheetName}
+                rowIndex={rowIndex}
                 refetch={refetch}
+                selectedRowData={selectedRowData}
+                setSearchKey={setSearchKey}
+                listRowIndex={rowIndex >= 0 ? String(rowIndex) : ""}
               />
             )}
+
             {selectedRowData && (
               <>
-                <EditRowDialogButton
-                  fileId={fileId}
-                  sheetName={selectedSheetName}
-                  rowIndex={rowSelectionModel[0] as number}
-                  refetch={refetch}
-                  selectedRowData={selectedRowData}
-                />
                 <TemplateUploadButton />
                 <ExportToWordButton
                   fileId={fileId}
                   sheetName={selectedSheetName}
-                  listRowIndex={rowSelectionModel.join(",")}
+                  listRowIndex={listRowIndex}
                 />
               </>
             )}

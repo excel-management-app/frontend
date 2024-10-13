@@ -208,7 +208,7 @@ export const OldPurposeOfUseTable = ({
         </Box>
       </Grid2>
       {currentFields.landType === "loaiDatCu1" && numRows > 0 && (
-        <Grid2 size={3} spacing={1} container>
+        <Grid2 size={3} spacing={2} container>
           <Grid2 size={12}>
             <ControlledSelect
               control={control}
@@ -248,7 +248,7 @@ export const OldPurposeOfUseTable = ({
         </Grid2>
       )}
       {currentFields.landType === "loaiDatCu2" && numRows > 1 && (
-        <Grid2 size={3} spacing={1} container>
+        <Grid2 size={3} spacing={2} container>
           <Grid2 size={12}>
             <ControlledSelect
               control={control}
@@ -273,7 +273,7 @@ export const OldPurposeOfUseTable = ({
             <ControlledTextField
               control={control}
               name="thmdsdcu2"
-              label="Thời hạn cũ 2"
+              label="Thời hạn sử dụng cũ 2"
             />
           </Grid2>
 
@@ -281,7 +281,7 @@ export const OldPurposeOfUseTable = ({
             <ControlledTextField
               control={control}
               name="ngmdsdcu2"
-              label="Nguồn gốc cũ 2"
+              label="Nguồn gốc sử dụng 2"
               size="small"
             />
           </Grid2>
