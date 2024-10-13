@@ -305,9 +305,6 @@ export default function CurrentDataForm({
               </LoadingButton>
             </Grid2>
           </Tooltip>
-        </Grid2>
-
-        <Grid2 container size={12} spacing={2}>
           <Grid2 size={1}>
             <ControlledNumberField
               control={control}
@@ -315,6 +312,25 @@ export default function CurrentDataForm({
               label="Diện tích"
             />
           </Grid2>
+          <Grid2 size={1.5}>
+            <ControlledNumberField
+              control={control}
+              name="Dientichtangthem"
+              label="Diện tích tăng thêm"
+              fullWidth
+            />
+          </Grid2>
+          <Grid2 size={1.5}>
+            <ControlledTextField
+              control={control}
+              name="Donvicapcu"
+              label="Đơn vị cấp cũ"
+              fullWidth
+            />
+          </Grid2>
+        </Grid2>
+
+        <Grid2 container size={12} spacing={2}>
           <Grid2 size={4}>
             <ControlledTextField
               control={control}

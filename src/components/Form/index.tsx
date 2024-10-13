@@ -11,20 +11,20 @@ import {
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
-import * as React from "react";
-import { makeStyles } from "tss-react/mui";
-import CurrentDataForm from "./CurrentDataForm/CurrentDataForm";
-import OldDataForm from "./OldDataForm/OldDataForm";
-import { SheetRowData } from "../../utils/types";
-import { useForm } from "react-hook-form";
-import { convertToFormData } from "./functions";
-import dayjs from "dayjs";
-import { IFormData } from "./types";
-import { addRowToSheet, editRow } from "../../apis/excel";
-import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import dayjs from "dayjs";
+import * as React from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { makeStyles } from "tss-react/mui";
+import { addRowToSheet, editRow } from "../../apis/excel";
+import { SheetRowData } from "../../utils/types";
 import { CertificateForm } from "./CertificateFrom";
+import CurrentDataForm from "./CurrentDataForm/CurrentDataForm";
 import { FormulaireForm } from "./FormulaireForm";
+import { convertToFormData } from "./functions";
+import OldDataForm from "./OldDataForm/OldDataForm";
+import { IFormData } from "./types";
 
 const useStyles = makeStyles()(() => ({
   exitButton: {
@@ -115,11 +115,6 @@ export default function MyForm({
   };
   const isEdit = !!selectedRowData && !!rowIndex;
 
-  const handleClearForm = () => {
-    reset({});
-    reset({});
-  };
-
   return (
     <Dialog open maxWidth="xl" fullScreen>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -198,16 +193,6 @@ export default function MyForm({
               >
                 {isEdit ? "Lưu thông tin" : "Thêm hàng"}
               </Button>
-              {!isEdit && (
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  style={{ marginRight: "10px" }}
-                  onClick={handleClearForm}
-                >
-                  Xóa dữ liệu đã nhập
-                </Button>
-              )}
             </Box>
             <Button variant="contained" onClick={onClose}>
               Thoát

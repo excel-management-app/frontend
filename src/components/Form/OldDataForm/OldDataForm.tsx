@@ -74,7 +74,7 @@ export default function OldDataForm({
             <ControlledTextField
               control={control}
               name="tenChuCu"
-              label="Họ tên"
+              label="Tên chủ cũ"
               size="small"
             />
           </Grid2>
@@ -82,7 +82,7 @@ export default function OldDataForm({
             <ControlledTextField
               control={control}
               name="namSinhCu"
-              label="Năm sinh"
+              label="Năm sinh chủ cũ"
               size="small"
             />
           </Grid2>
@@ -91,7 +91,7 @@ export default function OldDataForm({
               <ControlledSelect
                 control={control}
                 name="gioiTinhCu"
-                label="Giới tính"
+                label="Giới tính chủ cũ"
                 options={[
                   { label: "Nam", value: "Nam" },
                   { label: "Nữ", value: "Nữ" },
@@ -120,7 +120,7 @@ export default function OldDataForm({
               <ControlledSelect
                 control={control}
                 name="loaiGiayToCu"
-                label="Giấy tờ"
+                label="Loại giấy tờ chủ cũ"
                 options={Object.entries(GIAY_TO).map(([key, value]) => ({
                   label: `${value} (${key})`,
                   value: key,
@@ -131,7 +131,7 @@ export default function OldDataForm({
               <ControlledNumberField
                 control={control}
                 name="soGiayToCu"
-                label="Số giấy tờ"
+                label="Số giấy tờ chủ cũ"
                 size="small"
               />
             </Grid2>
@@ -140,14 +140,14 @@ export default function OldDataForm({
             <ControlledDatePicker
               control={control}
               name="ngayCapCu"
-              label="Ngày cấp"
+              label="Ngày cấp chủ cũ"
             />
           </Grid2>
           <Grid2 size={4}>
             <ControlledTextField
               control={control}
               name="noiCapCu"
-              label="Nơi cấp"
+              label="Nơi cấp chủ cũ"
               size="small"
             />
           </Grid2>
@@ -157,7 +157,7 @@ export default function OldDataForm({
           <ControlledTextField
             control={control}
             name="diaChiChuCu"
-            label="Địa chỉ"
+            label="Địa chỉ thường trú chủ cũ"
           />
         </Grid2>
 
@@ -173,7 +173,7 @@ export default function OldDataForm({
             <ControlledTextField
               control={control}
               name="hoTenCu2"
-              label="Họ tên"
+              label="Họ tên vợ chồng chủ cũ"
               size="small"
             />
           </Grid2>
@@ -181,7 +181,7 @@ export default function OldDataForm({
             <ControlledTextField
               control={control}
               name="namSinhCu2"
-              label="Năm sinh"
+              label="Năm sinh vợ chồng chủ cũ"
               size="small"
             />
           </Grid2>
@@ -219,7 +219,7 @@ export default function OldDataForm({
               <ControlledSelect
                 control={control}
                 name="loaiGiayToCu2"
-                label="Giấy tờ"
+                label="Loại giấy tờ chủ cũ"
                 options={Object.entries(GIAY_TO).map(([key, value]) => ({
                   label: `${value} (${key})`,
                   value: key,
@@ -230,7 +230,7 @@ export default function OldDataForm({
               <ControlledNumberField
                 control={control}
                 name="soGiayToCu2"
-                label="Số giấy tờ"
+                label="Số giấy tờ vợ chồng chủ cũ"
                 size="small"
               />
             </Grid2>
@@ -240,14 +240,14 @@ export default function OldDataForm({
             <ControlledDatePicker
               control={control}
               name="ngayCapCu2"
-              label="Ngày cấp"
+              label="Ngày cấp chủ cũ"
             />
           </Grid2>
           <Grid2 size={4}>
             <ControlledTextField
               control={control}
               name="noiCapCu2"
-              label="Nơi cấp"
+              label="Nơi cấp chủ cũ"
               size="small"
             />
           </Grid2>
@@ -257,7 +257,7 @@ export default function OldDataForm({
           <ControlledTextField
             control={control}
             name="diaChiChuCu2"
-            label="Địa chỉ"
+            label="Địa chỉ thường trú chủ cũ"
             fullWidth
           />
         </Grid2>
@@ -272,7 +272,7 @@ export default function OldDataForm({
             <ControlledNumberField
               control={control}
               name="soToCu"
-              label="Số tờ"
+              label="Số tờ cũ"
               rules={{
                 required: "Yêu cầu nhập trường này",
                 validate: (value: number) =>
@@ -284,7 +284,7 @@ export default function OldDataForm({
             <ControlledNumberField
               control={control}
               name="soThuaCu"
-              label="Số thửa"
+              label="Số thửa cũ"
               rules={{
                 required: "Yêu cầu nhập trường này",
                 validate: (value: number) =>
@@ -314,20 +314,20 @@ export default function OldDataForm({
             <ControlledNumberField
               control={control}
               name="dienTichCu"
-              label="Diện tích"
+              label="Diện tích cũ"
             />
           </Grid2>
           <Grid2 size={4}>
             <ControlledTextField
               control={control}
-              name="xuDong"
-              label="Địa chỉ"
+              name="diaChiCu"
+              label="Địa chỉ cũ"
               fullWidth
               multiline
               maxRows={3}
             />
           </Grid2>
-          <Grid2 size={5}>
+          {/* <Grid2 size={5}>
             <ControlledTextField
               control={control}
               name="ghiChuThuaDat"
@@ -336,7 +336,7 @@ export default function OldDataForm({
               multiline
               maxRows={3}
             />
-          </Grid2>
+          </Grid2> */}
         </Grid2>
 
         {/*Thông tin giấy chứng nhận cũ */}
@@ -350,7 +350,7 @@ export default function OldDataForm({
             <ControlledTextField
               control={control}
               name="soPhatHanhCu"
-              label="Số phát hành"
+              label="Số phát hành cũ"
               size="small"
             />
           </Grid2>
@@ -358,7 +358,7 @@ export default function OldDataForm({
             <ControlledTextField
               control={control}
               name="soVaoSoCu"
-              label="Số vào sổ "
+              label="Số vào sổ cấp giấy cũ"
               size="small"
             />
           </Grid2>
@@ -366,7 +366,7 @@ export default function OldDataForm({
             <ControlledDatePicker
               control={control}
               name="ngayCapGiayCu"
-              label="Ngày cấp"
+              label="Ngày cấp giấy cũ"
             />
           </Grid2>
         </Grid2>

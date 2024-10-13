@@ -273,7 +273,7 @@ export const OldPurposeOfUseTable = ({
             <ControlledTextField
               control={control}
               name="thmdsdcu2"
-              label="Thời hạn cũ 2"
+              label="Thời hạn sử dụng cũ 2"
             />
           </Grid2>
 
@@ -281,7 +281,7 @@ export const OldPurposeOfUseTable = ({
             <ControlledTextField
               control={control}
               name="ngmdsdcu2"
-              label="Nguồn gốc cũ 2"
+              label="Nguồn gốc sử dụng 2"
               size="small"
             />
           </Grid2>
