@@ -99,13 +99,20 @@ export default function CurrentDataForm({
             <Controller
               name="hoGiaDinh"
               control={control}
-              render={({ field }) => (
-                <FormControlLabel
-                  control={<Checkbox {...field} />}
-                  label="Là hộ gia đình"
-                  labelPlacement="start"
-                />
-              )}
+              render={({ field }) => {
+                return (
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        {...field}
+                        defaultChecked={field.value === "ho"}
+                      />
+                    }
+                    label="Là hộ gia đình"
+                    labelPlacement="start"
+                  />
+                );
+              }}
             />
           </Grid2>
         </Grid2>
@@ -186,7 +193,12 @@ export default function CurrentDataForm({
                 control={control}
                 render={({ field }) => (
                   <FormControlLabel
-                    control={<Checkbox {...field} />}
+                    control={
+                      <Checkbox
+                        {...field}
+                        defaultChecked={field.value === "l"}
+                      />
+                    }
                     label="In hộ ông/bà"
                     labelPlacement="start"
                   />

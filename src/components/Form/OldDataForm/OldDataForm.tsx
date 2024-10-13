@@ -87,7 +87,12 @@ export default function OldDataForm({
                 control={control}
                 render={({ field }) => (
                   <FormControlLabel
-                    control={<Checkbox {...field} />}
+                    control={
+                      <Checkbox
+                        {...field}
+                        defaultChecked={field.value === "ho"}
+                      />
+                    }
                     label="Là hộ gia đình"
                     labelPlacement="start"
                   />
@@ -186,7 +191,12 @@ export default function OldDataForm({
                 control={control}
                 render={({ field }) => (
                   <FormControlLabel
-                    control={<Checkbox {...field} />}
+                    control={
+                      <Checkbox
+                        {...field}
+                        defaultChecked={field.value === "l"}
+                      />
+                    }
                     label="In hộ ông/bà"
                     labelPlacement="start"
                   />

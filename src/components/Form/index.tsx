@@ -95,7 +95,6 @@ export default function MyForm({
       ngayCapGiayCu: formatDate(data.ngayCapGiayCu),
       inHoOngBa: data.inHoOngBa ? "l" : "",
       hoGiaDinh: data.hoGiaDinh ? "ho" : "",
-      suDungChung: data.suDungChung ? "chung" : "",
     };
 
     try {
