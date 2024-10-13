@@ -60,7 +60,7 @@ export const TemplateUploadButton = () => {
       tabIndex={-1}
       startIcon={<FileUploadOutlinedIcon />}
     >
-      Chọn file template Word
+      Tải file Word mẫu
       <VisuallyHiddenInput
         id="fileInput"
         type="file"

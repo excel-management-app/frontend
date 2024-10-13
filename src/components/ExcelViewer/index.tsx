@@ -111,7 +111,7 @@ export const ExcelViewer = () => {
 
           <Box sx={{ display: "flex", gap: "10px" }}>
             <FileUploadButton />
-
+            <TemplateUploadButton />
             {selectedFile && <FileExportButton fileId={fileId} />}
             <StatisticButton />
           </Box>
@@ -154,14 +154,11 @@ export const ExcelViewer = () => {
             )}
 
             {selectedRowData && (
-              <>
-                <TemplateUploadButton />
-                <ExportToWordButton
-                  fileId={fileId}
-                  sheetName={selectedSheetName}
-                  listRowIndex={listRowIndex}
-                />
-              </>
+              <ExportToWordButton
+                fileId={fileId}
+                sheetName={selectedSheetName}
+                listRowIndex={listRowIndex}
+              />
             )}
           </Box>
         </Box>
