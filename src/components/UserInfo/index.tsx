@@ -22,6 +22,7 @@ import { makeStyles } from "tss-react/mui";
 import axiosClient from "../../apis/axiosClient";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles()(() => ({
   addButton: {
@@ -44,6 +45,7 @@ interface UpdateData {
 
 export const UserInfo = () => {
   const { classes } = useStyles();
+  const navigate = useNavigate();
 
   const [editing, setEditing] = useState(false);
   const { currentUser, setCurrentUser } = useCurrentUser();
@@ -88,6 +90,15 @@ export const UserInfo = () => {
         console.error(error);
       }
     }
+  };
+
+  const handleLogout = async () => {
+    setCurrentUser({
+      _id: "",
+      name: "",
+      role: "user",
+    });
+    navigate("/login");
   };
 
   return (
@@ -161,7 +172,19 @@ export const UserInfo = () => {
               )}
             </FormControl>
           </DialogContent>
-          <DialogActions>
+          <DialogActions
+            sx={{
+              justifyContent: "space-between",
+            }}
+          >
+            <Button
+              variant="contained"
+              color="error"
+              className={classes.addButton}
+              onClick={handleLogout}
+            >
+              Thoát tài khoản
+            </Button>
             <Button
               variant="contained"
               color="primary"

@@ -14,6 +14,7 @@ import { SheetNameSelect } from "./SheetNamesSelector";
 import { StatisticButton } from "./StatisticButton";
 import { TemplateUploadButton } from "./TemplateUploadButton";
 import { UserInfo } from "../UserInfo";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 
 const useStyles = makeStyles()((theme: Theme) => ({
   root: {
@@ -103,6 +104,7 @@ export const ExcelViewer = () => {
     [rowIndex, sheetRows.length],
   );
 
+  const { isAdmin } = useCurrentUser();
   return (
     <>
       <Box className={classes.root}>
@@ -111,7 +113,7 @@ export const ExcelViewer = () => {
 
           <Box sx={{ display: "flex", gap: "10px" }}>
             <FileUploadButton />
-            <TemplateUploadButton />
+            {isAdmin && <TemplateUploadButton />}
             {selectedFile && <FileExportButton fileId={fileId} />}
             <StatisticButton />
           </Box>

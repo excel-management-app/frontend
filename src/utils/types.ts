@@ -9,3 +9,11 @@ export interface CurrentUser {
   name: string;
   role: "admin" | "user";
 }
+
+export const isAdmin = (currentUser: CurrentUser) => {
+  return currentUser.role === "admin";
+};
+
+export const isUser = (currentUser: CurrentUser) => {
+  return currentUser.role === "user";
+};
