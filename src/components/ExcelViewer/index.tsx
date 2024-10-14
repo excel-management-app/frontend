@@ -67,7 +67,7 @@ export const ExcelViewer = () => {
     {
       fileId,
       sheetName: selectedSheetName,
-    }
+    },
   );
 
   const onSelectFile = (fileId: string) => {
@@ -83,7 +83,7 @@ export const ExcelViewer = () => {
     if (searchKey) {
       return (
         sheetRows.find(
-          (row) => searchKey === `${row.soHieuToBanDo}_${row.soThuTuThua}`
+          (row) => searchKey === `${row.soHieuToBanDo}_${row.soThuTuThua}`,
         ) || null
       );
     }
@@ -92,10 +92,13 @@ export const ExcelViewer = () => {
       : null;
   }, [rowSelectionModel, sheetRows.length, searchKey]);
 
-  const rowIndex = useMemo(
-    () => (selectedRowData ? sheetRows.indexOf(selectedRowData) : -1),
-    [selectedRowData, sheetRows]
-  );
+  const rowIndex = useMemo(() => {
+    return sheetRows.findIndex(
+      (row) =>
+        row.soHieuToBanDo === selectedRowData?.soHieuToBanDo &&
+        row.soThuTuThua === selectedRowData?.soThuTuThua,
+    );
+  }, [selectedRowData, sheetRows]);
 
   const listRowIndex = useMemo(
     () =>
@@ -104,7 +107,7 @@ export const ExcelViewer = () => {
         : rowIndex >= 0
           ? String(rowIndex)
           : "",
-    [rowIndex, sheetRows.length, rowSelectionModel]
+    [rowIndex, sheetRows.length, rowSelectionModel],
   );
 
   const { isAdmin } = useCurrentUser();

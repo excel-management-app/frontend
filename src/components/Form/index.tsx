@@ -107,6 +107,7 @@ export default function MyForm({
           rowIndex,
           newRow,
         });
+
         toast.success("Cập nhật hàng thành công");
       } else {
         await addRowToSheet({
@@ -115,7 +116,7 @@ export default function MyForm({
           newRow,
         });
         toast.success("Thêm hàng thành công");
-        refetch();
+
         const newSearchKey = newRow.soHieuToBanDo
           ? `${newRow.soHieuToBanDo}_${newRow.soThuTuThua}`
           : `${newRow.soToCu}_${newRow.soThuaCu}`;
@@ -128,6 +129,8 @@ export default function MyForm({
       } else {
         console.error(error);
       }
+    } finally {
+      refetch();
     }
   };
 
