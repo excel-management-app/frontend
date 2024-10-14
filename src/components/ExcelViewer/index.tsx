@@ -3,7 +3,6 @@ import { DataGrid, GridRowSelectionModel } from "@mui/x-data-grid";
 import { useMemo, useState } from "react";
 import { makeStyles } from "tss-react/mui";
 import { FileListOption, SheetRowData } from "../../utils/types";
-import { DeviceName } from "../DeviceInfo/DeviceName";
 import { EditRowDialogButton } from "./EditRowDialogButton";
 import { ExportToWordButton } from "./ExportToWordButton";
 import { FileExportButton } from "./FileExportButton";
@@ -14,6 +13,8 @@ import { useGetTableData } from "./hooks/useTableData";
 import { SheetNameSelect } from "./SheetNamesSelector";
 import { StatisticButton } from "./StatisticButton";
 import { TemplateUploadButton } from "./TemplateUploadButton";
+import { UserInfo } from "../UserInfo";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 
 const useStyles = makeStyles()((theme: Theme) => ({
   root: {
@@ -66,7 +67,7 @@ export const ExcelViewer = () => {
     {
       fileId,
       sheetName: selectedSheetName,
-    }
+    },
   );
 
   const onSelectFile = (fileId: string) => {
@@ -85,7 +86,7 @@ export const ExcelViewer = () => {
         sheetRows.find(
           (row) =>
             searchKey === `${row.soToCu}_${row.soThuaCu}` ||
-            searchKey === `${row.soHieuToBanDo}_${row.soThuTuThua}`
+            searchKey === `${row.soHieuToBanDo}_${row.soThuTuThua}`,
         ) || null);
     }
     return rowSelectionModel.length > 0
@@ -95,23 +96,29 @@ export const ExcelViewer = () => {
 
   const rowIndex = useMemo(
     () => (selectedRowData ? sheetRows.indexOf(selectedRowData) : -1),
-    [selectedRowData, sheetRows]
+    [selectedRowData, sheetRows],
   );
 
   const listRowIndex = useMemo(
-    () => (rowIndex >= 0 ? String(rowIndex) : ""),
-    [rowIndex, sheetRows.length]
+    () =>
+      rowSelectionModel.length
+        ? rowSelectionModel.join(",")
+        : rowIndex >= 0
+          ? String(rowIndex)
+          : "",
+    [rowIndex, sheetRows.length, rowSelectionModel],
   );
 
+  const { isAdmin } = useCurrentUser();
   return (
     <>
       <Box className={classes.root}>
         <Box className={classes.header}>
-          <DeviceName />
+          <UserInfo />
 
           <Box sx={{ display: "flex", gap: "10px" }}>
             <FileUploadButton />
-            <TemplateUploadButton />
+            {isAdmin && <TemplateUploadButton />}
             {selectedFile && <FileExportButton fileId={fileId} />}
             <StatisticButton />
           </Box>

@@ -6,7 +6,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { makeStyles } from "tss-react/mui";
 import axiosClient from "../../apis/axiosClient";
 
@@ -59,21 +59,23 @@ export default function TableStatisticDialog({ onClose }: StatisticProps) {
 
   useEffect(() => {
     async function fetchData() {
-      console.log("selectedDateaaa", selectedDate);
       const response = await axiosClient.get(
-        `/devices/getAll/${dayjs(selectedDate).format("YYYY-MM-DD")}`,
-        // `/devices/getAll/2024-10-09`
+        `/accounts/getAll/${dayjs(selectedDate).format("YYYY-MM-DD")}`,
       );
-      console.log(response);
+
       setDataRow(response.data);
     }
     fetchData();
   }, [selectedDate]);
 
-  const sheetRows = dataRows.map((row: { createdAt: Date; _id: string }) => ({
-    ...row,
-    createdAt: formatDate(row.createdAt),
-  }));
+  const sheetRows = useMemo(
+    () =>
+      dataRows.map((row: { createdAt: Date; _id: string }) => ({
+        ...row,
+        createdAt: formatDate(row.createdAt),
+      })),
+    [dataRows],
+  );
   const sheetColumns = [
     { field: "createdAt", headerName: "Ngày", width: 150 },
     { field: "name", headerName: "Tên thiết bị", width: 150 },
@@ -88,7 +90,7 @@ export default function TableStatisticDialog({ onClose }: StatisticProps) {
           <DatePicker
             label="Chọn ngày"
             value={selectedDate}
-            onChange={handleDateChange} // Log date on selection
+            onChange={handleDateChange}
           />
           <CloseIcon sx={{ cursor: "pointer" }} onClick={onClose} />
         </LocalizationProvider>
@@ -101,9 +103,6 @@ export default function TableStatisticDialog({ onClose }: StatisticProps) {
         columns={sheetColumns}
         localeText={{
           noRowsLabel: "Không có dữ liệu",
-          // footerRowSelected(count) {
-          //   return `${count} dòng đã được chọn`;
-          // },
         }}
       />
     </Dialog>
