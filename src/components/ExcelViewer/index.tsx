@@ -1,8 +1,10 @@
 import { Box, Theme } from "@mui/material";
 import { DataGrid, GridRowSelectionModel } from "@mui/x-data-grid";
-import { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { makeStyles } from "tss-react/mui";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 import { FileListOption, SheetRowData } from "../../utils/types";
+import { UserInfo } from "../UserInfo";
 import { EditRowDialogButton } from "./EditRowDialogButton";
 import { ExportToWordButton } from "./ExportToWordButton";
 import { FileExportButton } from "./FileExportButton";
@@ -13,8 +15,6 @@ import { useGetTableData } from "./hooks/useTableData";
 import { SheetNameSelect } from "./SheetNamesSelector";
 import { StatisticButton } from "./StatisticButton";
 import { TemplateUploadButton } from "./TemplateUploadButton";
-import { UserInfo } from "../UserInfo";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
 
 const useStyles = makeStyles()((theme: Theme) => ({
   root: {
