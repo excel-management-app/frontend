@@ -106,6 +106,8 @@ export default function MyForm({
       ngayCapGiayCu: formatDate(data.ngayCapGiayCu),
       inHoOngBa: data.inHoOngBa ? "l" : "",
       hoGiaDinh: data.hoGiaDinh ? "ho" : "",
+      hoGiaDinhCu: data.hoGiaDinhCu ? "ho" : "",
+      inHoOngBaCu: data.inHoOngBaCu ? "l" : "",
     };
 
     try {

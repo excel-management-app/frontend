@@ -149,17 +149,19 @@ export const ExcelViewer = () => {
           </Box>
 
           <Box sx={{ display: "flex", gap: "10px" }}>
-            {selectedFile && selectedSheetName && (
-              <EditRowDialogButton
-                fileId={fileId}
-                sheetName={selectedSheetName}
-                rowIndex={rowIndex}
-                refetch={refetch}
-                selectedRowData={selectedRowData}
-                setSearchKey={setSearchKey}
-                listRowIndex={rowIndex >= 0 ? String(rowIndex) : ""}
-              />
-            )}
+            {selectedFile &&
+              selectedSheetName &&
+              rowSelectionModel.length === 1 && (
+                <EditRowDialogButton
+                  fileId={fileId}
+                  sheetName={selectedSheetName}
+                  rowIndex={rowIndex}
+                  refetch={refetch}
+                  selectedRowData={selectedRowData}
+                  setSearchKey={setSearchKey}
+                  listRowIndex={rowIndex >= 0 ? String(rowIndex) : ""}
+                />
+              )}
 
             {selectedRowData && (
               <ExportToWordButton
