@@ -106,7 +106,6 @@ export default function MyForm({
           newRow,
         });
         toast.success("Cập nhật hàng thành công");
-        refetch();
       } else {
         await addRowToSheet({
           fileId,

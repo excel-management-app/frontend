@@ -80,14 +80,14 @@ export const ExcelViewer = () => {
   const [searchKey, setSearchKey] = useState<string>("");
 
   const selectedRowData = useMemo(() => {
-    let data = null;
     if (searchKey) {
-      return (data =
+      return (
         sheetRows.find(
           (row) =>
             searchKey === `${row.soToCu}_${row.soThuaCu}` ||
             searchKey === `${row.soHieuToBanDo}_${row.soThuTuThua}`,
-        ) || null);
+        ) || null
+      );
     }
     return rowSelectionModel.length > 0
       ? sheetRows[rowSelectionModel[0] as number]
