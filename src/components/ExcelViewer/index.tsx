@@ -1,6 +1,6 @@
 import { Box, Theme } from "@mui/material";
 import { DataGrid, GridRowSelectionModel } from "@mui/x-data-grid";
-import { useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { makeStyles } from "tss-react/mui";
 import { FileListOption, SheetRowData } from "../../utils/types";
 import { EditRowDialogButton } from "./EditRowDialogButton";
@@ -78,19 +78,23 @@ export const ExcelViewer = () => {
   const getRowId = (row: SheetRowData) => sheetRows.indexOf(row);
 
   const [searchKey, setSearchKey] = useState<string>("");
-
-  const selectedRowData = useMemo(() => {
+  const [selectedRowData, setSelectedRowData] = useState<SheetRowData | null>(
+    null
+  );
+  useLayoutEffect(() => {
     if (searchKey) {
-      return (
+      setSelectedRowData(
         sheetRows.find(
           (row) => searchKey === `${row.soHieuToBanDo}_${row.soThuTuThua}`
         ) || null
       );
     }
-    return rowSelectionModel.length > 0
-      ? sheetRows[rowSelectionModel[0] as number]
-      : null;
-  }, [rowSelectionModel, sheetRows.length, searchKey]);
+    setSelectedRowData(
+      rowSelectionModel.length > 0
+        ? sheetRows[rowSelectionModel[0] as number]
+        : null
+    );
+  }, [rowSelectionModel, sheetRows.length, searchKey, loading]);
 
   const rowIndex = useMemo(() => {
     return sheetRows.findIndex(
@@ -109,6 +113,9 @@ export const ExcelViewer = () => {
           : "",
     [rowIndex, sheetRows.length, rowSelectionModel]
   );
+  const clearSelection = () => {
+    setRowSelectionModel([]);
+  };
 
   const { isAdmin } = useCurrentUser();
   return (
@@ -151,7 +158,7 @@ export const ExcelViewer = () => {
           <Box sx={{ display: "flex", gap: "10px" }}>
             {selectedFile &&
               selectedSheetName &&
-              rowSelectionModel.length === 1 && (
+              rowSelectionModel.length < 2 && (
                 <EditRowDialogButton
                   fileId={fileId}
                   sheetName={selectedSheetName}
@@ -160,6 +167,7 @@ export const ExcelViewer = () => {
                   selectedRowData={selectedRowData}
                   setSearchKey={setSearchKey}
                   listRowIndex={rowIndex >= 0 ? String(rowIndex) : ""}
+                  clearSelection={clearSelection}
                 />
               )}
 
@@ -191,7 +199,6 @@ export const ExcelViewer = () => {
             }}
             checkboxSelection
             disableRowSelectionOnClick
-            // disableMultipleRowSelection
             onRowSelectionModelChange={(newRowSelectionModel) => {
               setRowSelectionModel(newRowSelectionModel);
             }}

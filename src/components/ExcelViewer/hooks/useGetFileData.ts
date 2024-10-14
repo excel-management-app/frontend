@@ -12,7 +12,7 @@ export function useGetFileData(fileId: string) {
     queryKey: ["fileData", fileId],
     queryFn: () => fetchFileData(fileId),
     enabled: !!fileId,
-    refetchInterval: 1000 * 10,
+    refetchInterval: 1000 * 30,
   });
 
   return {

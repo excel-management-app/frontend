@@ -35,6 +35,7 @@ interface Props {
   rowIndex: number;
   setSearchKey: (key: string) => void;
   listRowIndex: string;
+  clearSelection: () => void;
 }
 
 export const EditRowDialogButton = ({
@@ -45,6 +46,7 @@ export const EditRowDialogButton = ({
   rowIndex,
   setSearchKey,
   listRowIndex,
+  clearSelection,
 }: Props) => {
   const { classes } = useStyles();
 
@@ -53,6 +55,7 @@ export const EditRowDialogButton = ({
   const onClose = () => {
     setEditingRow(false);
     setSearchKey("");
+    clearSelection();
   };
 
   return (
