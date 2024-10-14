@@ -128,3 +128,11 @@ export function convertToFormData({ data }: ConvertToFormDataProps): FormData {
 
 export const formatDate = (date: any) =>
   date ? dayjs(date).format("DD/MM/YYYY") : "";
+
+export function emptyFormData(): FormData {
+  const formData: FormData = {};
+  fieldNames.forEach((fieldName) => {
+    formData[fieldName] = "";
+  });
+  return formData;
+}

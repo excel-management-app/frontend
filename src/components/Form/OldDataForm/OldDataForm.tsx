@@ -1,12 +1,4 @@
-import SearchIcon from "@mui/icons-material/Search";
-import { LoadingButton } from "@mui/lab";
-import {
-  Checkbox,
-  FormControlLabel,
-  Grid2,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Checkbox, FormControlLabel, Grid2, Typography } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import {
@@ -29,21 +21,13 @@ export default function OldDataForm({
   register,
   watch,
   resetField,
-  setSearchKey,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<IFormData, any>;
   register: UseFormRegister<IFormData>;
   watch: UseFormWatch<IFormData>;
   resetField: UseFormResetField<IFormData>;
-  setSearchKey: (key: string) => void;
 }) {
-  const [soToCu, soThuaCu] = watch(["soToCu", "soThuaCu"]);
-
-  const handleSearch = async () => {
-    setSearchKey(`${soToCu}_${soThuaCu}`);
-  };
-
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Grid2 container spacing={1.5}>
@@ -286,22 +270,6 @@ export default function OldDataForm({
             />
           </Grid2>
 
-          <Tooltip title="Nhập số tờ và số thửa để tìm kiếm" placement="right">
-            <Grid2 size={1.5}>
-              <LoadingButton
-                sx={{
-                  minWidth: "120px",
-                }}
-                size="small"
-                startIcon={<SearchIcon />}
-                onClick={handleSearch}
-                variant="contained"
-                disabled={!soToCu || !soThuaCu}
-              >
-                Tìm thửa
-              </LoadingButton>
-            </Grid2>
-          </Tooltip>
           <Grid2 size={1}>
             <ControlledNumberField
               control={control}

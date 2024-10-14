@@ -22,7 +22,7 @@ import { ExportToWordButton } from "../ExcelViewer/ExportToWordButton";
 import { CertificateForm } from "./CertificateFrom";
 import CurrentDataForm from "./CurrentDataForm/CurrentDataForm";
 import { FormulaireForm } from "./FormulaireForm";
-import { convertToFormData, formatDate } from "./functions";
+import { convertToFormData, emptyFormData, formatDate } from "./functions";
 import OldDataForm from "./OldDataForm/OldDataForm";
 import { IFormData } from "./types";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
@@ -78,6 +78,8 @@ export default function MyForm({
   React.useLayoutEffect(() => {
     if (selectedRowData) {
       reset(convertToFormData({ data: selectedRowData }));
+    } else {
+      reset(emptyFormData());
     }
   }, [reset, selectedRowData]);
 
@@ -177,7 +179,6 @@ export default function MyForm({
               register={register}
               watch={watch}
               resetField={resetField}
-              setSearchKey={setSearchKey}
             />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={2}>
