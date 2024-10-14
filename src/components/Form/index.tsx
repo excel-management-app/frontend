@@ -13,7 +13,7 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import { AxiosError } from "axios";
 import * as React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { toast } from "react-toastify";
 import { makeStyles } from "tss-react/mui";
 import { addRowToSheet, editRow } from "../../apis/excel";
@@ -74,6 +74,7 @@ export default function MyForm({
   };
   const { control, handleSubmit, reset, register, watch, resetField } =
     useForm<IFormData>();
+  const { dirtyFields } = useFormState({ control });
 
   React.useLayoutEffect(() => {
     if (selectedRowData) {
@@ -84,6 +85,14 @@ export default function MyForm({
   }, [reset, selectedRowData]);
 
   const onSubmit = async (data: IFormData) => {
+    if (Object.keys(dirtyFields).length === 0) {
+      toast.info("Bạn chưa thay đổi gì cả");
+      return;
+    }
+    const oldKey = `${selectedRowData?.soHieuToBanDo}-${selectedRowData?.soThuTuThua}`;
+
+    const newKey = `${data.soHieuToBanDo}-${data.soThuTuThua}`;
+
     const newRow = {
       ...data,
       soHieuToBanDo: data.soHieuToBanDo,
@@ -101,6 +110,10 @@ export default function MyForm({
 
     try {
       if (selectedRowData && rowIndex) {
+        if (oldKey !== newKey) {
+          toast.error("Bạn không thể thay đổi số tờ và số thửa");
+          return;
+        }
         await editRow({
           fileId,
           sheetName,
@@ -134,6 +147,12 @@ export default function MyForm({
     }
   };
 
+  const handleClose = () => {
+    onClose();
+    reset(emptyFormData());
+    refetch();
+  };
+
   return (
     <Dialog open maxWidth="xl" fullScreen>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -146,7 +165,7 @@ export default function MyForm({
           >
             Nhập dữ liệu
           </Typography>
-          <CloseIcon sx={{ cursor: "pointer" }} onClick={onClose} />
+          <CloseIcon sx={{ cursor: "pointer" }} onClick={handleClose} />
         </DialogTitle>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
@@ -217,7 +236,7 @@ export default function MyForm({
                 />
               )}
             </Box>
-            <Button variant="contained" onClick={onClose}>
+            <Button variant="contained" onClick={handleClose}>
               Thoát
             </Button>
           </Box>
