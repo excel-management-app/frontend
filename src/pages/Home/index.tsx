@@ -1,34 +1,15 @@
 import { Box } from "@mui/material";
+import { Navigate } from "react-router-dom";
 import { ExcelViewer } from "../../components/ExcelViewer";
-import { useLocalStorage } from "react-use";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import axiosClient from "../../apis/axiosClient";
-import { Device } from "../../components/DeviceInfo/DeviceName";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 
 export const Home = () => {
-  const navigate = useNavigate();
-  const [deviceId, setDeviceId] = useLocalStorage("deviceId", "");
-  useEffect(() => {
-    const getDeviceName = async () => {
-      return await axiosClient.get<Device>("/devices", {
-        data: { deviceId },
-      });
-    };
-    if (!deviceId) {
-      navigate("/deviceInfo");
-    } else {
-      getDeviceName()
-        .then((response) => {
-          setDeviceId(response.data.id);
-        })
-        .catch((error) => {
-          setDeviceId(undefined);
-          console.error(error);
-          navigate("/deviceInfo");
-        });
-    }
-  }, [deviceId, navigate, setDeviceId]);
+  const { currentUser } = useCurrentUser();
+  const isAuth = currentUser._id && currentUser.name;
+
+  if (!isAuth) {
+    return <Navigate to="/login" />;
+  }
   return (
     <Box>
       <ExcelViewer />

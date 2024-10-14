@@ -1,6 +1,7 @@
 import axios from "axios";
 import qs from "qs";
 import { API_URL } from "../utils/consts";
+import { CurrentUser } from "../utils/types";
 
 const axiosClient = axios.create({
   baseURL: API_URL,
@@ -18,9 +19,14 @@ axiosClient.interceptors.request.use(
       config.data = qs.stringify(config.data);
       config.params = qs.stringify(config.params);
     }
-    const deviceId = window.localStorage.getItem("deviceId");
-    if (deviceId) {
-      config.headers["device-id"] = deviceId.replace(/^"(.*)"$/, "$1");
+    const currentUser = JSON.parse(
+      window.localStorage.getItem("currentUser") as string,
+    ) as unknown as CurrentUser;
+
+    const accountId = currentUser?._id;
+
+    if (accountId) {
+      config.headers["account-id"] = accountId.replace(/^"(.*)"$/, "$1");
     }
 
     return config;
