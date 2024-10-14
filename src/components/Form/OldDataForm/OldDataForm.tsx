@@ -250,11 +250,6 @@ export default function OldDataForm({
               control={control}
               name="soToCu"
               label="Số tờ cũ"
-              rules={{
-                required: "Yêu cầu nhập trường này",
-                validate: (value: number) =>
-                  value > 0 || "Không được nhập số âm",
-              }}
             />
           </Grid2>
           <Grid2 size={1}>
@@ -262,11 +257,6 @@ export default function OldDataForm({
               control={control}
               name="soThuaCu"
               label="Số thửa cũ"
-              rules={{
-                required: "Yêu cầu nhập trường này",
-                validate: (value: number) =>
-                  value > 0 || "Không được nhập số âm",
-              }}
             />
           </Grid2>
 
