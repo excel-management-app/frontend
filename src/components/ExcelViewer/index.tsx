@@ -100,8 +100,13 @@ export const ExcelViewer = () => {
   );
 
   const listRowIndex = useMemo(
-    () => (rowIndex >= 0 ? String(rowIndex) : ""),
-    [rowIndex, sheetRows.length],
+    () =>
+      rowSelectionModel.length
+        ? rowSelectionModel.join(",")
+        : rowIndex >= 0
+          ? String(rowIndex)
+          : "",
+    [rowIndex, sheetRows.length, rowSelectionModel],
   );
 
   const { isAdmin } = useCurrentUser();
