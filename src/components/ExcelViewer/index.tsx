@@ -78,22 +78,18 @@ export const ExcelViewer = () => {
   const getRowId = (row: SheetRowData) => sheetRows.indexOf(row);
 
   const [searchKey, setSearchKey] = useState<string>("");
-  const [selectedRowData, setSelectedRowData] = useState<SheetRowData | null>(
-    null
-  );
-  useLayoutEffect(() => {
+
+  const selectedRowData = useMemo(() => {
     if (searchKey) {
-      setSelectedRowData(
+      return (
         sheetRows.find(
           (row) => searchKey === `${row.soHieuToBanDo}_${row.soThuTuThua}`
         ) || null
       );
     }
-    setSelectedRowData(
-      rowSelectionModel.length > 0
-        ? sheetRows[rowSelectionModel[0] as number]
-        : null
-    );
+    return rowSelectionModel.length > 0
+      ? sheetRows[rowSelectionModel[0] as number]
+      : null;
   }, [rowSelectionModel, sheetRows.length, searchKey, loading]);
 
   const rowIndex = useMemo(() => {
