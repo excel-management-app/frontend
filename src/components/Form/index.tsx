@@ -72,6 +72,7 @@ export default function MyForm({
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
   const { control, handleSubmit, reset, register, watch, resetField } =
     useForm<IFormData>();
   const { dirtyFields } = useFormState({ control });
@@ -105,6 +106,7 @@ export default function MyForm({
       ngayCapCu2: formatDate(data.ngayCapCu2),
       ngayCapGiayCu: formatDate(data.ngayCapGiayCu),
       inHoOngBa: data.inHoOngBa ? "l" : "",
+      loaiDon: data.loaiDon ? "Cấp mới" : "Cấp đổi",
       hoGiaDinh: data.hoGiaDinh ? "ho" : "",
       hoGiaDinhCu: data.hoGiaDinhCu ? "ho" : "",
       inHoOngBaCu: data.inHoOngBaCu ? "l" : "",
@@ -178,7 +180,7 @@ export default function MyForm({
             <Tab label="Dữ liệu hiện trạng" {...a11yProps(0)} />
             <Tab label="Dữ liệu cũ" {...a11yProps(1)} />
             <Tab label="Giấy chứng nhận" {...a11yProps(2)} />
-            <Tab label="Đơn đăng ký" {...a11yProps(3)} />
+            {/* <Tab label="Đơn đăng ký" {...a11yProps(3)} /> */}
           </Tabs>
         </Box>
 
@@ -235,6 +237,7 @@ export default function MyForm({
                   fileId={fileId}
                   sheetName={sheetName}
                   listRowIndex={listRowIndex}
+                  rowIndex={rowIndex}
                 />
               )}
             </Box>

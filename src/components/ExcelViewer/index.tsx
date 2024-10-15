@@ -167,13 +167,13 @@ export const ExcelViewer = () => {
                 />
               )}
 
-            {selectedRowData && (
+            {/* {selectedRowData && (
               <ExportToWordButton
                 fileId={fileId}
                 sheetName={selectedSheetName}
                 listRowIndex={listRowIndex}
               />
-            )}
+            )} */}
           </Box>
         </Box>
 

@@ -39,7 +39,7 @@ export default function CurrentDataForm({
   setSearchKey: (key: string) => void;
 }) {
   const [soHieuToBanDo, soThuTuThua] = watch(["soHieuToBanDo", "soThuTuThua"]);
-
+ 
   const handleSearch = async () => {
     setSearchKey(`${soHieuToBanDo}_${soThuTuThua}`);
   };
@@ -323,6 +323,29 @@ export default function CurrentDataForm({
               name="Donvicapcu"
               label="Đơn vị cấp cũ"
               fullWidth
+            />
+          </Grid2>
+          <Grid2 size={2}>
+            <Controller
+              name="loaiDon"
+              control={control}
+              render={({ field }) => {
+                return (
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        {...field}
+                        checked={field.value === "Cấp mới"} // Check if the value is "Cấp mới"
+                        onChange={(e) => {
+                          field.onChange(e.target.checked ? "Cấp mới" : "Cấp đổi"); // Update value based on checked state
+                        }}
+                      />
+                    }
+                    label="Cấp mới/ cấp đổi"
+                    labelPlacement="start"
+                  />
+                );
+              }}
             />
           </Grid2>
         </Grid2>

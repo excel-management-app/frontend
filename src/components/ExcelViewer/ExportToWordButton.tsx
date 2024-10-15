@@ -14,18 +14,17 @@ interface Props {
   fileId: string;
   sheetName: string;
   listRowIndex: string;
+  rowIndex?: number ;
 }
-export function ExportToWordButton({ fileId, sheetName, listRowIndex }: Props) {
+export function ExportToWordButton({ fileId, sheetName, listRowIndex,rowIndex }: Props) {
   const { classes } = useStyles();
 
   const exportToWord = async (): Promise<void> => {
     try {
-      await axiosClient.post(`/words/${fileId}/sheets/${sheetName}/rows/`, {
-        data: listRowIndex,
-      });
+      await axiosClient.get(`/words/${fileId}/sheets/${sheetName}/rows/${rowIndex}`);
 
-      window.location.href = `${API_URL}/files/${fileId}/downloadWord`;
-      toast.success("Xuất file thành công");
+      // window.location.href = `${API_URL}/files/${fileId}/downloadWord`;
+      // toast.success("Xuất file thành công");
     } catch (error) {
       console.error("Error during file download:", error);
       toast.error(" Không có file template word. Hãy tải lên file word");
