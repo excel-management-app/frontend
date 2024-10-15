@@ -68,7 +68,7 @@ export const ExcelViewer = () => {
     {
       fileId,
       sheetName: selectedSheetName,
-    },
+    }
   );
 
   const onSelectFile = (fileId: string) => {
@@ -84,7 +84,7 @@ export const ExcelViewer = () => {
     if (searchKey) {
       const searchResult =
         sheetRows.find(
-          (row) => searchKey === `${row.soHieuToBanDo}_${row.soThuTuThua}`,
+          (row) => searchKey === `${row.soHieuToBanDo}_${row.soThuTuThua}`
         ) || null;
       return searchResult;
     }
@@ -96,7 +96,6 @@ export const ExcelViewer = () => {
   useEffect(() => {
     if (searchKey && !selectedRowData) {
       toast.error("Không tìm thấy kết quả");
-      setSearchKey("");
     }
   }, [searchKey, selectedRowData]);
 
@@ -104,7 +103,7 @@ export const ExcelViewer = () => {
     return sheetRows.findIndex(
       (row) =>
         row.soHieuToBanDo === selectedRowData?.soHieuToBanDo &&
-        row.soThuTuThua === selectedRowData?.soThuTuThua,
+        row.soThuTuThua === selectedRowData?.soThuTuThua
     );
   }, [selectedRowData, sheetRows]);
 
@@ -115,7 +114,7 @@ export const ExcelViewer = () => {
         : rowIndex >= 0
           ? String(rowIndex)
           : "",
-    [rowIndex, sheetRows.length, rowSelectionModel],
+    [rowIndex, sheetRows.length, rowSelectionModel]
   );
   const clearSelection = () => {
     setRowSelectionModel([]);
