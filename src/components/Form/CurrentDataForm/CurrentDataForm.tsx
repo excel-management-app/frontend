@@ -90,8 +90,8 @@ export default function CurrentDataForm({
               name="gioiTinh"
               label="Giới tính"
               options={[
-                { label: "Nam", value: "Nam" },
-                { label: "Nữ", value: "Nữ" },
+                { label: "Nam", value: "1" },
+                { label: "Nữ", value: "0" },
               ]}
             />
           </Grid2>
@@ -182,8 +182,8 @@ export default function CurrentDataForm({
                 name="gioiTinh2"
                 label="Giới tính"
                 options={[
-                  { label: "Nam", value: "Nam" },
-                  { label: "Nữ", value: "Nữ" },
+                  { label: "Nam", value: "1" },
+                  { label: "Nữ", value: "0" },
                 ]}
               />
             </Grid2>
@@ -196,7 +196,7 @@ export default function CurrentDataForm({
                     control={
                       <Checkbox
                         {...field}
-                        defaultChecked={field.value === "l"}
+                        defaultChecked={Number(field.value) === 1}
                       />
                     }
                     label="In hộ ông/bà"

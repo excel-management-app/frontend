@@ -120,7 +120,7 @@ export function convertToFormData({ data }: ConvertToFormDataProps): FormData {
         formData[fieldName] = "";
       }
     } else {
-      formData[fieldName] = data[fieldName] || "";
+      formData[fieldName] = String(data[fieldName]);
     }
   });
   return formData;

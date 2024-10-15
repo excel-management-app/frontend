@@ -60,8 +60,8 @@ export default function OldDataForm({
                 name="gioiTinhCu"
                 label="Giới tính chủ cũ"
                 options={[
-                  { label: "Nam", value: "Nam" },
-                  { label: "Nữ", value: "Nữ" },
+                  { label: "Nam", value: "1" },
+                  { label: "Nữ", value: "0" },
                 ]}
               />
             </Grid2>
@@ -164,8 +164,8 @@ export default function OldDataForm({
                 name="gioiTinhCu2"
                 label="Giới tính"
                 options={[
-                  { label: "Nam", value: "Nam" },
-                  { label: "Nữ", value: "Nữ" },
+                  { label: "Nam", value: "1" },
+                  { label: "Nữ", value: "0" },
                 ]}
               />
             </Grid2>
@@ -178,7 +178,7 @@ export default function OldDataForm({
                     control={
                       <Checkbox
                         {...field}
-                        defaultChecked={field.value === "l"}
+                        defaultChecked={Number(field.value) === 1}
                       />
                     }
                     label="In hộ ông/bà"

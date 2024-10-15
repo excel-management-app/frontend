@@ -103,10 +103,10 @@ export default function MyForm({
       ngayCapCu: formatDate(data.ngayCapCu),
       ngayCapCu2: formatDate(data.ngayCapCu2),
       ngayCapGiayCu: formatDate(data.ngayCapGiayCu),
-      inHoOngBa: data.inHoOngBa ? "l" : "",
+      inHoOngBa: data.inHoOngBa ? 1 : 0,
+      inHoOngBaCu: data.inHoOngBaCu ? 1 : 0,
       hoGiaDinh: data.hoGiaDinh ? "ho" : "",
       hoGiaDinhCu: data.hoGiaDinhCu ? "ho" : "",
-      inHoOngBaCu: data.inHoOngBaCu ? "l" : "",
     };
 
     try {
