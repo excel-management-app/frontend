@@ -21,7 +21,6 @@ import { SheetRowData } from "../../utils/types";
 import { ExportToWordButton } from "../ExcelViewer/ExportToWordButton";
 import { CertificateForm } from "./CertificateFrom";
 import CurrentDataForm from "./CurrentDataForm/CurrentDataForm";
-import { FormulaireForm } from "./FormulaireForm";
 import { convertToFormData, emptyFormData, formatDate } from "./functions";
 import OldDataForm from "./OldDataForm/OldDataForm";
 import { IFormData } from "./types";
@@ -131,12 +130,6 @@ export default function MyForm({
           newRow,
         });
         toast.success("Thêm hàng thành công");
-
-        const newSearchKey = newRow.soHieuToBanDo
-          ? `${newRow.soHieuToBanDo}_${newRow.soThuTuThua}`
-          : `${newRow.soToCu}_${newRow.soThuaCu}`;
-
-        setSearchKey(newSearchKey);
       }
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -178,7 +171,6 @@ export default function MyForm({
             <Tab label="Dữ liệu hiện trạng" {...a11yProps(0)} />
             <Tab label="Dữ liệu cũ" {...a11yProps(1)} />
             <Tab label="Giấy chứng nhận" {...a11yProps(2)} />
-            <Tab label="Đơn đăng ký" {...a11yProps(3)} />
           </Tabs>
         </Box>
 
@@ -207,9 +199,6 @@ export default function MyForm({
           </CustomTabPanel>
           <CustomTabPanel value={value} index={2}>
             <CertificateForm control={control} />
-          </CustomTabPanel>
-          <CustomTabPanel value={value} index={3}>
-            <FormulaireForm control={control} />
           </CustomTabPanel>
         </DialogContent>
         <DialogActions>

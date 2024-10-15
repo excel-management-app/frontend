@@ -1,6 +1,6 @@
 import { Box, Theme } from "@mui/material";
 import { DataGrid, GridRowSelectionModel } from "@mui/x-data-grid";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { makeStyles } from "tss-react/mui";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
 import { FileListOption, SheetRowData } from "../../utils/types";
@@ -15,6 +15,7 @@ import { useGetTableData } from "./hooks/useTableData";
 import { SheetNameSelect } from "./SheetNamesSelector";
 import { StatisticButton } from "./StatisticButton";
 import { TemplateUploadButton } from "./TemplateUploadButton";
+import { toast } from "react-toastify";
 
 const useStyles = makeStyles()((theme: Theme) => ({
   root: {
@@ -67,7 +68,7 @@ export const ExcelViewer = () => {
     {
       fileId,
       sheetName: selectedSheetName,
-    }
+    },
   );
 
   const onSelectFile = (fileId: string) => {
@@ -81,22 +82,29 @@ export const ExcelViewer = () => {
 
   const selectedRowData = useMemo(() => {
     if (searchKey) {
-      return (
+      const searchResult =
         sheetRows.find(
-          (row) => searchKey === `${row.soHieuToBanDo}_${row.soThuTuThua}`
-        ) || null
-      );
+          (row) => searchKey === `${row.soHieuToBanDo}_${row.soThuTuThua}`,
+        ) || null;
+      return searchResult;
     }
     return rowSelectionModel.length > 0
       ? sheetRows[rowSelectionModel[0] as number]
       : null;
   }, [rowSelectionModel, sheetRows.length, searchKey, loading]);
 
+  useEffect(() => {
+    if (searchKey && !selectedRowData) {
+      toast.error("Không tìm thấy kết quả");
+      setSearchKey("");
+    }
+  }, [searchKey, selectedRowData]);
+
   const rowIndex = useMemo(() => {
     return sheetRows.findIndex(
       (row) =>
         row.soHieuToBanDo === selectedRowData?.soHieuToBanDo &&
-        row.soThuTuThua === selectedRowData?.soThuTuThua
+        row.soThuTuThua === selectedRowData?.soThuTuThua,
     );
   }, [selectedRowData, sheetRows]);
 
@@ -107,7 +115,7 @@ export const ExcelViewer = () => {
         : rowIndex >= 0
           ? String(rowIndex)
           : "",
-    [rowIndex, sheetRows.length, rowSelectionModel]
+    [rowIndex, sheetRows.length, rowSelectionModel],
   );
   const clearSelection = () => {
     setRowSelectionModel([]);
@@ -121,10 +129,14 @@ export const ExcelViewer = () => {
           <UserInfo />
 
           <Box sx={{ display: "flex", gap: "10px" }}>
-            <FileUploadButton />
-            {isAdmin && <TemplateUploadButton />}
-            {selectedFile && <FileExportButton fileId={fileId} />}
-            <StatisticButton />
+            {isAdmin && (
+              <>
+                <FileUploadButton />
+                <TemplateUploadButton />
+                {selectedFile && <FileExportButton fileId={fileId} />}
+                <StatisticButton />
+              </>
+            )}
           </Box>
         </Box>
 
@@ -164,6 +176,11 @@ export const ExcelViewer = () => {
                   setSearchKey={setSearchKey}
                   listRowIndex={rowIndex >= 0 ? String(rowIndex) : ""}
                   clearSelection={clearSelection}
+                  title={
+                    rowSelectionModel.length
+                      ? "Chỉnh sửa đơn đăng ký"
+                      : "Thêm mới đơn đăng ký"
+                  }
                 />
               )}
 
