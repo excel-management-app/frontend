@@ -121,7 +121,7 @@ export function convertToFormData({ data }: ConvertToFormDataProps): FormData {
         formData[fieldName] = "";
       }
     } else {
-      formData[fieldName] = String(data[fieldName]);
+      formData[fieldName] = data[fieldName] ? String(data[fieldName]) : "";
     }
   });
   return formData;

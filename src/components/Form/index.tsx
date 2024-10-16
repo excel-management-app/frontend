@@ -114,8 +114,8 @@ export default function MyForm({
         if (key === "hoGiaDinh" || key === "hoGiaDinhCu") {
           return [key, value ? "ho" : ""];
         }
-        return [key, value];
-      })
+        return [key, value ? value : ""];
+      }),
     );
 
     try {
@@ -203,6 +203,7 @@ export default function MyForm({
               watch={watch}
               resetField={resetField}
               setSearchKey={setSearchKey}
+              reset={reset}
             />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>

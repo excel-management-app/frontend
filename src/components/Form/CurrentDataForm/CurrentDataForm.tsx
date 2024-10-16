@@ -13,6 +13,7 @@ import {
   Control,
   Controller,
   UseFormRegister,
+  UseFormReset,
   UseFormResetField,
   UseFormWatch,
 } from "react-hook-form";
@@ -23,6 +24,7 @@ import { ControlledSelect } from "../ControlledSelect";
 import { ControlledTextField } from "../ControlledTextField";
 import { IFormData } from "../types";
 import { PurposeOfUseTable } from "./PurposeOfUseTable";
+import { SearchDialog } from "./SearchDialog";
 
 export default function CurrentDataForm({
   control,
@@ -30,6 +32,7 @@ export default function CurrentDataForm({
   watch,
   resetField,
   setSearchKey,
+  reset,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<IFormData, any>;
@@ -37,6 +40,7 @@ export default function CurrentDataForm({
   watch: UseFormWatch<IFormData>;
   resetField: UseFormResetField<IFormData>;
   setSearchKey: (key: string) => void;
+  reset: UseFormReset<IFormData>;
 }) {
   const [soHieuToBanDo, soThuTuThua] = watch(["soHieuToBanDo", "soThuTuThua"]);
 
@@ -255,10 +259,15 @@ export default function CurrentDataForm({
           />
         </Grid2>
         {/* Thông tin thửa đất */}
-        <Grid2 size={12}>
-          <Typography height={25} variant="body1" fontWeight={600}>
-            Thông tin thửa đất
-          </Typography>
+        <Grid2 size={12} container alignItems="center">
+          <Grid2 size={1}>
+            <Typography height={25} variant="body1" fontWeight={600}>
+              Thông tin thửa đất
+            </Typography>
+          </Grid2>
+          <Grid2 size={2}>
+            <SearchDialog reset={reset} />
+          </Grid2>
         </Grid2>
         <Grid2 container size={12} spacing={2}>
           <Grid2 size={1}>

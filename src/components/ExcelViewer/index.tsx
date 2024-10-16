@@ -16,6 +16,7 @@ import { SheetNameSelect } from "./SheetNamesSelector";
 import { StatisticButton } from "./StatisticButton";
 import { TemplateUploadButton } from "./TemplateUploadButton";
 import { toast } from "react-toastify";
+import { SheetContextProvider } from "./contexts/SheetContext";
 
 const useStyles = makeStyles()((theme: Theme) => ({
   root: {
@@ -64,12 +65,11 @@ export const ExcelViewer = () => {
 
   const { files } = useGetAllFiles();
 
-  const { sheets, sheetRows, sheetColumns, loading, refetch } = useGetTableData(
-    {
+  const { sheets, sheetRows, sheetColumns, loading, sheetHeaders, refetch } =
+    useGetTableData({
       fileId,
       sheetName: selectedSheetName,
-    },
-  );
+    });
 
   const onSelectFile = (fileId: string) => {
     setSelectedFile(files.find((file) => file.id === fileId) || null);
@@ -122,7 +122,12 @@ export const ExcelViewer = () => {
 
   const { isAdmin } = useCurrentUser();
   return (
-    <>
+    <SheetContextProvider
+      sheetName={selectedSheetName}
+      fileId={fileId}
+      sheetHeaders={sheetHeaders}
+      rows={sheetRows}
+    >
       <Box className={classes.root}>
         <Box className={classes.header}>
           <UserInfo />
@@ -224,6 +229,6 @@ export const ExcelViewer = () => {
           />
         </Box>
       </Box>
-    </>
+    </SheetContextProvider>
   );
 };
