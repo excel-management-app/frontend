@@ -3,6 +3,7 @@ import { SheetRowData } from "../../../utils/types";
 import { useGetFileData } from "./useGetFileData";
 import { GridColDef } from "@mui/x-data-grid";
 import { SheetData } from "../../../apis/types";
+import { uniqBy } from "lodash";
 
 interface Dependencies {
   fileId: string;
@@ -41,6 +42,16 @@ export function useGetTableData({ fileId, sheetName }: Dependencies) {
       })),
     [sheetHeaders],
   );
+  const searRowsByHeaders = (
+    values: {
+      [key: string]: string;
+    }[],
+  ) => {
+    const res = sheetRows.filter((row) => {
+      return values.every((value) => row[value.header] === value.value);
+    });
+    return uniqBy(res, "hoTen");
+  };
 
   return {
     sheets,
@@ -49,5 +60,6 @@ export function useGetTableData({ fileId, sheetName }: Dependencies) {
     sheetHeaders,
     loading,
     refetch,
+    searRowsByHeaders,
   };
 }

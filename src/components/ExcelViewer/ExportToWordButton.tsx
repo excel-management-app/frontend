@@ -14,8 +14,14 @@ interface Props {
   fileId: string;
   sheetName: string;
   listRowIndex: string;
+  disabled: boolean;
 }
-export function ExportToWordButton({ fileId, sheetName, listRowIndex }: Props) {
+export function ExportToWordButton({
+  fileId,
+  sheetName,
+  listRowIndex,
+  disabled,
+}: Props) {
   const { classes } = useStyles();
 
   const exportToWord = async (): Promise<void> => {
@@ -41,6 +47,7 @@ export function ExportToWordButton({ fileId, sheetName, listRowIndex }: Props) {
         color="primary"
         startIcon={<FileDownloadOutlinedIcon />}
         onClick={exportToWord}
+        disabled={disabled}
       >
         Xuất đơn
       </Button>

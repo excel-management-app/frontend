@@ -16,6 +16,7 @@ import { SheetNameSelect } from "./SheetNamesSelector";
 import { StatisticButton } from "./StatisticButton";
 import { TemplateUploadButton } from "./TemplateUploadButton";
 import { toast } from "react-toastify";
+import { SheetContextProvider } from "./contexts/SheetContext";
 
 const useStyles = makeStyles()((theme: Theme) => ({
   root: {
@@ -64,12 +65,11 @@ export const ExcelViewer = () => {
 
   const { files } = useGetAllFiles();
 
-  const { sheets, sheetRows, sheetColumns, loading, refetch } = useGetTableData(
-    {
+  const { sheets, sheetRows, sheetColumns, loading, sheetHeaders, refetch } =
+    useGetTableData({
       fileId,
       sheetName: selectedSheetName,
-    }
-  );
+    });
 
   const onSelectFile = (fileId: string) => {
     setSelectedFile(files.find((file) => file.id === fileId) || null);
@@ -84,7 +84,7 @@ export const ExcelViewer = () => {
     if (searchKey) {
       const searchResult =
         sheetRows.find(
-          (row) => searchKey === `${row.soHieuToBanDo}_${row.soThuTuThua}`
+          (row) => searchKey === `${row.soHieuToBanDo}_${row.soThuTuThua}`,
         ) || null;
       return searchResult;
     }
@@ -103,7 +103,7 @@ export const ExcelViewer = () => {
     return sheetRows.findIndex(
       (row) =>
         row.soHieuToBanDo === selectedRowData?.soHieuToBanDo &&
-        row.soThuTuThua === selectedRowData?.soThuTuThua
+        row.soThuTuThua === selectedRowData?.soThuTuThua,
     );
   }, [selectedRowData, sheetRows]);
 
@@ -114,7 +114,7 @@ export const ExcelViewer = () => {
         : rowIndex >= 0
           ? String(rowIndex)
           : "",
-    [rowIndex, sheetRows.length, rowSelectionModel]
+    [rowIndex, sheetRows.length, rowSelectionModel],
   );
   const clearSelection = () => {
     setRowSelectionModel([]);
@@ -122,7 +122,12 @@ export const ExcelViewer = () => {
 
   const { isAdmin } = useCurrentUser();
   return (
-    <>
+    <SheetContextProvider
+      sheetName={selectedSheetName}
+      fileId={fileId}
+      sheetHeaders={sheetHeaders}
+      rows={sheetRows}
+    >
       <Box className={classes.root}>
         <Box className={classes.header}>
           <UserInfo />
@@ -132,7 +137,12 @@ export const ExcelViewer = () => {
               <>
                 <FileUploadButton />
                 <TemplateUploadButton />
-                {selectedFile && <FileExportButton fileId={fileId} />}
+                {selectedFile && selectedSheetName && (
+                  <FileExportButton
+                    fileId={fileId}
+                    sheetName={selectedSheetName}
+                  />
+                )}
                 <StatisticButton />
               </>
             )}
@@ -185,6 +195,7 @@ export const ExcelViewer = () => {
 
             {selectedRowData && (
               <ExportToWordButton
+                disabled={!selectedRowData}
                 fileId={fileId}
                 sheetName={selectedSheetName}
                 listRowIndex={listRowIndex}
@@ -218,6 +229,6 @@ export const ExcelViewer = () => {
           />
         </Box>
       </Box>
-    </>
+    </SheetContextProvider>
   );
 };
