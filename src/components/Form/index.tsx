@@ -6,6 +6,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  IconButton,
   Typography,
 } from "@mui/material";
 import Box from "@mui/material/Box";
@@ -25,6 +26,7 @@ import { convertToFormData, emptyFormData, formatDate } from "./functions";
 import OldDataForm from "./OldDataForm/OldDataForm";
 import { IFormData } from "./types";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
+import { DATE_FIELD_NAMES } from "./consts";
 
 const useStyles = makeStyles()(() => ({
   exitButton: {
@@ -67,6 +69,7 @@ export default function MyForm({
 }: Props) {
   const { classes } = useStyles();
   const [value, setValue] = React.useState(0);
+  const [loading, setLoading] = React.useState(false);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -88,26 +91,25 @@ export default function MyForm({
       toast.info("Bạn chưa thay đổi gì cả");
       return;
     }
+    setLoading(true);
     const oldKey = `${selectedRowData?.soHieuToBanDo}-${selectedRowData?.soThuTuThua}`;
 
     const newKey = `${data.soHieuToBanDo}-${data.soThuTuThua}`;
 
-    const newRow = {
-      ...data,
-      soHieuToBanDo: data.soHieuToBanDo,
-      soThuTuThua: data.soThuTuThua,
-      soToCu: data.soToCu,
-      soThuaCu: data.soThuaCu,
-      ngayCap: formatDate(data.ngayCap),
-      ngayCap2: formatDate(data.ngayCap2),
-      ngayCapCu: formatDate(data.ngayCapCu),
-      ngayCapCu2: formatDate(data.ngayCapCu2),
-      ngayCapGiayCu: formatDate(data.ngayCapGiayCu),
-      inHoOngBa: data.inHoOngBa ? 1 : 0,
-      inHoOngBaCu: data.inHoOngBaCu ? 1 : 0,
-      hoGiaDinh: data.hoGiaDinh ? "ho" : "",
-      hoGiaDinhCu: data.hoGiaDinhCu ? "ho" : "",
-    };
+    const newRow = Object.fromEntries(
+      Object.entries(data).map(([key, value]) => {
+        if (DATE_FIELD_NAMES.includes(key)) {
+          return [key, formatDate(value)];
+        }
+        if (key === "inHoOngBa" || key === "inHoOngBaCu") {
+          return [key, value ? 1 : 0];
+        }
+        if (key === "hoGiaDinh" || key === "hoGiaDinhCu") {
+          return [key, value ? "ho" : ""];
+        }
+        return [key, value];
+      }),
+    );
 
     try {
       if (selectedRowData && rowIndex) {
@@ -139,6 +141,7 @@ export default function MyForm({
       }
     } finally {
       refetch();
+      setLoading(false);
     }
   };
 
@@ -160,7 +163,13 @@ export default function MyForm({
           >
             Nhập dữ liệu
           </Typography>
-          <CloseIcon sx={{ cursor: "pointer" }} onClick={handleClose} />
+          <IconButton
+            disabled={loading}
+            sx={{ cursor: "pointer" }}
+            onClick={handleClose}
+          >
+            <CloseIcon />
+          </IconButton>
         </DialogTitle>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
@@ -177,7 +186,7 @@ export default function MyForm({
         <DialogContent
           sx={{
             p: 2,
-            height: "calc(100vh - 225px)",
+            height: "calc(100vh - 235px)",
           }}
         >
           <CustomTabPanel value={value} index={0}>
@@ -215,19 +224,25 @@ export default function MyForm({
                 type="submit"
                 style={{ marginRight: "10px" }}
                 startIcon={<SaveOutlinedIcon />}
+                disabled={loading}
               >
                 Lưu dữ liệu
               </Button>
 
               {listRowIndex && (
                 <ExportToWordButton
+                  disabled={loading}
                   fileId={fileId}
                   sheetName={sheetName}
                   listRowIndex={listRowIndex}
                 />
               )}
             </Box>
-            <Button variant="contained" onClick={handleClose}>
+            <Button
+              disabled={loading}
+              variant="contained"
+              onClick={handleClose}
+            >
               Thoát
             </Button>
           </Box>

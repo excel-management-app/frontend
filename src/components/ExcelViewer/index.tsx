@@ -68,7 +68,7 @@ export const ExcelViewer = () => {
     {
       fileId,
       sheetName: selectedSheetName,
-    }
+    },
   );
 
   const onSelectFile = (fileId: string) => {
@@ -84,7 +84,7 @@ export const ExcelViewer = () => {
     if (searchKey) {
       const searchResult =
         sheetRows.find(
-          (row) => searchKey === `${row.soHieuToBanDo}_${row.soThuTuThua}`
+          (row) => searchKey === `${row.soHieuToBanDo}_${row.soThuTuThua}`,
         ) || null;
       return searchResult;
     }
@@ -103,7 +103,7 @@ export const ExcelViewer = () => {
     return sheetRows.findIndex(
       (row) =>
         row.soHieuToBanDo === selectedRowData?.soHieuToBanDo &&
-        row.soThuTuThua === selectedRowData?.soThuTuThua
+        row.soThuTuThua === selectedRowData?.soThuTuThua,
     );
   }, [selectedRowData, sheetRows]);
 
@@ -114,7 +114,7 @@ export const ExcelViewer = () => {
         : rowIndex >= 0
           ? String(rowIndex)
           : "",
-    [rowIndex, sheetRows.length, rowSelectionModel]
+    [rowIndex, sheetRows.length, rowSelectionModel],
   );
   const clearSelection = () => {
     setRowSelectionModel([]);
@@ -132,7 +132,12 @@ export const ExcelViewer = () => {
               <>
                 <FileUploadButton />
                 <TemplateUploadButton />
-                {selectedFile && <FileExportButton fileId={fileId} />}
+                {selectedFile && selectedSheetName && (
+                  <FileExportButton
+                    fileId={fileId}
+                    sheetName={selectedSheetName}
+                  />
+                )}
                 <StatisticButton />
               </>
             )}
@@ -185,6 +190,7 @@ export const ExcelViewer = () => {
 
             {selectedRowData && (
               <ExportToWordButton
+                disabled={!selectedRowData}
                 fileId={fileId}
                 sheetName={selectedSheetName}
                 listRowIndex={listRowIndex}

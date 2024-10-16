@@ -127,7 +127,7 @@ export function convertToFormData({ data }: ConvertToFormDataProps): FormData {
 }
 
 export const formatDate = (date: any) =>
-  date ? dayjs(date).format("DD/MM/YYYY") : "";
+  dayjs(date).isValid() ? dayjs(date).format(format) : "";
 
 export function emptyFormData(): FormData {
   const formData: FormData = {};
