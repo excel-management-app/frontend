@@ -74,8 +74,15 @@ export default function MyForm({
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-  const { control, handleSubmit, reset, register, watch, resetField } =
-    useForm<IFormData>();
+  const {
+    control,
+    handleSubmit,
+    reset,
+    register,
+    watch,
+    resetField,
+    setValue: setFormValue,
+  } = useForm<IFormData>();
   const { dirtyFields } = useFormState({ control });
 
   React.useLayoutEffect(() => {
@@ -108,7 +115,7 @@ export default function MyForm({
           return [key, value ? "ho" : ""];
         }
         return [key, value];
-      }),
+      })
     );
 
     try {
@@ -204,6 +211,7 @@ export default function MyForm({
               register={register}
               watch={watch}
               resetField={resetField}
+              setFormValue={setFormValue}
             />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={2}>

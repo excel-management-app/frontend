@@ -6,6 +6,7 @@ import {
   Controller,
   UseFormRegister,
   UseFormResetField,
+  UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
 import { GIAY_TO } from "../../../utils/formFields";
@@ -15,19 +16,35 @@ import { ControlledSelect } from "../ControlledSelect";
 import { ControlledTextField } from "../ControlledTextField";
 import { IFormData } from "../types";
 import { OldPurposeOfUseTable } from "./OldPurposeOfUseTable";
+import { useEffect, useMemo } from "react";
 
 export default function OldDataForm({
   control,
   register,
   watch,
   resetField,
+  setFormValue,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<IFormData, any>;
   register: UseFormRegister<IFormData>;
   watch: UseFormWatch<IFormData>;
   resetField: UseFormResetField<IFormData>;
+  setFormValue: UseFormSetValue<IFormData>;
 }) {
+  // set Dientichtangthem = dienTich - dienTichCu
+  const [dienTich, dienTichCu] = watch(["dienTich", "dienTichCu"]);
+  const dienTichTangThem = useMemo(() => {
+    if (dienTich && dienTichCu) {
+      return Number(dienTich) - Number(dienTichCu);
+    }
+    return 0;
+  }, [dienTich, dienTichCu]);
+
+  useEffect(() => {
+    setFormValue("Dientichtangthem", dienTichTangThem);
+  }, [setFormValue, dienTichTangThem]);
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Grid2 container spacing={1.5}>
@@ -265,6 +282,23 @@ export default function OldDataForm({
               control={control}
               name="dienTichCu"
               label="Diện tích cũ"
+            />
+          </Grid2>
+          <Grid2 size={2}>
+            <ControlledNumberField
+              control={control}
+              name="Dientichtangthem"
+              label="Diện tích tăng thêm"
+              fullWidth
+              disabled
+            />
+          </Grid2>
+          <Grid2 size={1.5}>
+            <ControlledTextField
+              control={control}
+              name="Donvicapcu"
+              label="Đơn vị cấp cũ"
+              fullWidth
             />
           </Grid2>
           <Grid2 size={4}>

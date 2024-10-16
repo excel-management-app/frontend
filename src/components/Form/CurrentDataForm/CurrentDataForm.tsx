@@ -309,22 +309,6 @@ export default function CurrentDataForm({
               label="Diện tích"
             />
           </Grid2>
-          <Grid2 size={2}>
-            <ControlledNumberField
-              control={control}
-              name="Dientichtangthem"
-              label="Diện tích tăng thêm"
-              fullWidth
-            />
-          </Grid2>
-          <Grid2 size={1.5}>
-            <ControlledTextField
-              control={control}
-              name="Donvicapcu"
-              label="Đơn vị cấp cũ"
-              fullWidth
-            />
-          </Grid2>
         </Grid2>
 
         <Grid2 container size={12} spacing={2}>

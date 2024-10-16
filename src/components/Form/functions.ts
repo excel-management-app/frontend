@@ -26,8 +26,7 @@ export const fieldNames = [
   "soHieuToBanDo",
   "soThuTuThua",
   "dienTich",
-  "Dientichtangthem",
-  "Donvicapcu",
+
   "xuDong",
   "ghiChuThuaDat",
   "loaiDat1",
@@ -60,6 +59,8 @@ export const fieldNames = [
   "soToCu",
   "soThuaCu",
   "dienTichCu",
+  "Dientichtangthem",
+  "Donvicapcu",
   "diaChiCu",
   "soPhatHanhCu",
   "soVaoSoCu",
