@@ -16,6 +16,7 @@ interface Props {
   listRowIndex: string;
   rowIndex?: number ;
 }
+
 export function ExportToWordButton({ fileId, sheetName, listRowIndex,rowIndex }: Props) {
   const { classes } = useStyles();
 
@@ -23,13 +24,25 @@ export function ExportToWordButton({ fileId, sheetName, listRowIndex,rowIndex }:
     try {
       await axiosClient.get(`/words/${fileId}/sheets/${sheetName}/rows/${rowIndex}`);
 
-      // window.location.href = `${API_URL}/files/${fileId}/downloadWord`;
-      // toast.success("Xuất file thành công");
+      window.location.href = `${API_URL}/files/${rowIndex}/downloadWord`;
+      toast.success("Xuất file thành công");
     } catch (error) {
       console.error("Error during file download:", error);
       toast.error(" Không có file template word. Hãy tải lên file word");
     }
   };
+
+  // const exportManyToWord = async (): Promise<void> => {
+  //   try {
+  //     await axiosClient.get(`/words/${fileId}/sheets/${sheetName}/rows/${rowIndex}`);
+
+  //     window.location.href = `${API_URL}/files/${rowIndex}/downloadWord`;
+  //     toast.success("Xuất file thành công");
+  //   } catch (error) {
+  //     console.error("Error during file download:", error);
+  //     toast.error(" Không có file template word. Hãy tải lên file word");
+  //   }
+  // };
 
   return (
     <Tooltip title="Xuất đơn ra file word">
