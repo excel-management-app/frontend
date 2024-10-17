@@ -13,12 +13,16 @@ const useStyles = makeStyles()(() => ({
 }));
 interface Props {
   fileId: string;
+  sheetName: string;
 }
-export function FileExportButton({ fileId }: Props) {
+export function FileExportButton({ fileId, sheetName }: Props) {
   const { classes } = useStyles();
-  const downloadExcelFile = async (fileId: string): Promise<void> => {
+  const downloadExcelFile = async (
+    fileId: string,
+    sheetName: string,
+  ): Promise<void> => {
     try {
-      const url = `${API_URL}/files/${fileId}/export`;
+      const url = `${API_URL}/files/${fileId}/sheets/${sheetName}/export`;
       window.location.href = url;
 
       toast.success("Xuất file thành công");
@@ -34,7 +38,7 @@ export function FileExportButton({ fileId }: Props) {
         role={undefined}
         variant="contained"
         startIcon={<FileDownloadOutlinedIcon />}
-        onClick={() => downloadExcelFile(fileId)}
+        onClick={() => downloadExcelFile(fileId, sheetName)}
       >
         Xuất Excel
       </Button>

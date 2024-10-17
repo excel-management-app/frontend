@@ -14,17 +14,25 @@ interface Props {
   fileId: string;
   sheetName: string;
   listRowIndex: string;
-  rowIndex?: number ;
+  rowIndex?: number;
+  disabled: boolean;
 }
 
-export function ExportToWordButton({ fileId, sheetName, listRowIndex,rowIndex }: Props) {
+export function ExportToWordButton({
+  fileId,
+  sheetName,
+  listRowIndex,
+  disabled,
+  rowIndex,
+}: Props) {
   const { classes } = useStyles();
 
   var arrRowIndex = listRowIndex.split(",");
   const exportToWord = async (): Promise<void> => {
-    console.log("export 1 file======", fileId);
     try {
-      await axiosClient.get(`/words/${fileId}/sheets/${sheetName}/rows/${rowIndex ? rowIndex : arrRowIndex[0]}`);
+      await axiosClient.get(
+        `/words/${fileId}/sheets/${sheetName}/rows/${rowIndex ? rowIndex : arrRowIndex[0]}`
+      );
 
       window.location.href = `${API_URL}/files/${rowIndex}/downloadWord`;
       toast.success("Xuất file thành công");
@@ -35,15 +43,11 @@ export function ExportToWordButton({ fileId, sheetName, listRowIndex,rowIndex }:
   };
 
   const exportManyToWord = async (): Promise<void> => {
-    console.log("export nhiều file======", fileId);
     try {
-      const response = await axiosClient.post(
-        `/words/${fileId}/sheets/${sheetName}/rows/`,
-        {
-          data: listRowIndex,
-        },
-      );
-      
+      await axiosClient.post(`/words/${fileId}/sheets/${sheetName}/rows/`, {
+        data: listRowIndex,
+      });
+
       const url = `${import.meta.env.VITE_API_URL}/files/${fileId}/downloadManyWord`;
       window.location.href = url;
       toast.success("Xuất file thành công");
@@ -62,6 +66,7 @@ export function ExportToWordButton({ fileId, sheetName, listRowIndex,rowIndex }:
         color="primary"
         startIcon={<FileDownloadOutlinedIcon />}
         onClick={arrRowIndex.length > 1 ? exportManyToWord : exportToWord}
+        disabled={disabled}
       >
         Xuất đơn
       </Button>

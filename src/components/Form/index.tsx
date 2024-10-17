@@ -6,6 +6,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  IconButton,
   Typography,
 } from "@mui/material";
 import Box from "@mui/material/Box";
@@ -21,11 +22,11 @@ import { SheetRowData } from "../../utils/types";
 import { ExportToWordButton } from "../ExcelViewer/ExportToWordButton";
 import { CertificateForm } from "./CertificateFrom";
 import CurrentDataForm from "./CurrentDataForm/CurrentDataForm";
-import { FormulaireForm } from "./FormulaireForm";
 import { convertToFormData, emptyFormData, formatDate } from "./functions";
 import OldDataForm from "./OldDataForm/OldDataForm";
 import { IFormData } from "./types";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
+import { DATE_FIELD_NAMES } from "./consts";
 
 const useStyles = makeStyles()(() => ({
   exitButton: {
@@ -68,13 +69,21 @@ export default function MyForm({
 }: Props) {
   const { classes } = useStyles();
   const [value, setValue] = React.useState(0);
+  const [loading, setLoading] = React.useState(false);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
-  const { control, handleSubmit, reset, register, watch, resetField } =
-    useForm<IFormData>();
+  const {
+    control,
+    handleSubmit,
+    reset,
+    register,
+    watch,
+    resetField,
+    setValue: setFormValue,
+  } = useForm<IFormData>();
   const { dirtyFields } = useFormState({ control });
 
   React.useLayoutEffect(() => {
@@ -90,27 +99,28 @@ export default function MyForm({
       toast.info("Bạn chưa thay đổi gì cả");
       return;
     }
+    setLoading(true);
     const oldKey = `${selectedRowData?.soHieuToBanDo}-${selectedRowData?.soThuTuThua}`;
 
     const newKey = `${data.soHieuToBanDo}-${data.soThuTuThua}`;
 
-    const newRow = {
-      ...data,
-      soHieuToBanDo: data.soHieuToBanDo,
-      soThuTuThua: data.soThuTuThua,
-      soToCu: data.soToCu,
-      soThuaCu: data.soThuaCu,
-      ngayCap: formatDate(data.ngayCap),
-      ngayCap2: formatDate(data.ngayCap2),
-      ngayCapCu: formatDate(data.ngayCapCu),
-      ngayCapCu2: formatDate(data.ngayCapCu2),
-      ngayCapGiayCu: formatDate(data.ngayCapGiayCu),
-      inHoOngBa: data.inHoOngBa ? "l" : "",
-      loaiDon: data.loaiDon ? "Cấp mới" : "Cấp đổi",
-      hoGiaDinh: data.hoGiaDinh ? "ho" : "",
-      hoGiaDinhCu: data.hoGiaDinhCu ? "ho" : "",
-      inHoOngBaCu: data.inHoOngBaCu ? "l" : "",
-    };
+    const newRow = Object.fromEntries(
+      Object.entries(data).map(([key, value]) => {
+        if (DATE_FIELD_NAMES.includes(key)) {
+          return [key, formatDate(value)];
+        }
+        if (key === "inHoOngBa" || key === "inHoOngBaCu") {
+          return [key, value ? 1 : 0];
+        }
+        if (key === "hoGiaDinh" || key === "hoGiaDinhCu") {
+          return [key, value ? "ho" : ""];
+        }
+        if (key === "loaiDon") {
+          return [key, value ? "Cấp mới" : "Cấp đổi"];
+        }
+        return [key, value ? value : ""];
+      })
+    );
 
     try {
       if (selectedRowData && rowIndex) {
@@ -133,12 +143,6 @@ export default function MyForm({
           newRow,
         });
         toast.success("Thêm hàng thành công");
-
-        const newSearchKey = newRow.soHieuToBanDo
-          ? `${newRow.soHieuToBanDo}_${newRow.soThuTuThua}`
-          : `${newRow.soToCu}_${newRow.soThuaCu}`;
-
-        setSearchKey(newSearchKey);
       }
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -148,6 +152,7 @@ export default function MyForm({
       }
     } finally {
       refetch();
+      setLoading(false);
     }
   };
 
@@ -169,7 +174,13 @@ export default function MyForm({
           >
             Nhập dữ liệu
           </Typography>
-          <CloseIcon sx={{ cursor: "pointer" }} onClick={handleClose} />
+          <IconButton
+            disabled={loading}
+            sx={{ cursor: "pointer" }}
+            onClick={handleClose}
+          >
+            <CloseIcon />
+          </IconButton>
         </DialogTitle>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
@@ -180,14 +191,13 @@ export default function MyForm({
             <Tab label="Dữ liệu hiện trạng" {...a11yProps(0)} />
             <Tab label="Dữ liệu cũ" {...a11yProps(1)} />
             <Tab label="Giấy chứng nhận" {...a11yProps(2)} />
-            {/* <Tab label="Đơn đăng ký" {...a11yProps(3)} /> */}
           </Tabs>
         </Box>
 
         <DialogContent
           sx={{
             p: 2,
-            height: "calc(100vh - 225px)",
+            height: "calc(100vh - 235px)",
           }}
         >
           <CustomTabPanel value={value} index={0}>
@@ -197,6 +207,7 @@ export default function MyForm({
               watch={watch}
               resetField={resetField}
               setSearchKey={setSearchKey}
+              reset={reset}
             />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
@@ -205,13 +216,11 @@ export default function MyForm({
               register={register}
               watch={watch}
               resetField={resetField}
+              setFormValue={setFormValue}
             />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={2}>
             <CertificateForm control={control} />
-          </CustomTabPanel>
-          <CustomTabPanel value={value} index={3}>
-            <FormulaireForm control={control} />
           </CustomTabPanel>
         </DialogContent>
         <DialogActions>
@@ -228,12 +237,14 @@ export default function MyForm({
                 type="submit"
                 style={{ marginRight: "10px" }}
                 startIcon={<SaveOutlinedIcon />}
+                disabled={loading}
               >
                 Lưu dữ liệu
               </Button>
 
               {listRowIndex && (
                 <ExportToWordButton
+                  disabled={loading}
                   fileId={fileId}
                   sheetName={sheetName}
                   listRowIndex={listRowIndex}
@@ -241,7 +252,11 @@ export default function MyForm({
                 />
               )}
             </Box>
-            <Button variant="contained" onClick={handleClose}>
+            <Button
+              disabled={loading}
+              variant="contained"
+              onClick={handleClose}
+            >
               Thoát
             </Button>
           </Box>

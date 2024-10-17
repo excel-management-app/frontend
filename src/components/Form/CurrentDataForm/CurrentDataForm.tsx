@@ -13,6 +13,7 @@ import {
   Control,
   Controller,
   UseFormRegister,
+  UseFormReset,
   UseFormResetField,
   UseFormWatch,
 } from "react-hook-form";
@@ -23,6 +24,7 @@ import { ControlledSelect } from "../ControlledSelect";
 import { ControlledTextField } from "../ControlledTextField";
 import { IFormData } from "../types";
 import { PurposeOfUseTable } from "./PurposeOfUseTable";
+import { SearchDialog } from "./SearchDialog";
 
 export default function CurrentDataForm({
   control,
@@ -30,6 +32,7 @@ export default function CurrentDataForm({
   watch,
   resetField,
   setSearchKey,
+  reset,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<IFormData, any>;
@@ -37,9 +40,10 @@ export default function CurrentDataForm({
   watch: UseFormWatch<IFormData>;
   resetField: UseFormResetField<IFormData>;
   setSearchKey: (key: string) => void;
+  reset: UseFormReset<IFormData>;
 }) {
   const [soHieuToBanDo, soThuTuThua] = watch(["soHieuToBanDo", "soThuTuThua"]);
- 
+
   const handleSearch = async () => {
     setSearchKey(`${soHieuToBanDo}_${soThuTuThua}`);
   };
@@ -90,8 +94,8 @@ export default function CurrentDataForm({
               name="gioiTinh"
               label="Giới tính"
               options={[
-                { label: "Nam", value: "Nam" },
-                { label: "Nữ", value: "Nữ" },
+                { label: "Nam", value: "1" },
+                { label: "Nữ", value: "0" },
               ]}
             />
           </Grid2>
@@ -182,8 +186,8 @@ export default function CurrentDataForm({
                 name="gioiTinh2"
                 label="Giới tính"
                 options={[
-                  { label: "Nam", value: "Nam" },
-                  { label: "Nữ", value: "Nữ" },
+                  { label: "Nam", value: "1" },
+                  { label: "Nữ", value: "0" },
                 ]}
               />
             </Grid2>
@@ -196,7 +200,7 @@ export default function CurrentDataForm({
                     control={
                       <Checkbox
                         {...field}
-                        defaultChecked={field.value === "l"}
+                        defaultChecked={Number(field.value) === 1}
                       />
                     }
                     label="In hộ ông/bà"
@@ -255,10 +259,15 @@ export default function CurrentDataForm({
           />
         </Grid2>
         {/* Thông tin thửa đất */}
-        <Grid2 size={12}>
-          <Typography height={25} variant="body1" fontWeight={600}>
-            Thông tin thửa đất
-          </Typography>
+        <Grid2 size={12} container alignItems="center">
+          <Grid2 size={1}>
+            <Typography height={25} variant="body1" fontWeight={600}>
+              Thông tin thửa đất
+            </Typography>
+          </Grid2>
+          <Grid2 size={2}>
+            <SearchDialog reset={reset} />
+          </Grid2>
         </Grid2>
         <Grid2 container size={12} spacing={2}>
           <Grid2 size={1}>
@@ -309,22 +318,7 @@ export default function CurrentDataForm({
               label="Diện tích"
             />
           </Grid2>
-          <Grid2 size={2}>
-            <ControlledNumberField
-              control={control}
-              name="Dientichtangthem"
-              label="Diện tích tăng thêm"
-              fullWidth
-            />
-          </Grid2>
-          <Grid2 size={1.5}>
-            <ControlledTextField
-              control={control}
-              name="Donvicapcu"
-              label="Đơn vị cấp cũ"
-              fullWidth
-            />
-          </Grid2>
+
           <Grid2 size={2}>
             <Controller
               name="loaiDon"
@@ -335,10 +329,7 @@ export default function CurrentDataForm({
                     control={
                       <Checkbox
                         {...field}
-                        defaultChecked={field.value === "Cấp mới"} // Check if the value is "Cấp mới"
-                        // onChange={(e) => {
-                        //   field.onChange(e.target.checked ? "Cấp mới" : "Cấp đổi"); // Update value based on checked state
-                        // }}
+                        defaultChecked={field.value === "Cấp mới"}
                       />
                     }
                     label="Cấp mới/ cấp đổi"

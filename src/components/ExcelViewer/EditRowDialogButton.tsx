@@ -31,22 +31,24 @@ interface Props {
   fileId: string;
   sheetName: string;
   selectedRowData: SheetRowData | null;
-  refetch: () => void;
   rowIndex: number;
-  setSearchKey: (key: string) => void;
   listRowIndex: string;
+  title?: string;
   clearSelection: () => void;
+  refetch: () => void;
+  setSearchKey: (key: string) => void;
 }
 
 export const EditRowDialogButton = ({
   fileId,
   sheetName,
   selectedRowData,
-  refetch,
   rowIndex,
-  setSearchKey,
   listRowIndex,
+  title = "Đơn đăng ký",
   clearSelection,
+  setSearchKey,
+  refetch,
 }: Props) => {
   const { classes } = useStyles();
 
@@ -66,7 +68,7 @@ export const EditRowDialogButton = ({
         className={classes.editRowButton}
         startIcon={<EditOutlinedIcon />}
       >
-        Đơn đăng ký
+        {title}
       </Button>
       {editingRow && (
         <MyForm

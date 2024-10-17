@@ -26,8 +26,7 @@ export const fieldNames = [
   "soHieuToBanDo",
   "soThuTuThua",
   "dienTich",
-  "Dientichtangthem",
-  "Donvicapcu",
+
   "xuDong",
   "ghiChuThuaDat",
   "loaiDat1",
@@ -60,6 +59,8 @@ export const fieldNames = [
   "soToCu",
   "soThuaCu",
   "dienTichCu",
+  "Dientichtangthem",
+  "Donvicapcu",
   "diaChiCu",
   "soPhatHanhCu",
   "soVaoSoCu",
@@ -120,14 +121,14 @@ export function convertToFormData({ data }: ConvertToFormDataProps): FormData {
         formData[fieldName] = "";
       }
     } else {
-      formData[fieldName] = data[fieldName] || "";
+      formData[fieldName] = data[fieldName] ? String(data[fieldName]) : "";
     }
   });
   return formData;
 }
 
 export const formatDate = (date: any) =>
-  date ? dayjs(date).format("DD/MM/YYYY") : "";
+  dayjs(date).isValid() ? dayjs(date).format(format) : "";
 
 export function emptyFormData(): FormData {
   const formData: FormData = {};

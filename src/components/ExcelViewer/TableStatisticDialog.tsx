@@ -42,7 +42,6 @@ export default function TableStatisticDialog({ onClose }: StatisticProps) {
 
   const handleDateChange = async (date: any) => {
     setSelectedDate(date);
-    console.log("Selected date:", dayjs(date).format("YYYY-MM-DD"));
   };
 
   const formatDate = (dateString: Date) => {
