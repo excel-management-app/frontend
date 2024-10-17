@@ -115,7 +115,9 @@ export const ExcelViewer = () => {
           ? String(rowIndex)
           : "",
     [rowIndex, sheetRows.length, rowSelectionModel],
+
   );
+  console.log('listRowIndex:====', listRowIndex);
   const clearSelection = () => {
     setRowSelectionModel([]);
   };
@@ -193,7 +195,7 @@ export const ExcelViewer = () => {
                 />
               )}
 
-            {listRowIndex.length > 1 && (
+            {listRowIndex.split(",").length > 1 && (
               <ExportToWordButton
                 disabled={!selectedRowData}
                 fileId={fileId}
