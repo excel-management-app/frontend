@@ -131,9 +131,8 @@ export const formatDate = (date: any) =>
   dayjs(date).isValid() ? dayjs(date).format(format) : "";
 
 export function emptyFormData(): FormData {
-  const formData: FormData = {};
-  fieldNames.forEach((fieldName) => {
+  return fieldNames.reduce((formData, fieldName) => {
     formData[fieldName] = "";
-  });
-  return formData;
+    return formData;
+  }, {} as FormData);
 }

@@ -114,7 +114,7 @@ export default function MyForm({
         switch (key) {
           case "inHoOngBa":
           case "inHoOngBaCu":
-            return [key, value ? 1 : 0];
+            return [key, value ? "1" : ""];
           case "hoGiaDinh":
           case "hoGiaDinhCu":
             return [key, value ? "ho" : ""];
@@ -123,14 +123,14 @@ export default function MyForm({
           default:
             return [key, value ?? ""];
         }
-      }),
+      })
     );
 
     try {
       if (selectedRowData && rowIndex) {
         if (oldKey !== newKey) {
           toast.error(
-            "Bạn không thể thay đổi số hiệu tờ bản đồ và số thứ tự thửa",
+            "Bạn không thể thay đổi số hiệu tờ bản đồ và số thứ tự thửa"
           );
           return;
         }

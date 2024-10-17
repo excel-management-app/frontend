@@ -336,11 +336,11 @@ export default function CurrentDataForm({
                       <Checkbox
                         {...field}
                         defaultChecked={field.value === "Cấp mới"}
-                        onChange={(event) =>
-                          field.onChange(
-                            event.target.checked ? "Cấp mới" : "Cấp đổi",
-                          )
-                        }
+                        // onChange={(event) =>
+                        //   field.onChange(
+                        //     event.target.checked ? "Cấp mới" : "Cấp đổi",
+                        //   )
+                        // }
                       />
                     }
                     label="Cấp mới/ Cấp đổi"
