@@ -183,7 +183,7 @@ export const ExcelViewer = () => {
                   refetch={refetch}
                   selectedRowData={selectedRowData}
                   setSearchKey={setSearchKey}
-                  listRowIndex={rowIndex >= 0 ? String(rowIndex) : ""}
+                  listRowIndex={listRowIndex}
                   clearSelection={clearSelection}
                   title={
                     rowSelectionModel.length
@@ -193,7 +193,7 @@ export const ExcelViewer = () => {
                 />
               )}
 
-            {listRowIndex.length>1 && (
+            {listRowIndex.length > 1 && (
               <ExportToWordButton
                 disabled={!selectedRowData}
                 fileId={fileId}

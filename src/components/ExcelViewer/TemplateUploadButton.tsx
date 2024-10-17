@@ -28,7 +28,7 @@ const useStyles = makeStyles()(() => ({
     height: 40,
     backgroundColor: colors.grey["100"],
     color: colors.grey["900"],
-  }
+  },
 }));
 
 export const TemplateUploadButton = () => {
@@ -41,7 +41,7 @@ export const TemplateUploadButton = () => {
     if (file) {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("type", type.toString());  // 1 là file cấp mới , 2 là file cấp đổi
+      formData.append("type", type.toString()); // 1 là file cấp mới , 2 là file cấp đổi
       mutate(formData, {
         onSuccess: () => {
           toast.success("Tải file thành công");
@@ -94,7 +94,5 @@ export const TemplateUploadButton = () => {
         />
       </LoadingButton>
     </>
-    
-    
   );
 };

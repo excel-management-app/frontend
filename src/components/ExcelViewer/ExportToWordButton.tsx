@@ -31,7 +31,7 @@ export function ExportToWordButton({
   const exportToWord = async (): Promise<void> => {
     try {
       await axiosClient.get(
-        `/words/${fileId}/sheets/${sheetName}/rows/${rowIndex ? rowIndex : arrRowIndex[0]}`
+        `/words/${fileId}/sheets/${sheetName}/rows/${rowIndex ? rowIndex : arrRowIndex[0]}`,
       );
 
       window.location.href = `${API_URL}/files/${rowIndex}/downloadWord`;

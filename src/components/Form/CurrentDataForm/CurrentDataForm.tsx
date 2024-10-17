@@ -338,7 +338,7 @@ export default function CurrentDataForm({
                         defaultChecked={field.value === "Cấp mới"}
                         onChange={(event) =>
                           field.onChange(
-                            event.target.checked ? "Cấp mới" : "Cấp đổi"
+                            event.target.checked ? "Cấp mới" : "Cấp đổi",
                           )
                         }
                       />

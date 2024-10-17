@@ -26,7 +26,9 @@ export const addRowToSheet = async ({
   fileId,
   sheetName,
   newRow,
-}: AddRowProps): Promise<FileData> => {
+}: AddRowProps): Promise<{
+  rowIndex: number;
+}> => {
   const response = await axiosClient.post(
     `/files/${fileId}/sheets/${sheetName}/rows`,
     {

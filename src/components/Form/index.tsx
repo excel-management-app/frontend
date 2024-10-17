@@ -71,6 +71,9 @@ export default function MyForm({
   const [value, setValue] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
 
+  const [currentListRowIndex, setCurrentListRowIndex] =
+    React.useState(listRowIndex);
+
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
@@ -119,7 +122,7 @@ export default function MyForm({
           return [key, value ? "Cấp mới" : "Cấp đổi"];
         }
         return [key, value ? value : ""];
-      })
+      }),
     );
 
     try {
@@ -137,11 +140,15 @@ export default function MyForm({
 
         toast.success("Cập nhật hàng thành công");
       } else {
-        await addRowToSheet({
+        const res = await addRowToSheet({
           fileId,
           sheetName,
           newRow,
         });
+        if (res.rowIndex) {
+          setCurrentListRowIndex(String(res.rowIndex));
+        }
+
         toast.success("Thêm hàng thành công");
       }
     } catch (error: unknown) {
@@ -242,13 +249,13 @@ export default function MyForm({
                 Lưu dữ liệu
               </Button>
 
-              {listRowIndex && (
+              {currentListRowIndex && (
                 <ExportToWordButton
                   disabled={loading}
                   fileId={fileId}
                   sheetName={sheetName}
-                  listRowIndex={listRowIndex}
-                  rowIndex={rowIndex}
+                  listRowIndex={currentListRowIndex}
+                  rowIndex={Number(currentListRowIndex)}
                 />
               )}
             </Box>
