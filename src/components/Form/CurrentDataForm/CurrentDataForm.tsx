@@ -335,10 +335,10 @@ export default function CurrentDataForm({
                     control={
                       <Checkbox
                         {...field}
-                        checked={field.value === "Cấp mới"} // Check if the value is "Cấp mới"
-                        onChange={(e) => {
-                          field.onChange(e.target.checked ? "Cấp mới" : "Cấp đổi"); // Update value based on checked state
-                        }}
+                        defaultChecked={field.value === "Cấp mới"} // Check if the value is "Cấp mới"
+                        // onChange={(e) => {
+                        //   field.onChange(e.target.checked ? "Cấp mới" : "Cấp đổi"); // Update value based on checked state
+                        // }}
                       />
                     }
                     label="Cấp mới/ cấp đổi"

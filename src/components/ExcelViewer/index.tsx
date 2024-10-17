@@ -167,7 +167,7 @@ export const ExcelViewer = () => {
                 />
               )}
 
-            {selectedRowData && (
+            {listRowIndex.length>1 && (
               <ExportToWordButton
                 fileId={fileId}
                 sheetName={selectedSheetName}
