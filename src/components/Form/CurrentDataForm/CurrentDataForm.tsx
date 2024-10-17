@@ -110,6 +110,9 @@ export default function CurrentDataForm({
                       <Checkbox
                         {...field}
                         defaultChecked={field.value === "ho"}
+                        onChange={(event) =>
+                          field.onChange(event.target.checked ? "ho" : "")
+                        }
                       />
                     }
                     label="Là hộ gia đình"
@@ -201,6 +204,9 @@ export default function CurrentDataForm({
                       <Checkbox
                         {...field}
                         defaultChecked={Number(field.value) === 1}
+                        onChange={(event) =>
+                          field.onChange(event.target.checked ? 1 : 0)
+                        }
                       />
                     }
                     label="In hộ ông/bà"
@@ -330,9 +336,14 @@ export default function CurrentDataForm({
                       <Checkbox
                         {...field}
                         defaultChecked={field.value === "Cấp mới"}
+                        onChange={(event) =>
+                          field.onChange(
+                            event.target.checked ? "Cấp mới" : "Cấp đổi"
+                          )
+                        }
                       />
                     }
-                    label="Cấp mới/ cấp đổi"
+                    label="Cấp mới/ Cấp đổi"
                     labelPlacement="start"
                   />
                 );

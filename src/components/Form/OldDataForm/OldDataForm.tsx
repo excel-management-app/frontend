@@ -92,6 +92,9 @@ export default function OldDataForm({
                       <Checkbox
                         {...field}
                         defaultChecked={field.value === "ho"}
+                        onChange={(e) =>
+                          field.onChange(e.target.checked ? "ho" : "")
+                        }
                       />
                     }
                     label="Là hộ gia đình"
@@ -196,6 +199,9 @@ export default function OldDataForm({
                       <Checkbox
                         {...field}
                         defaultChecked={Number(field.value) === 1}
+                        onChange={(e) =>
+                          field.onChange(e.target.checked ? 1 : 0)
+                        }
                       />
                     }
                     label="In hộ ông/bà"
