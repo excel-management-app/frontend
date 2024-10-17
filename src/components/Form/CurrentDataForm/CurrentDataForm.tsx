@@ -318,6 +318,27 @@ export default function CurrentDataForm({
               label="Diện tích"
             />
           </Grid2>
+
+          <Grid2 size={2}>
+            <Controller
+              name="loaiDon"
+              control={control}
+              render={({ field }) => {
+                return (
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        {...field}
+                        defaultChecked={field.value === "Cấp mới"}
+                      />
+                    }
+                    label="Cấp mới/ cấp đổi"
+                    labelPlacement="start"
+                  />
+                );
+              }}
+            />
+          </Grid2>
         </Grid2>
 
         <Grid2 container size={12} spacing={2}>

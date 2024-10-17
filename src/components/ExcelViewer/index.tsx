@@ -193,7 +193,7 @@ export const ExcelViewer = () => {
                 />
               )}
 
-            {selectedRowData && (
+            {listRowIndex.length>1 && (
               <ExportToWordButton
                 disabled={!selectedRowData}
                 fileId={fileId}

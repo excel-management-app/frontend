@@ -74,6 +74,7 @@ export default function MyForm({
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
   const {
     control,
     handleSubmit,
@@ -114,8 +115,11 @@ export default function MyForm({
         if (key === "hoGiaDinh" || key === "hoGiaDinhCu") {
           return [key, value ? "ho" : ""];
         }
+        if (key === "loaiDon") {
+          return [key, value ? "Cấp mới" : "Cấp đổi"];
+        }
         return [key, value ? value : ""];
-      }),
+      })
     );
 
     try {
@@ -244,6 +248,7 @@ export default function MyForm({
                   fileId={fileId}
                   sheetName={sheetName}
                   listRowIndex={listRowIndex}
+                  rowIndex={rowIndex}
                 />
               )}
             </Box>

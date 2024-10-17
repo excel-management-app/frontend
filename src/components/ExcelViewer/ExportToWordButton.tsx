@@ -14,23 +14,42 @@ interface Props {
   fileId: string;
   sheetName: string;
   listRowIndex: string;
+  rowIndex?: number;
   disabled: boolean;
 }
+
 export function ExportToWordButton({
   fileId,
   sheetName,
   listRowIndex,
   disabled,
+  rowIndex,
 }: Props) {
   const { classes } = useStyles();
 
+  var arrRowIndex = listRowIndex.split(",");
   const exportToWord = async (): Promise<void> => {
+    try {
+      await axiosClient.get(
+        `/words/${fileId}/sheets/${sheetName}/rows/${rowIndex ? rowIndex : arrRowIndex[0]}`
+      );
+
+      window.location.href = `${API_URL}/files/${rowIndex}/downloadWord`;
+      toast.success("Xuất file thành công");
+    } catch (error) {
+      console.error("Error during file download:", error);
+      toast.error(" Không có file template word. Hãy tải lên file word");
+    }
+  };
+
+  const exportManyToWord = async (): Promise<void> => {
     try {
       await axiosClient.post(`/words/${fileId}/sheets/${sheetName}/rows/`, {
         data: listRowIndex,
       });
 
-      window.location.href = `${API_URL}/files/${fileId}/downloadWord`;
+      const url = `${import.meta.env.VITE_API_URL}/files/${fileId}/downloadManyWord`;
+      window.location.href = url;
       toast.success("Xuất file thành công");
     } catch (error) {
       console.error("Error during file download:", error);
@@ -46,7 +65,7 @@ export function ExportToWordButton({
         variant="contained"
         color="primary"
         startIcon={<FileDownloadOutlinedIcon />}
-        onClick={exportToWord}
+        onClick={arrRowIndex.length > 1 ? exportManyToWord : exportToWord}
         disabled={disabled}
       >
         Xuất đơn
