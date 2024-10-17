@@ -121,14 +121,15 @@ export const PurposeOfUseTable = ({
       const [landType, area] = [form[row.landType], form[row.area]];
       if (!landType && !area) {
         data.push({
-          landType: `Chọn loại đất ${index + 1}`,
-          area: `Chọn diện tích ${index + 1}`,
+          landType: `Chọn loại đất ${index + 1}`,
+          area: `Chọn diện tích ${index + 1}`,
+        });
+      } else {
+        data.push({
+          landType: landType ? String(landType) : "",
+          area: area ? String(area) : "",
         });
       }
-      data.push({
-        landType: landType ? String(landType) : "",
-        area: area ? String(area) : "",
-      });
     });
     return data;
   }, [form, numRows]);

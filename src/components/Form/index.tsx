@@ -106,29 +106,32 @@ export default function MyForm({
     const oldKey = `${selectedRowData?.soHieuToBanDo}-${selectedRowData?.soThuTuThua}`;
 
     const newKey = `${data.soHieuToBanDo}-${data.soThuTuThua}`;
-
     const newRow = Object.fromEntries(
       Object.entries(data).map(([key, value]) => {
         if (DATE_FIELD_NAMES.includes(key)) {
           return [key, formatDate(value)];
         }
-        if (key === "inHoOngBa" || key === "inHoOngBaCu") {
-          return [key, value ? 1 : 0];
+        switch (key) {
+          case "inHoOngBa":
+          case "inHoOngBaCu":
+            return [key, value ? 1 : 0];
+          case "hoGiaDinh":
+          case "hoGiaDinhCu":
+            return [key, value ? "ho" : ""];
+          case "loaiDon":
+            return [key, value ? "Cấp mới" : "Cấp đổi"];
+          default:
+            return [key, value ?? ""];
         }
-        if (key === "hoGiaDinh" || key === "hoGiaDinhCu") {
-          return [key, value ? "ho" : ""];
-        }
-        if (key === "loaiDon") {
-          return [key, value ? "Cấp mới" : "Cấp đổi"];
-        }
-        return [key, value ? value : ""];
       }),
     );
 
     try {
       if (selectedRowData && rowIndex) {
         if (oldKey !== newKey) {
-          toast.error("Bạn không thể thay đổi số tờ và số thửa");
+          toast.error(
+            "Bạn không thể thay đổi số hiệu tờ bản đồ và số thứ tự thửa",
+          );
           return;
         }
         await editRow({
@@ -138,18 +141,17 @@ export default function MyForm({
           newRow,
         });
 
-        toast.success("Cập nhật hàng thành công");
+        toast.success("Cập nhật dòng thành công");
       } else {
         const res = await addRowToSheet({
           fileId,
           sheetName,
           newRow,
         });
+        toast.success("Thêm dòng thành công");
         if (res.rowIndex) {
           setCurrentListRowIndex(String(res.rowIndex));
         }
-
-        toast.success("Thêm hàng thành công");
       }
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
