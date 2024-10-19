@@ -251,7 +251,7 @@ export default function MyForm({
                 Lưu dữ liệu
               </Button>
 
-              {currentListRowIndex && (
+              {/* {currentListRowIndex && ( */}
                 <ExportToWordButton
                   disabled={loading}
                   fileId={fileId}
@@ -259,7 +259,7 @@ export default function MyForm({
                   listRowIndex={currentListRowIndex}
                   rowIndex={Number(currentListRowIndex)}
                 />
-              )}
+              {/* )} */}
             </Box>
             <Button
               disabled={loading}

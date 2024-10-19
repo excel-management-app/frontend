@@ -36,7 +36,8 @@ export default function OldDataForm({
   const [dienTich, dienTichCu] = watch(["dienTich", "dienTichCu"]);
   const dienTichTangThem = useMemo(() => {
     if (dienTich && dienTichCu) {
-      return Number(dienTich) - Number(dienTichCu);
+      const value = Number(dienTich) - Number(dienTichCu)
+      return parseFloat(value.toFixed(1));
     }
     return 0;
   }, [dienTich, dienTichCu]);
@@ -77,8 +78,8 @@ export default function OldDataForm({
                 name="gioiTinhCu"
                 label="Giới tính chủ cũ"
                 options={[
-                  { label: "Nam", value: "1" },
-                  { label: "Nữ", value: "0" },
+                  { label: "Ông", value: "1" },
+                  { label: "Bà", value: "0" },
                 ]}
               />
             </Grid2>
@@ -184,8 +185,8 @@ export default function OldDataForm({
                 name="gioiTinhCu2"
                 label="Giới tính"
                 options={[
-                  { label: "Nam", value: "1" },
-                  { label: "Nữ", value: "0" },
+                  { label: "Ông", value: "1" },
+                  { label: "Bà", value: "0" },
                 ]}
               />
             </Grid2>

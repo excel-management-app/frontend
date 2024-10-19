@@ -94,8 +94,8 @@ export default function CurrentDataForm({
               name="gioiTinh"
               label="Giới tính"
               options={[
-                { label: "Nam", value: "1" },
-                { label: "Nữ", value: "0" },
+                { label: "Ông", value: "1" },
+                { label: "Bà", value: "0" },
               ]}
             />
           </Grid2>
@@ -189,8 +189,8 @@ export default function CurrentDataForm({
                 name="gioiTinh2"
                 label="Giới tính"
                 options={[
-                  { label: "Nam", value: "1" },
-                  { label: "Nữ", value: "0" },
+                  { label: "Ông", value: "1" },
+                  { label: "Bà", value: "0" },
                 ]}
               />
             </Grid2>

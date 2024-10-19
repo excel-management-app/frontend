@@ -28,6 +28,7 @@ export function ExportToWordButton({
   const { classes } = useStyles();
 
   var arrRowIndex = listRowIndex.split(",");
+
   const exportToWord = async (): Promise<void> => {
     try {
       await axiosClient.get(
@@ -38,6 +39,14 @@ export function ExportToWordButton({
       toast.success("Xuất file thành công");
     } catch (error) {
       console.error("Error during file download:", error);
+      if (error instanceof Error && 'status' in error && error.status === 404) {
+        toast.error("Không có dữ liệu để xuất");
+        return;
+      }
+      if (error instanceof Error && 'status' in error && error.status === 400) {
+        toast.error(" Không có file template word. Hãy tải lên file word");
+        return;
+      }
       toast.error(" Không có file template word. Hãy tải lên file word");
     }
   };
