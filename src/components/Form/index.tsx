@@ -27,6 +27,7 @@ import OldDataForm from "./OldDataForm/OldDataForm";
 import { IFormData } from "./types";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import { DATE_FIELD_NAMES } from "./consts";
+import { useSheetContext } from "../ExcelViewer/contexts/SheetContext";
 
 const useStyles = makeStyles()(() => ({
   exitButton: {
@@ -68,6 +69,8 @@ export default function MyForm({
   listRowIndex,
 }: Props) {
   const { classes } = useStyles();
+  const { rows } = useSheetContext();
+
   const [value, setValue] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
 
@@ -92,6 +95,12 @@ export default function MyForm({
   React.useLayoutEffect(() => {
     if (selectedRowData) {
       reset(convertToFormData({ data: selectedRowData }));
+      const currentIndex = rows.findIndex(
+        (row) =>
+          row.soHieuToBanDo === selectedRowData.soHieuToBanDo &&
+          row.soThuTuThua === selectedRowData.soThuTuThua
+      );
+      setCurrentListRowIndex(String(currentIndex));
     } else {
       reset(emptyFormData());
     }
@@ -149,9 +158,8 @@ export default function MyForm({
           newRow,
         });
         toast.success("Thêm dòng thành công");
-        if (res.rowIndex) {
-          setCurrentListRowIndex(String(res.rowIndex));
-        }
+
+        setCurrentListRowIndex(String(res.rowIndex));
       }
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -251,7 +259,7 @@ export default function MyForm({
                 Lưu dữ liệu
               </Button>
 
-              {/* {currentListRowIndex && ( */}
+              {currentListRowIndex && (
                 <ExportToWordButton
                   disabled={loading}
                   fileId={fileId}
@@ -259,7 +267,7 @@ export default function MyForm({
                   listRowIndex={currentListRowIndex}
                   rowIndex={Number(currentListRowIndex)}
                 />
-              {/* )} */}
+              )}
             </Box>
             <Button
               disabled={loading}

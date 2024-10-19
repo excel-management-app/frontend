@@ -266,7 +266,7 @@ export default function CurrentDataForm({
         </Grid2>
         {/* Thông tin thửa đất */}
         <Grid2 size={12} container alignItems="center">
-          <Grid2 size={1}>
+          <Grid2 size={2}>
             <Typography height={25} variant="body1" fontWeight={600}>
               Thông tin thửa đất
             </Typography>
