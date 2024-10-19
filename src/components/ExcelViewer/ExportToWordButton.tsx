@@ -39,12 +39,16 @@ export function ExportToWordButton({
       toast.success("Xuất file thành công");
     } catch (error) {
       console.error("Error during file download:", error);
-      if (error instanceof Error && 'status' in error && error.status === 404) {
-        toast.error("Không có dữ liệu để xuất");
+      if (error instanceof Error && 'status' in error && error.status === 400) {
+        toast.error(" Không có file template word. Hãy tải lên file word");
         return;
       }
       if (error instanceof Error && 'status' in error && error.status === 400) {
-        toast.error(" Không có file template word. Hãy tải lên file word");
+        toast.error("Không có dữ liệu để xuất");
+        return;
+      }
+      if (error instanceof Error && 'status' in error && error.status === 500) {
+        toast.error("Lỗi form word mẫu");
         return;
       }
       toast.error(" Không có file template word. Hãy tải lên file word");
