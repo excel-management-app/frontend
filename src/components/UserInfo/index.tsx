@@ -74,7 +74,7 @@ export const UserInfo = () => {
     if (password) {
       newData["password"] = password;
     }
-    console.log(newData);
+
     try {
       const res = await axiosClient.put("/accounts", {
         data: newData,

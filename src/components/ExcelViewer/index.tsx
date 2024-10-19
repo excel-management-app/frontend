@@ -84,7 +84,7 @@ export const ExcelViewer = () => {
     if (searchKey) {
       const searchResult =
         sheetRows.find(
-          (row) => searchKey === `${row.soHieuToBanDo}_${row.soThuTuThua}`,
+          (row) => searchKey === `${row.soHieuToBanDo}_${row.soThuTuThua}`
         ) || null;
       return searchResult;
     }
@@ -103,7 +103,7 @@ export const ExcelViewer = () => {
     return sheetRows.findIndex(
       (row) =>
         row.soHieuToBanDo === selectedRowData?.soHieuToBanDo &&
-        row.soThuTuThua === selectedRowData?.soThuTuThua,
+        row.soThuTuThua === selectedRowData?.soThuTuThua
     );
   }, [selectedRowData, sheetRows]);
 
@@ -114,10 +114,9 @@ export const ExcelViewer = () => {
         : rowIndex >= 0
           ? String(rowIndex)
           : "",
-    [rowIndex, sheetRows.length, rowSelectionModel],
-
+    [rowIndex, sheetRows.length, rowSelectionModel]
   );
-  console.log('listRowIndex:====', listRowIndex);
+
   const clearSelection = () => {
     setRowSelectionModel([]);
   };
