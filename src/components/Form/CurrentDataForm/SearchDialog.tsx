@@ -230,6 +230,7 @@ export const SearchDialog = ({ watch, setFormValue }: Props) => {
 
               <Grid2 size={8} maxHeight={"50vh"}>
                 <DataGrid
+                  disableMultipleRowSelection
                   checkboxSelection
                   onRowSelectionModelChange={(newRowSelectionModel) => {
                     setRowSelectionModel(newRowSelectionModel);
