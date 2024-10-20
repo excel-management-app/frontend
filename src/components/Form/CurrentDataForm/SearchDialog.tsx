@@ -110,8 +110,7 @@ export const SearchDialog = ({ watch, setFormValue }: Props) => {
       const formData = rows[rowSelectionModel[0] as number];
       const dataObj = PERSONAL_INFO_FIELDS.reduce(
         (acc, field) => {
-          const currentValue = watch(field);
-          acc[field] = currentValue ? currentValue : formData[field];
+          acc[field] = formData[field];
           return acc;
         },
         {} as Record<string, any>
@@ -122,6 +121,15 @@ export const SearchDialog = ({ watch, setFormValue }: Props) => {
       preservedFields.forEach((field) => {
         dataObj[field] = watch(field);
       });
+
+      // Keep values of fields not in PERSONAL_INFO_FIELDS
+      const currentFormValues = watch();
+      Object.keys(currentFormValues).forEach((key) => {
+        if (!PERSONAL_INFO_FIELDS.includes(key)) {
+          dataObj[key] = currentFormValues[key];
+        }
+      });
+
       const convertedData = convertToFormData({
         data: {
           ...dataObj,
