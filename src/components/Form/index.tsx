@@ -53,9 +53,7 @@ interface Props {
   sheetName: string;
   refetch: () => void;
   selectedRowData: SheetRowData | null;
-  rowIndex?: number;
   setSearchKey: (key: string) => void;
-  listRowIndex: string;
   listTamY: string;
 }
 
@@ -65,9 +63,7 @@ export default function MyForm({
   sheetName,
   selectedRowData,
   refetch,
-  rowIndex,
   setSearchKey,
-  listRowIndex,
   listTamY,
 }: Props) {
   const { classes } = useStyles();
@@ -141,7 +137,7 @@ export default function MyForm({
     );
 
     try {
-      if (selectedRowData && rowIndex) {
+      if (selectedRowData) {
         if (oldKey !== newKey) {
           toast.error(
             "Bạn không thể thay đổi số hiệu tờ bản đồ và số thứ tự thửa"
@@ -151,7 +147,6 @@ export default function MyForm({
         await editRow({
           fileId,
           sheetName,
-          rowIndex,
           newRow,
         });
 

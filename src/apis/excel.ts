@@ -31,26 +31,22 @@ export const addRowToSheet = async ({
     `/files/${fileId}/sheets/${sheetName}/rows`,
     {
       data: newRow,
-    },
+    }
   );
 
   return response;
 };
-
-interface EditRowProps extends AddRowProps {
-  rowIndex: number;
-}
+type UpdateRowProps = AddRowProps;
 export const editRow = async ({
   fileId,
   sheetName,
-  rowIndex,
   newRow,
-}: EditRowProps): Promise<FileData> => {
+}: UpdateRowProps): Promise<FileData> => {
   const response = await axiosClient.put(
-    `/files/${fileId}/sheets/${sheetName}/rows/${rowIndex}`,
+    `/files/${fileId}/sheets/${sheetName}/rows`,
     {
       data: newRow,
-    },
+    }
   );
   return response.data;
 };
@@ -79,7 +75,7 @@ export const countRowsByDeviceId = async ({
   sheetName: string;
 }): Promise<number> => {
   const response = await axiosClient.get(
-    `/files/${fileId}/sheets/${sheetName}/count`,
+    `/files/${fileId}/sheets/${sheetName}/count`
   );
   return response.data;
 };

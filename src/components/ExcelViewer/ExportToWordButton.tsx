@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { makeStyles } from "tss-react/mui";
 import axiosClient from "../../apis/axiosClient";
 import { API_URL } from "../../utils/consts";
+import { AxiosError } from "axios";
 
 const useStyles = makeStyles()(() => ({
   button: {
@@ -34,20 +35,11 @@ export function ExportToWordButton({
       window.location.href = `${API_URL}/files/downloadWord/${listTamY}`;
       toast.success("Xuất file thành công");
     } catch (error) {
-      console.error("Error during file download:", error);
-      if (error instanceof Error && "status" in error && error.status === 400) {
-        toast.error(" Không có file template word. Hãy tải lên file word");
-        return;
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data);
+      } else {
+        toast.error("Không có file template word. Hãy tải lên file word");
       }
-      if (error instanceof Error && "status" in error && error.status === 400) {
-        toast.error("Không có dữ liệu để xuất");
-        return;
-      }
-      if (error instanceof Error && "status" in error && error.status === 500) {
-        toast.error("Lỗi form word mẫu");
-        return;
-      }
-      toast.error(" Không có file template word. Hãy tải lên file word");
     }
   };
 

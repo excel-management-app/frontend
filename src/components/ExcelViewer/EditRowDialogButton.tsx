@@ -31,9 +31,8 @@ interface Props {
   fileId: string;
   sheetName: string;
   selectedRowData: SheetRowData | null;
-  rowIndex: number;
-  listRowIndex: string;
   title?: string;
+  listTamY: string;
   clearSelection: () => void;
   refetch: () => void;
   setSearchKey: (key: string) => void;
@@ -43,9 +42,8 @@ export const EditRowDialogButton = ({
   fileId,
   sheetName,
   selectedRowData,
-  rowIndex,
-  listRowIndex,
   title = "Đơn đăng ký",
+  listTamY,
   clearSelection,
   setSearchKey,
   refetch,
@@ -77,9 +75,8 @@ export const EditRowDialogButton = ({
           sheetName={sheetName}
           refetch={refetch}
           selectedRowData={selectedRowData}
-          rowIndex={rowIndex}
           setSearchKey={setSearchKey}
-          listRowIndex={listRowIndex}
+          listTamY={listTamY}
         />
       )}
     </>

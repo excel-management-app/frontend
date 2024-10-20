@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { SheetRowData } from "../../utils/types";
 export const fieldNames = [
+  "tamX",
   "hoTen",
   "namSinh",
   "diaChiNha",

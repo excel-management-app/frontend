@@ -109,24 +109,6 @@ export const ExcelViewer = () => {
     }
   }, [searchKey, selectedRowData]);
 
-  const rowIndex = useMemo(() => {
-    return sheetRows.findIndex(
-      (row) =>
-        row.soHieuToBanDo === selectedRowData?.soHieuToBanDo &&
-        row.soThuTuThua === selectedRowData?.soThuTuThua
-    );
-  }, [selectedRowData, sheetRows]);
-
-  const listRowIndex = useMemo(
-    () =>
-      rowSelectionModel.length
-        ? rowSelectionModel.join(",")
-        : rowIndex >= 0
-          ? String(rowIndex)
-          : "",
-    [rowIndex, sheetRows.length, rowSelectionModel]
-  );
-
   const clearSelection = () => {
     setRowSelectionModel([]);
   };
@@ -190,21 +172,20 @@ export const ExcelViewer = () => {
                 <EditRowDialogButton
                   fileId={fileId}
                   sheetName={selectedSheetName}
-                  rowIndex={rowIndex}
                   refetch={refetch}
                   selectedRowData={selectedRowData}
                   setSearchKey={setSearchKey}
-                  listRowIndex={listRowIndex}
                   clearSelection={clearSelection}
                   title={
                     rowSelectionModel.length
                       ? "Chỉnh sửa đơn đăng ký"
                       : "Thêm mới đơn đăng ký"
                   }
+                  listTamY={listTamY}
                 />
               )}
 
-            {listRowIndex.split(",").length > 1 && (
+            {rowSelectionModel.length > 1 && (
               <ExportToWordButton
                 disabled={!selectedRowData}
                 fileId={fileId}
