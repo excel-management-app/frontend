@@ -56,6 +56,7 @@ interface Props {
   rowIndex?: number;
   setSearchKey: (key: string) => void;
   listRowIndex: string;
+  listTamY: string;
 }
 
 export default function MyForm({
@@ -67,6 +68,7 @@ export default function MyForm({
   rowIndex,
   setSearchKey,
   listRowIndex,
+  listTamY,
 }: Props) {
   const { classes } = useStyles();
   const { rows } = useSheetContext();
@@ -74,8 +76,7 @@ export default function MyForm({
   const [value, setValue] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
 
-  const [currentListRowIndex, setCurrentListRowIndex] =
-    React.useState(listRowIndex);
+  const [currentListTamY, setCurrentListTamY] = React.useState(listTamY);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -95,12 +96,16 @@ export default function MyForm({
   React.useLayoutEffect(() => {
     if (selectedRowData) {
       reset(convertToFormData({ data: selectedRowData }));
-      const currentIndex = rows.findIndex(
+      const currentRow = rows.filter(
         (row) =>
           row.soHieuToBanDo === selectedRowData.soHieuToBanDo &&
           row.soThuTuThua === selectedRowData.soThuTuThua
       );
-      setCurrentListRowIndex(String(currentIndex));
+      setCurrentListTamY(
+        currentRow
+          .map((row) => `${row.soHieuToBanDo}_${row.soThuTuThua}`)
+          .join(",")
+      );
     } else {
       reset(emptyFormData());
     }
@@ -159,7 +164,7 @@ export default function MyForm({
         });
         toast.success("Thêm dòng thành công");
 
-        setCurrentListRowIndex(String(res.rowIndex));
+        setCurrentListTamY(res.tamY);
       }
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -259,13 +264,12 @@ export default function MyForm({
                 Lưu dữ liệu
               </Button>
 
-              {currentListRowIndex && (
+              {currentListTamY && (
                 <ExportToWordButton
                   disabled={loading}
                   fileId={fileId}
                   sheetName={sheetName}
-                  listRowIndex={currentListRowIndex}
-                  rowIndex={Number(currentListRowIndex)}
+                  listTamY={currentListTamY}
                 />
               )}
             </Box>

@@ -13,29 +13,25 @@ const useStyles = makeStyles()(() => ({
 interface Props {
   fileId: string;
   sheetName: string;
-  listRowIndex: string;
-  rowIndex?: number;
   disabled: boolean;
+  listTamY: string;
 }
 
 export function ExportToWordButton({
   fileId,
   sheetName,
-  listRowIndex,
   disabled,
-  rowIndex,
+  listTamY,
 }: Props) {
   const { classes } = useStyles();
 
-  var arrRowIndex = listRowIndex.split(",");
+  const isSingleRow = listTamY.split(",").length === 1;
 
   const exportToWord = async (): Promise<void> => {
     try {
-      await axiosClient.get(
-        `/words/${fileId}/sheets/${sheetName}/rows/${rowIndex ? rowIndex : arrRowIndex[0]}`,
-      );
+      await axiosClient.get(`/words/${fileId}/sheets/${sheetName}/${listTamY}`);
 
-      window.location.href = `${API_URL}/files/${rowIndex}/downloadWord`;
+      window.location.href = `${API_URL}/files/downloadWord/${listTamY}`;
       toast.success("Xuất file thành công");
     } catch (error) {
       console.error("Error during file download:", error);
@@ -57,8 +53,8 @@ export function ExportToWordButton({
 
   const exportManyToWord = async (): Promise<void> => {
     try {
-      await axiosClient.post(`/words/${fileId}/sheets/${sheetName}/rows/`, {
-        data: listRowIndex,
+      await axiosClient.post(`/words/${fileId}/sheets/${sheetName}`, {
+        data: listTamY,
       });
 
       const url = `${import.meta.env.VITE_API_URL}/files/${fileId}/downloadManyWord`;
@@ -78,7 +74,7 @@ export function ExportToWordButton({
         variant="contained"
         color="primary"
         startIcon={<FileDownloadOutlinedIcon />}
-        onClick={arrRowIndex.length > 1 ? exportManyToWord : exportToWord}
+        onClick={isSingleRow ? exportToWord : exportManyToWord}
         disabled={disabled}
       >
         Xuất đơn

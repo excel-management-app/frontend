@@ -84,7 +84,7 @@ export const ExcelViewer = () => {
     if (searchKey) {
       const searchResult =
         sheetRows.find(
-          (row) => searchKey === `${row.soHieuToBanDo}_${row.soThuTuThua}`,
+          (row) => searchKey === `${row.soHieuToBanDo}_${row.soThuTuThua}`
         ) || null;
       return searchResult;
     }
@@ -92,6 +92,16 @@ export const ExcelViewer = () => {
       ? sheetRows[rowSelectionModel[0] as number]
       : null;
   }, [rowSelectionModel, sheetRows.length, searchKey, loading]);
+
+  // return tamY = soHieuToBanDo_soThuTuThua from rowSelectionModel
+  const listTamY = useMemo(() => {
+    return rowSelectionModel
+      .map((index) => {
+        const row = sheetRows[index as number];
+        return `${row.soHieuToBanDo}_${row.soThuTuThua}`;
+      })
+      .join(",");
+  }, [rowSelectionModel, sheetRows]);
 
   useEffect(() => {
     if (searchKey && !selectedRowData) {
@@ -103,7 +113,7 @@ export const ExcelViewer = () => {
     return sheetRows.findIndex(
       (row) =>
         row.soHieuToBanDo === selectedRowData?.soHieuToBanDo &&
-        row.soThuTuThua === selectedRowData?.soThuTuThua,
+        row.soThuTuThua === selectedRowData?.soThuTuThua
     );
   }, [selectedRowData, sheetRows]);
 
@@ -114,7 +124,7 @@ export const ExcelViewer = () => {
         : rowIndex >= 0
           ? String(rowIndex)
           : "",
-    [rowIndex, sheetRows.length, rowSelectionModel],
+    [rowIndex, sheetRows.length, rowSelectionModel]
   );
 
   const clearSelection = () => {
@@ -199,7 +209,7 @@ export const ExcelViewer = () => {
                 disabled={!selectedRowData}
                 fileId={fileId}
                 sheetName={selectedSheetName}
-                listRowIndex={listRowIndex}
+                listTamY={listTamY}
               />
             )}
           </Box>
