@@ -76,7 +76,7 @@ export const TemplateUploadButton = () => {
         />
       </LoadingButton>
       <LoadingButton
-        className={classes.button2}
+        className={classes.button1}
         loadingPosition="start"
         loading={isPending}
         component="label"
