@@ -23,7 +23,7 @@ export function FileExportButton({ fileId, sheetName }: Props) {
   const [loading, setLoading] = useState(false);
   const downloadExcelFile = async (
     fileId: string,
-    sheetName: string
+    sheetName: string,
   ): Promise<void> => {
     try {
       setLoading(true);

@@ -41,7 +41,7 @@ export const useDownLoadFile = () => {
         setLoading(false);
       }
     },
-    [setLoading]
+    [setLoading],
   );
   return { loading, handleDownload };
 };

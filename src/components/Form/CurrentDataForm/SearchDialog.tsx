@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import { DataGrid, GridRowSelectionModel } from "@mui/x-data-grid";
 import { useCallback, useState } from "react";
-import { UseFormReset, UseFormSetValue, UseFormWatch } from "react-hook-form";
+import { UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 import { makeStyles } from "tss-react/mui";
 import { SheetRowData } from "../../../utils/types";
@@ -47,10 +47,9 @@ const useStyles = makeStyles()(() => ({
 interface Props {
   watch: UseFormWatch<IFormData>;
   setFormValue: UseFormSetValue<IFormData>;
-  reset: UseFormReset<IFormData>;
 }
 
-export const SearchDialog = ({ watch, setFormValue, reset }: Props) => {
+export const SearchDialog = ({ watch, setFormValue }: Props) => {
   const { classes } = useStyles();
   const { rows } = useSheetContext();
 
@@ -109,12 +108,13 @@ export const SearchDialog = ({ watch, setFormValue, reset }: Props) => {
         return;
       }
       const formData = rows[rowSelectionModel[0] as number];
+
       const dataObj = PERSONAL_INFO_FIELDS.reduce(
         (acc, field) => {
           acc[field] = formData[field];
           return acc;
         },
-        {} as Record<string, any>
+        {} as Record<string, any>,
       );
 
       // Preserve specific fields from the form
@@ -137,7 +137,11 @@ export const SearchDialog = ({ watch, setFormValue, reset }: Props) => {
         },
       });
 
-      reset(convertedData);
+      Object.entries(convertedData).forEach(([key, value]) => {
+        setFormValue(key, value, {
+          shouldDirty: true,
+        });
+      });
       onClose();
     } catch (error) {
       toast.error("Có lỗi xảy ra, xin vui lòng thử lại");

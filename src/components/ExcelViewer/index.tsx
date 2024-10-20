@@ -84,7 +84,7 @@ export const ExcelViewer = () => {
     if (searchKey) {
       const searchResult =
         sheetRows.find(
-          (row) => searchKey === `${row.soHieuToBanDo}_${row.soThuTuThua}`
+          (row) => searchKey === `${row.soHieuToBanDo}_${row.soThuTuThua}`,
         ) || null;
       return searchResult;
     }
