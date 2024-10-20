@@ -110,7 +110,8 @@ export const SearchDialog = ({ watch, setFormValue }: Props) => {
       const formData = rows[rowSelectionModel[0] as number];
       const dataObj = PERSONAL_INFO_FIELDS.reduce(
         (acc, field) => {
-          acc[field] = formData[field];
+          const currentValue = watch(field);
+          acc[field] = currentValue ? currentValue : formData[field];
           return acc;
         },
         {} as Record<string, any>
