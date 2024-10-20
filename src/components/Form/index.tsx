@@ -225,6 +225,7 @@ export default function MyForm({
               resetField={resetField}
               setSearchKey={setSearchKey}
               reset={reset}
+              setFormValue={setFormValue}
             />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>

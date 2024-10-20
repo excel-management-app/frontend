@@ -15,6 +15,7 @@ import {
   UseFormRegister,
   UseFormReset,
   UseFormResetField,
+  UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
 import { GIAY_TO } from "../../../utils/formFields";
@@ -33,6 +34,7 @@ export default function CurrentDataForm({
   resetField,
   setSearchKey,
   reset,
+  setFormValue,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<IFormData, any>;
@@ -41,6 +43,7 @@ export default function CurrentDataForm({
   resetField: UseFormResetField<IFormData>;
   setSearchKey: (key: string) => void;
   reset: UseFormReset<IFormData>;
+  setFormValue: UseFormSetValue<IFormData>;
 }) {
   const [soHieuToBanDo, soThuTuThua] = watch(["soHieuToBanDo", "soThuTuThua"]);
 
@@ -272,7 +275,11 @@ export default function CurrentDataForm({
             </Typography>
           </Grid2>
           <Grid2 size={2}>
-            <SearchDialog reset={reset} />
+            <SearchDialog
+              reset={reset}
+              watch={watch}
+              setFormValue={setFormValue}
+            />
           </Grid2>
         </Grid2>
         <Grid2 container size={12} spacing={2}>
@@ -336,11 +343,6 @@ export default function CurrentDataForm({
                       <Checkbox
                         {...field}
                         defaultChecked={field.value === "Cấp mới"}
-                        // onChange={(event) =>
-                        //   field.onChange(
-                        //     event.target.checked ? "Cấp mới" : "Cấp đổi",
-                        //   )
-                        // }
                       />
                     }
                     label="Cấp mới/ Cấp đổi"

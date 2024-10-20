@@ -14,15 +14,17 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { SheetRowData } from "../../../utils/types";
 import { useSheetContext } from "../../ExcelViewer/contexts/SheetContext";
 import { makeStyles } from "tss-react/mui";
 import { DataGrid, GridRowSelectionModel } from "@mui/x-data-grid";
 import { toast } from "react-toastify";
-import { UseFormReset } from "react-hook-form";
+import { UseFormReset, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { IFormData } from "../types";
 import { convertToFormData } from "../functions";
+import { HEADERS_NAME, PERSONAL_INFO_FIELDS } from "./consts";
+import { removeVietnameseAccents } from "./functions";
 
 const useStyles = makeStyles()(() => ({
   exitButton: {
@@ -42,13 +44,13 @@ const useStyles = makeStyles()(() => ({
   },
 }));
 
-const HEADERS_NAME = ["hoTen", "namSinh", "loaiGiayTo", "soGiayTo", "ngayCap"];
-
 interface Props {
   reset: UseFormReset<IFormData>;
+  watch: UseFormWatch<IFormData>;
+  setFormValue: UseFormSetValue<IFormData>;
 }
 
-export const SearchDialog = ({ reset }: Props) => {
+export const SearchDialog = ({ reset, watch, setFormValue }: Props) => {
   const { classes } = useStyles();
   const { rows } = useSheetContext();
 
@@ -68,32 +70,36 @@ export const SearchDialog = ({ reset }: Props) => {
       hoTen: "",
       namSinh: "",
     });
+    setRowSelectionModel([]);
+    setRowsData([]);
   };
 
-  const filterRows = () => {
-    const hoten = value.hoTen.toLowerCase();
-    const namSinh = value.namSinh;
+  const filterRows = useCallback(() => {
+    const hoten = removeVietnameseAccents(value.hoTen.trim().toLowerCase());
+    const namSinh = value.namSinh.trim();
+
     if (!hoten && !namSinh) {
       toast.error("Vui lòng nhập từ khóa để tìm kiếm");
       return;
     }
+
     const filteredRows = rows.filter((row) => {
-      if (namSinh) {
-        return (
-          String(row.hoTen).toLowerCase().includes(hoten) &&
-          String(row.namSinh) === namSinh
-        );
-      } else {
-        return String(row.hoTen).toLowerCase().includes(hoten);
-      }
+      const rowHoTen = removeVietnameseAccents(String(row.hoTen).toLowerCase());
+      const rowNamSinh = String(row.namSinh);
+
+      const matchesHoTen = hoten ? rowHoTen.includes(hoten) : true;
+      const matchesNamSinh = namSinh ? rowNamSinh === namSinh : true;
+
+      return matchesHoTen && matchesNamSinh;
     });
 
     if (!filteredRows.length) {
-      toast.error("Không tìm được kết quả");
+      toast.error("Không tìm được kết quả");
     }
 
     setRowsData(filteredRows);
-  };
+  }, [rows, value.hoTen, value.namSinh, setRowsData, setRowSelectionModel]);
+
   const getRowId = (row: SheetRowData) => rows.indexOf(row);
 
   const handleFillForm = () => {
@@ -103,47 +109,28 @@ export const SearchDialog = ({ reset }: Props) => {
         return;
       }
       const formData = rows[rowSelectionModel[0] as number];
-      const dataObj = {
-        "hoTen": formData["hoTen"],
-        "namSinh": formData["namSinh"],
-        "diaChiChu": formData["diaChiChu"],
-        "gioiTinh": formData["gioiTinh"],
-        "loaiGiayTo": formData["loaiGiayTo"],
-        "soGiayTo": formData["soGiayTo"],
-        "ngayCap": formData["ngayCap"],
-        "noiCap": formData["noiCap"],
-        "hoTen2": formData["hoTen2"],
-        "namSinh2": formData["namSinh2"],
-        "diaChiChu2": formData["diaChiChu2"],
-        "gioiTinh2": formData["gioiTinh2"],
-        "loaiGiayTo2": formData["loaiGiayTo2"],
-        "soGiayTo2": formData["soGiayTo2"],
-        "ngayCap2": formData["ngayCap2"],
-        "noiCap2": formData["noiCap2"],
-        "hoTenCu": formData["hoTenCu"],
-        "namSinhCu": formData["namSinhCu"],
-        "diaChiChuCu": formData["diaChiChuCu"],
-        "gioiTinhCu": formData["gioiTinhCu"],
-        "loaiGiayToCu": formData["loaiGiayToCu"],
-        "soGiayToCu": formData["soGiayToCu"],
-        "ngayCapCu": formData["ngayCapCu"],
-        "noiCapCu": formData["noiCapCu"],
-        "hoTenCu2": formData["hoTenCu2"],
-        "namSinhCu2": formData["namSinhCu2"],
-        "diaChiChuCu2": formData["diaChiChuCu2"],
-        "gioiTinhCu2": formData["gioiTinhCu2"],
-        "loaiGiayToCu2": formData["loaiGiayToCu2"],
-        "soGiayToCu2": formData["soGiayToCu2"],
-        "ngayCapCu2": formData["ngayCapCu2"],
-        "noiCapCu2": formData["noiCapCu2"]
-      };
-      reset(
-        convertToFormData({
-          data: {
-            ...dataObj,
-          },
-        }),
+      const dataObj = PERSONAL_INFO_FIELDS.reduce(
+        (acc, field) => {
+          acc[field] = formData[field];
+          return acc;
+        },
+        {} as Record<string, any>
       );
+
+      // Preserve specific fields from the form
+      const preservedFields = ["soHieuToBanDo", "soThuTuThua"];
+      preservedFields.forEach((field) => {
+        dataObj[field] = watch(field);
+      });
+      const convertedData = convertToFormData({
+        data: {
+          ...dataObj,
+        },
+      });
+
+      Object.entries(convertedData).forEach(([key, value]) => {
+        setFormValue(key, value);
+      });
       onClose();
     } catch (error) {
       toast.error("Có lỗi xảy ra, xin vui lòng thử lại");
@@ -185,7 +172,7 @@ export const SearchDialog = ({ reset }: Props) => {
           >
             <Grid2 container size={12}>
               <Grid2 size={4}>
-                <FormControl fullWidth margin="normal">
+                <FormControl fullWidth margin="normal" autoFocus>
                   <Grid2 size={10} alignItems="flex-start">
                     <TextField
                       fullWidth
@@ -196,6 +183,7 @@ export const SearchDialog = ({ reset }: Props) => {
                       onChange={(e) =>
                         setValue({ ...value, hoTen: e.target.value })
                       }
+                      autoFocus
                     />
                   </Grid2>
                   <Grid2 size={4}>
