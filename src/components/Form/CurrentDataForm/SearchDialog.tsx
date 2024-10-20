@@ -103,13 +103,44 @@ export const SearchDialog = ({ reset }: Props) => {
         return;
       }
       const formData = rows[rowSelectionModel[0] as number];
-
+      const dataObj = {
+        "hoTen": formData["hoTen"],
+        "namSinh": formData["namSinh"],
+        "diaChiChu": formData["diaChiChu"],
+        "gioiTinh": formData["gioiTinh"],
+        "loaiGiayTo": formData["loaiGiayTo"],
+        "soGiayTo": formData["soGiayTo"],
+        "ngayCap": formData["ngayCap"],
+        "noiCap": formData["noiCap"],
+        "hoTen2": formData["hoTen2"],
+        "namSinh2": formData["namSinh2"],
+        "diaChiChu2": formData["diaChiChu2"],
+        "gioiTinh2": formData["gioiTinh2"],
+        "loaiGiayTo2": formData["loaiGiayTo2"],
+        "soGiayTo2": formData["soGiayTo2"],
+        "ngayCap2": formData["ngayCap2"],
+        "noiCap2": formData["noiCap2"],
+        "hoTenCu": formData["hoTenCu"],
+        "namSinhCu": formData["namSinhCu"],
+        "diaChiChuCu": formData["diaChiChuCu"],
+        "gioiTinhCu": formData["gioiTinhCu"],
+        "loaiGiayToCu": formData["loaiGiayToCu"],
+        "soGiayToCu": formData["soGiayToCu"],
+        "ngayCapCu": formData["ngayCapCu"],
+        "noiCapCu": formData["noiCapCu"],
+        "hoTenCu2": formData["hoTenCu2"],
+        "namSinhCu2": formData["namSinhCu2"],
+        "diaChiChuCu2": formData["diaChiChuCu2"],
+        "gioiTinhCu2": formData["gioiTinhCu2"],
+        "loaiGiayToCu2": formData["loaiGiayToCu2"],
+        "soGiayToCu2": formData["soGiayToCu2"],
+        "ngayCapCu2": formData["ngayCapCu2"],
+        "noiCapCu2": formData["noiCapCu2"]
+      };
       reset(
         convertToFormData({
           data: {
-            ...formData,
-            soHieuToBanDo: "",
-            soThuTuThua: "",
+            ...dataObj,
           },
         }),
       );
