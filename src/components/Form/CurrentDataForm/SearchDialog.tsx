@@ -14,15 +14,15 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { DataGrid, GridRowSelectionModel } from "@mui/x-data-grid";
 import { useCallback, useState } from "react";
+import { UseFormSetValue, UseFormWatch } from "react-hook-form";
+import { toast } from "react-toastify";
+import { makeStyles } from "tss-react/mui";
 import { SheetRowData } from "../../../utils/types";
 import { useSheetContext } from "../../ExcelViewer/contexts/SheetContext";
-import { makeStyles } from "tss-react/mui";
-import { DataGrid, GridRowSelectionModel } from "@mui/x-data-grid";
-import { toast } from "react-toastify";
-import { UseFormReset, UseFormSetValue, UseFormWatch } from "react-hook-form";
-import { IFormData } from "../types";
 import { convertToFormData } from "../functions";
+import { IFormData } from "../types";
 import { HEADERS_NAME, PERSONAL_INFO_FIELDS } from "./consts";
 import { removeVietnameseAccents } from "./functions";
 
@@ -45,12 +45,11 @@ const useStyles = makeStyles()(() => ({
 }));
 
 interface Props {
-  reset: UseFormReset<IFormData>;
   watch: UseFormWatch<IFormData>;
   setFormValue: UseFormSetValue<IFormData>;
 }
 
-export const SearchDialog = ({ reset, watch, setFormValue }: Props) => {
+export const SearchDialog = ({ watch, setFormValue }: Props) => {
   const { classes } = useStyles();
   const { rows } = useSheetContext();
 

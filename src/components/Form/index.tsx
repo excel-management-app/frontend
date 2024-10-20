@@ -1,4 +1,5 @@
 import CloseIcon from "@mui/icons-material/Close";
+import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import {
   Button,
   colors,
@@ -19,15 +20,14 @@ import { toast } from "react-toastify";
 import { makeStyles } from "tss-react/mui";
 import { addRowToSheet, editRow } from "../../apis/excel";
 import { SheetRowData } from "../../utils/types";
+import { useSheetContext } from "../ExcelViewer/contexts/SheetContext";
 import { ExportToWordButton } from "../ExcelViewer/ExportToWordButton";
 import { CertificateForm } from "./CertificateFrom";
+import { DATE_FIELD_NAMES } from "./consts";
 import CurrentDataForm from "./CurrentDataForm/CurrentDataForm";
 import { convertToFormData, emptyFormData, formatDate } from "./functions";
 import OldDataForm from "./OldDataForm/OldDataForm";
 import { IFormData } from "./types";
-import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
-import { DATE_FIELD_NAMES } from "./consts";
-import { useSheetContext } from "../ExcelViewer/contexts/SheetContext";
 
 const useStyles = makeStyles()(() => ({
   exitButton: {
@@ -224,7 +224,6 @@ export default function MyForm({
               watch={watch}
               resetField={resetField}
               setSearchKey={setSearchKey}
-              reset={reset}
               setFormValue={setFormValue}
             />
           </CustomTabPanel>

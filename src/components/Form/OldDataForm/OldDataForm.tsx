@@ -36,7 +36,7 @@ export default function OldDataForm({
   const [dienTich, dienTichCu] = watch(["dienTich", "dienTichCu"]);
   const dienTichTangThem = useMemo(() => {
     if (dienTich && dienTichCu) {
-      const value = Number(dienTich) - Number(dienTichCu)
+      const value = Number(dienTich) - Number(dienTichCu);
       return parseFloat(value.toFixed(1));
     }
     return 0;
