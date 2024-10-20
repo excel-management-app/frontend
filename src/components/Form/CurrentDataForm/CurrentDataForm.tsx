@@ -13,6 +13,7 @@ import {
   Control,
   Controller,
   UseFormRegister,
+  UseFormReset,
   UseFormResetField,
   UseFormSetValue,
   UseFormWatch,
@@ -33,6 +34,7 @@ export default function CurrentDataForm({
   resetField,
   setSearchKey,
   setFormValue,
+  reset,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<IFormData, any>;
@@ -41,6 +43,7 @@ export default function CurrentDataForm({
   resetField: UseFormResetField<IFormData>;
   setSearchKey: (key: string) => void;
   setFormValue: UseFormSetValue<IFormData>;
+  reset: UseFormReset<IFormData>;
 }) {
   const [soHieuToBanDo, soThuTuThua] = watch(["soHieuToBanDo", "soThuTuThua"]);
 
@@ -272,7 +275,11 @@ export default function CurrentDataForm({
             </Typography>
           </Grid2>
           <Grid2 size={2}>
-            <SearchDialog watch={watch} setFormValue={setFormValue} />
+            <SearchDialog
+              watch={watch}
+              setFormValue={setFormValue}
+              reset={reset}
+            />
           </Grid2>
         </Grid2>
         <Grid2 container size={12} spacing={2}>

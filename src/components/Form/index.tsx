@@ -108,10 +108,10 @@ export default function MyForm({
   }, [reset, selectedRowData]);
 
   const onSubmit = async (data: IFormData) => {
-    if (Object.keys(dirtyFields).length === 0) {
-      toast.info("Bạn chưa thay đổi gì cả");
-      return;
-    }
+    // if (Object.keys(dirtyFields).length === 0) {
+    //   toast.info("Bạn chưa thay đổi gì cả");
+    //   return;
+    // }
     setLoading(true);
     const oldKey = `${selectedRowData?.soHieuToBanDo}-${selectedRowData?.soThuTuThua}`;
 
@@ -225,6 +225,7 @@ export default function MyForm({
               resetField={resetField}
               setSearchKey={setSearchKey}
               setFormValue={setFormValue}
+              reset={reset}
             />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>

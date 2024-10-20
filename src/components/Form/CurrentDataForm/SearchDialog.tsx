@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import { DataGrid, GridRowSelectionModel } from "@mui/x-data-grid";
 import { useCallback, useState } from "react";
-import { UseFormSetValue, UseFormWatch } from "react-hook-form";
+import { UseFormReset, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 import { makeStyles } from "tss-react/mui";
 import { SheetRowData } from "../../../utils/types";
@@ -47,9 +47,10 @@ const useStyles = makeStyles()(() => ({
 interface Props {
   watch: UseFormWatch<IFormData>;
   setFormValue: UseFormSetValue<IFormData>;
+  reset: UseFormReset<IFormData>;
 }
 
-export const SearchDialog = ({ watch, setFormValue }: Props) => {
+export const SearchDialog = ({ watch, setFormValue, reset }: Props) => {
   const { classes } = useStyles();
   const { rows } = useSheetContext();
 
@@ -136,9 +137,7 @@ export const SearchDialog = ({ watch, setFormValue }: Props) => {
         },
       });
 
-      Object.entries(convertedData).forEach(([key, value]) => {
-        setFormValue(key, value);
-      });
+      reset(convertedData);
       onClose();
     } catch (error) {
       toast.error("Có lỗi xảy ra, xin vui lòng thử lại");
