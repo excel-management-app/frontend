@@ -35,7 +35,6 @@ interface Props {
   listTamY: string;
   clearSelection: () => void;
   refetch: () => void;
-  setSearchKey: (key: string) => void;
 }
 
 export const EditRowDialogButton = ({
@@ -45,7 +44,6 @@ export const EditRowDialogButton = ({
   title = "Đơn đăng ký",
   listTamY,
   clearSelection,
-  setSearchKey,
   refetch,
 }: Props) => {
   const { classes } = useStyles();
@@ -54,7 +52,7 @@ export const EditRowDialogButton = ({
 
   const onClose = () => {
     setEditingRow(false);
-    setSearchKey("");
+
     clearSelection();
   };
 
@@ -75,7 +73,6 @@ export const EditRowDialogButton = ({
           sheetName={sheetName}
           refetch={refetch}
           selectedRowData={selectedRowData}
-          setSearchKey={setSearchKey}
           listTamY={listTamY}
         />
       )}
