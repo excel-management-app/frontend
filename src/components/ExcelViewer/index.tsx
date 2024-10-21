@@ -78,20 +78,11 @@ export const ExcelViewer = () => {
   const paginationModel = { page: 0, pageSize: 20 };
   const getRowId = (row: SheetRowData) => sheetRows.indexOf(row);
 
-  const [searchKey, setSearchKey] = useState<string>("");
-
   const selectedRowData = useMemo(() => {
-    if (searchKey) {
-      const searchResult =
-        sheetRows.find(
-          (row) => searchKey === `${row.soHieuToBanDo}_${row.soThuTuThua}`,
-        ) || null;
-      return searchResult;
-    }
     return rowSelectionModel.length > 0
       ? sheetRows[rowSelectionModel[0] as number]
       : null;
-  }, [rowSelectionModel, sheetRows.length, searchKey, loading]);
+  }, [rowSelectionModel, sheetRows.length, loading]);
 
   // return tamY = soHieuToBanDo_soThuTuThua from rowSelectionModel
   const listTamY = useMemo(() => {
@@ -102,12 +93,6 @@ export const ExcelViewer = () => {
       })
       .join(",");
   }, [rowSelectionModel, sheetRows]);
-
-  useEffect(() => {
-    if (searchKey && !selectedRowData) {
-      toast.error("Không tìm thấy kết quả");
-    }
-  }, [searchKey, selectedRowData]);
 
   const clearSelection = () => {
     setRowSelectionModel([]);
@@ -174,7 +159,6 @@ export const ExcelViewer = () => {
                   sheetName={selectedSheetName}
                   refetch={refetch}
                   selectedRowData={selectedRowData}
-                  setSearchKey={setSearchKey}
                   clearSelection={clearSelection}
                   title={
                     rowSelectionModel.length

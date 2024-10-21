@@ -13,6 +13,7 @@ import {
   Control,
   Controller,
   UseFormRegister,
+  UseFormReset,
   UseFormResetField,
   UseFormSetValue,
   UseFormWatch,
@@ -25,28 +26,54 @@ import { ControlledTextField } from "../ControlledTextField";
 import { IFormData } from "../types";
 import { PurposeOfUseTable } from "./PurposeOfUseTable";
 import { SearchDialog } from "./SearchDialog";
+import { useLayoutEffect, useState } from "react";
+import { SheetRowData } from "../../../utils/types";
+import axiosClient from "../../../apis/axiosClient";
+import { useSheetContext } from "../../ExcelViewer/contexts/SheetContext";
+import { toast } from "react-toastify";
+import { convertToFormData, emptyFormData } from "../functions";
 
 export default function CurrentDataForm({
   control,
   register,
   watch,
   resetField,
-  setSearchKey,
   setFormValue,
+  reset,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<IFormData, any>;
   register: UseFormRegister<IFormData>;
   watch: UseFormWatch<IFormData>;
   resetField: UseFormResetField<IFormData>;
-  setSearchKey: (key: string) => void;
   setFormValue: UseFormSetValue<IFormData>;
+  reset: UseFormReset<IFormData>;
 }) {
+  const { sheetName, fileId } = useSheetContext();
+
   const [soHieuToBanDo, soThuTuThua] = watch(["soHieuToBanDo", "soThuTuThua"]);
+  const tamY = watch("tamY") || `${soHieuToBanDo}_${soThuTuThua}`;
+  const [searchResult, setSearchResult] = useState<SheetRowData>();
 
   const handleSearch = async () => {
-    setSearchKey(`${soHieuToBanDo}_${soThuTuThua}`);
+    try {
+      const response = await axiosClient.get(
+        `/files/${fileId}/sheets/${sheetName}/rows/${tamY}`
+      );
+      setSearchResult(response.data);
+    } catch (error) {
+      console.error(error);
+      setSearchResult(undefined);
+      reset(emptyFormData());
+      toast.error("Không tìm thấy thửa đất");
+    }
   };
+
+  useLayoutEffect(() => {
+    if (searchResult) {
+      reset(convertToFormData({ data: searchResult }));
+    }
+  }, [searchResult]);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>

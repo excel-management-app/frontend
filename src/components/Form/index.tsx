@@ -53,7 +53,7 @@ interface Props {
   sheetName: string;
   refetch: () => void;
   selectedRowData: SheetRowData | null;
-  setSearchKey: (key: string) => void;
+
   listTamY: string;
 }
 
@@ -63,7 +63,7 @@ export default function MyForm({
   sheetName,
   selectedRowData,
   refetch,
-  setSearchKey,
+
   listTamY,
 }: Props) {
   const { classes } = useStyles();
@@ -95,12 +95,12 @@ export default function MyForm({
       const currentRow = rows.filter(
         (row) =>
           row.soHieuToBanDo === selectedRowData.soHieuToBanDo &&
-          row.soThuTuThua === selectedRowData.soThuTuThua,
+          row.soThuTuThua === selectedRowData.soThuTuThua
       );
       setCurrentListTamY(
         currentRow
           .map((row) => `${row.soHieuToBanDo}_${row.soThuTuThua}`)
-          .join(","),
+          .join(",")
       );
     } else {
       reset(emptyFormData());
@@ -133,14 +133,14 @@ export default function MyForm({
           default:
             return [key, value ?? ""];
         }
-      }),
+      })
     );
 
     try {
       if (selectedRowData) {
         if (oldKey !== newKey) {
           toast.error(
-            "Bạn không thể thay đổi số hiệu tờ bản đồ và số thứ tự thửa",
+            "Bạn không thể thay đổi số hiệu tờ bản đồ và số thứ tự thửa"
           );
           return;
         }
@@ -223,8 +223,8 @@ export default function MyForm({
               register={register}
               watch={watch}
               resetField={resetField}
-              setSearchKey={setSearchKey}
               setFormValue={setFormValue}
+              reset={reset}
             />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
