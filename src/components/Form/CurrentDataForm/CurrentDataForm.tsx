@@ -43,20 +43,7 @@ export default function CurrentDataForm({
   setFormValue: UseFormSetValue<IFormData>;
 }) {
   const [soHieuToBanDo, soThuTuThua] = watch(["soHieuToBanDo", "soThuTuThua"]);
-  const [ngayCap, ngayCap2, ngayCapCu, ngayCapCu2, ngayCapGiayCu] = watch([
-    "ngayCap",
-    "ngayCap2",
-    "ngayCapCu",
-    "ngayCapCu2",
-    "ngayCapGiayCu",
-  ]);
-  console.log({
-    ngayCap,
-    ngayCap2,
-    ngayCapCu,
-    ngayCapCu2,
-    ngayCapGiayCu,
-  });
+
   const handleSearch = async () => {
     setSearchKey(`${soHieuToBanDo}_${soThuTuThua}`);
   };
