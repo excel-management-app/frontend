@@ -22,7 +22,7 @@ interface AddRowProps {
     [k: string]: FormDataEntryValue | number;
   };
 }
-export const addRowToSheet = async ({
+export const updateOrAddRow = async ({
   fileId,
   sheetName,
   newRow,
@@ -35,20 +35,6 @@ export const addRowToSheet = async ({
   );
 
   return response;
-};
-type UpdateRowProps = AddRowProps;
-export const editRow = async ({
-  fileId,
-  sheetName,
-  newRow,
-}: UpdateRowProps): Promise<FileData> => {
-  const response = await axiosClient.put(
-    `/files/${fileId}/sheets/${sheetName}/rows`,
-    {
-      data: newRow,
-    },
-  );
-  return response.data;
 };
 
 export const uploadExcelFile = async (formData: FormData): Promise<void> => {

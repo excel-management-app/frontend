@@ -150,13 +150,7 @@ export const ExcelViewer = () => {
                 <EditRowDialogButton
                   refetch={refetch}
                   clearSelection={clearSelection}
-                  title={
-                    rowSelectionModel.length
-                      ? "Chỉnh sửa đơn đăng ký"
-                      : "Thêm mới đơn đăng ký"
-                  }
                   listTamY={listTamY}
-                  isAddForm={rowSelectionModel.length === 0}
                 />
               )}
 

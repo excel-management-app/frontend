@@ -27,17 +27,13 @@ const useStyles = makeStyles()(() => ({
   },
 }));
 interface Props {
-  title?: string;
   listTamY: string;
-  isAddForm?: boolean;
   clearSelection: () => void;
   refetch: () => void;
 }
 
 export const EditRowDialogButton = ({
-  title = "Đơn đăng ký",
   listTamY,
-  isAddForm,
   clearSelection,
   refetch,
 }: Props) => {
@@ -58,15 +54,10 @@ export const EditRowDialogButton = ({
         className={classes.editRowButton}
         startIcon={<EditOutlinedIcon />}
       >
-        {title}
+        Đơn đăng ký
       </Button>
       {editingRow && (
-        <MyForm
-          onClose={onClose}
-          refetch={refetch}
-          listTamY={listTamY}
-          isAddForm={isAddForm}
-        />
+        <MyForm onClose={onClose} refetch={refetch} listTamY={listTamY} />
       )}
     </>
   );

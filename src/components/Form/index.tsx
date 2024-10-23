@@ -19,7 +19,8 @@ import * as React from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { toast } from "react-toastify";
 import { makeStyles } from "tss-react/mui";
-import { addRowToSheet, editRow } from "../../apis/excel";
+import axiosClient from "../../apis/axiosClient";
+import { updateOrAddRow } from "../../apis/excel";
 import { SheetRowData } from "../../utils/types";
 import { useSheetContext } from "../ExcelViewer/contexts/SheetContext";
 import { ExportToWordButton } from "../ExcelViewer/ExportToWordButton";
@@ -29,7 +30,6 @@ import CurrentDataForm from "./CurrentDataForm/CurrentDataForm";
 import { convertToFormData, emptyFormData, formatDate } from "./functions";
 import OldDataForm from "./OldDataForm/OldDataForm";
 import { IFormData } from "./types";
-import axiosClient from "../../apis/axiosClient";
 
 const useStyles = makeStyles()(() => ({
   exitButton: {
@@ -53,15 +53,9 @@ interface Props {
   onClose: () => void;
   refetch: () => void;
   listTamY: string;
-  isAddForm?: boolean;
 }
 
-export default function MyForm({
-  onClose,
-  refetch,
-  listTamY,
-  isAddForm,
-}: Props) {
+export default function MyForm({ onClose, refetch, listTamY }: Props) {
   const { classes } = useStyles();
   const { rows, fileId, sheetName } = useSheetContext();
 
@@ -70,10 +64,13 @@ export default function MyForm({
   const [currentListTamY, setCurrentListTamY] = React.useState(listTamY);
   const [searchKey, setSearchKey] = React.useState("");
   const [gettingData, setGettingData] = React.useState(false);
+  const [selectedRowData, setSelectedRowData] =
+    React.useState<SheetRowData | null>(null);
 
-  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
+  const tamY = React.useMemo(
+    () => (searchKey ? searchKey : currentListTamY),
+    [searchKey, currentListTamY],
+  );
 
   const {
     control,
@@ -86,44 +83,37 @@ export default function MyForm({
   } = useForm<IFormData>();
   const { dirtyFields } = useFormState({ control });
 
-  const [selectedRowData, setSelectedRowData] =
-    React.useState<SheetRowData | null>(null);
-
-  const [isAddMode, setIsAddMode] = React.useState(isAddForm);
-
-  React.useEffect(() => {
-    if (searchKey) {
-      setIsAddMode(false);
-    }
-  }, [searchKey]);
+  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
 
   React.useEffect(() => {
-    if (isAddMode) {
+    if (!tamY) {
       return;
     }
+
     const fetchData = async () => {
       setGettingData(true);
-      const tamY = searchKey ? searchKey : currentListTamY;
       const res = await axiosClient.get(
-        `files/${fileId}/sheets/${sheetName}/rows/${tamY}`
+        `files/${fileId}/sheets/${sheetName}/rows/${tamY}`,
       );
       setSelectedRowData(res.data);
+      reset(convertToFormData({ data: res.data }));
     };
 
     fetchData()
       .catch((error) => {
         if (error instanceof AxiosError) {
-          toast.error(searchKey ? "Không tìm thấy dòng" : error.response?.data);
+          toast.error(searchKey ? "Chưa có dữ liệu" : error.response?.data);
         } else {
           console.error(error);
         }
         reset(emptyFormData());
-        setIsAddMode(true);
       })
       .finally(() => {
         setGettingData(false);
       });
-  }, [searchKey]);
+  }, [searchKey, tamY]);
 
   React.useLayoutEffect(() => {
     if (selectedRowData) {
@@ -131,12 +121,12 @@ export default function MyForm({
       const currentRow = rows.filter(
         (row) =>
           row.soHieuToBanDo === selectedRowData.soHieuToBanDo &&
-          row.soThuTuThua === selectedRowData.soThuTuThua
+          row.soThuTuThua === selectedRowData.soThuTuThua,
       );
       setCurrentListTamY(
         currentRow
           .map((row) => `${row.soHieuToBanDo}_${row.soThuTuThua}`)
-          .join(",")
+          .join(","),
       );
     } else {
       reset(emptyFormData());
@@ -149,9 +139,7 @@ export default function MyForm({
       return;
     }
     setLoading(true);
-    const oldKey = `${selectedRowData?.soHieuToBanDo}-${selectedRowData?.soThuTuThua}`;
 
-    const newKey = `${data.soHieuToBanDo}-${data.soThuTuThua}`;
     const newRow = Object.fromEntries(
       Object.entries(data).map(([key, value]) => {
         if (DATE_FIELD_NAMES.includes(key)) {
@@ -169,34 +157,16 @@ export default function MyForm({
           default:
             return [key, value ?? ""];
         }
-      })
+      }),
     );
 
     try {
-      if (selectedRowData) {
-        if (oldKey !== newKey) {
-          toast.error(
-            "Bạn không thể thay đổi số hiệu tờ bản đồ và số thứ tự thửa"
-          );
-          return;
-        }
-        await editRow({
-          fileId,
-          sheetName,
-          newRow,
-        });
-
-        toast.success("Cập nhật dòng thành công");
-      } else {
-        const res = await addRowToSheet({
-          fileId,
-          sheetName,
-          newRow,
-        });
-        toast.success("Thêm dòng thành công");
-
-        setCurrentListTamY(res.tamY);
-      }
+      await updateOrAddRow({
+        fileId,
+        sheetName,
+        newRow,
+      });
+      toast.success("Thành công");
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
         toast.error(error.response?.data);
