@@ -69,7 +69,7 @@ export default function MyForm({ onClose, refetch, listTamY }: Props) {
 
   const tamY = React.useMemo(
     () => (searchKey ? searchKey : currentListTamY),
-    [searchKey, currentListTamY],
+    [searchKey, currentListTamY]
   );
 
   const {
@@ -95,7 +95,7 @@ export default function MyForm({ onClose, refetch, listTamY }: Props) {
     const fetchData = async () => {
       setGettingData(true);
       const res = await axiosClient.get(
-        `files/${fileId}/sheets/${sheetName}/rows/${tamY}`,
+        `files/${fileId}/sheets/${sheetName}/rows/${tamY}`
       );
       setSelectedRowData(res.data);
       reset(convertToFormData({ data: res.data }));
@@ -121,12 +121,12 @@ export default function MyForm({ onClose, refetch, listTamY }: Props) {
       const currentRow = rows.filter(
         (row) =>
           row.soHieuToBanDo === selectedRowData.soHieuToBanDo &&
-          row.soThuTuThua === selectedRowData.soThuTuThua,
+          row.soThuTuThua === selectedRowData.soThuTuThua
       );
       setCurrentListTamY(
         currentRow
           .map((row) => `${row.soHieuToBanDo}_${row.soThuTuThua}`)
-          .join(","),
+          .join(",")
       );
     } else {
       reset(emptyFormData());
@@ -157,7 +157,7 @@ export default function MyForm({ onClose, refetch, listTamY }: Props) {
           default:
             return [key, value ?? ""];
         }
-      }),
+      })
     );
 
     try {
@@ -184,10 +184,14 @@ export default function MyForm({ onClose, refetch, listTamY }: Props) {
     reset(emptyFormData());
     refetch();
   };
-
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLFormElement>) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+    }
+  };
   return (
     <Dialog open maxWidth="xl" fullScreen>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} onKeyDown={handleKeyDown}>
         <DialogTitle className={classes.title}>
           <Typography
             variant="body1"
