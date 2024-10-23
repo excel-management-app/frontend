@@ -3,7 +3,6 @@ import { colors } from "@mui/material";
 import Button from "@mui/material/Button";
 import { useState } from "react";
 import { makeStyles } from "tss-react/mui";
-import { SheetRowData } from "../../utils/types";
 import MyForm from "../Form";
 
 const useStyles = makeStyles()(() => ({
@@ -28,24 +27,18 @@ const useStyles = makeStyles()(() => ({
   },
 }));
 interface Props {
-  fileId: string;
-  sheetName: string;
-  selectedRowData: SheetRowData | null;
   title?: string;
   listTamY: string;
+  isAddForm?: boolean;
   clearSelection: () => void;
   refetch: () => void;
-  setSearchKey: (key: string) => void;
 }
 
 export const EditRowDialogButton = ({
-  fileId,
-  sheetName,
-  selectedRowData,
   title = "Đơn đăng ký",
   listTamY,
+  isAddForm,
   clearSelection,
-  setSearchKey,
   refetch,
 }: Props) => {
   const { classes } = useStyles();
@@ -54,7 +47,6 @@ export const EditRowDialogButton = ({
 
   const onClose = () => {
     setEditingRow(false);
-    setSearchKey("");
     clearSelection();
   };
 
@@ -70,13 +62,10 @@ export const EditRowDialogButton = ({
       </Button>
       {editingRow && (
         <MyForm
-          fileId={fileId}
           onClose={onClose}
-          sheetName={sheetName}
           refetch={refetch}
-          selectedRowData={selectedRowData}
-          setSearchKey={setSearchKey}
           listTamY={listTamY}
+          isAddForm={isAddForm}
         />
       )}
     </>

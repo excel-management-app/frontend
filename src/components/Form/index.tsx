@@ -2,6 +2,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import {
   Button,
+  CircularProgress,
   colors,
   Dialog,
   DialogActions,
@@ -28,6 +29,7 @@ import CurrentDataForm from "./CurrentDataForm/CurrentDataForm";
 import { convertToFormData, emptyFormData, formatDate } from "./functions";
 import OldDataForm from "./OldDataForm/OldDataForm";
 import { IFormData } from "./types";
+import axiosClient from "../../apis/axiosClient";
 
 const useStyles = makeStyles()(() => ({
   exitButton: {
@@ -49,30 +51,25 @@ const useStyles = makeStyles()(() => ({
 
 interface Props {
   onClose: () => void;
-  fileId: string;
-  sheetName: string;
   refetch: () => void;
-  selectedRowData: SheetRowData | null;
-  setSearchKey: (key: string) => void;
   listTamY: string;
+  isAddForm?: boolean;
 }
 
 export default function MyForm({
   onClose,
-  fileId,
-  sheetName,
-  selectedRowData,
   refetch,
-  setSearchKey,
   listTamY,
+  isAddForm,
 }: Props) {
   const { classes } = useStyles();
-  const { rows } = useSheetContext();
+  const { rows, fileId, sheetName } = useSheetContext();
 
   const [value, setValue] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
-
   const [currentListTamY, setCurrentListTamY] = React.useState(listTamY);
+  const [searchKey, setSearchKey] = React.useState("");
+  const [gettingData, setGettingData] = React.useState(false);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -89,18 +86,57 @@ export default function MyForm({
   } = useForm<IFormData>();
   const { dirtyFields } = useFormState({ control });
 
+  const [selectedRowData, setSelectedRowData] =
+    React.useState<SheetRowData | null>(null);
+
+  const [isAddMode, setIsAddMode] = React.useState(isAddForm);
+
+  React.useEffect(() => {
+    if (searchKey) {
+      setIsAddMode(false);
+    }
+  }, [searchKey]);
+
+  React.useEffect(() => {
+    if (isAddMode) {
+      return;
+    }
+    const fetchData = async () => {
+      setGettingData(true);
+      const tamY = searchKey ? searchKey : currentListTamY;
+      const res = await axiosClient.get(
+        `files/${fileId}/sheets/${sheetName}/rows/${tamY}`
+      );
+      setSelectedRowData(res.data);
+    };
+
+    fetchData()
+      .catch((error) => {
+        if (error instanceof AxiosError) {
+          toast.error(searchKey ? "Không tìm thấy dòng" : error.response?.data);
+        } else {
+          console.error(error);
+        }
+        reset(emptyFormData());
+        setIsAddMode(true);
+      })
+      .finally(() => {
+        setGettingData(false);
+      });
+  }, [searchKey]);
+
   React.useLayoutEffect(() => {
     if (selectedRowData) {
       reset(convertToFormData({ data: selectedRowData }));
       const currentRow = rows.filter(
         (row) =>
           row.soHieuToBanDo === selectedRowData.soHieuToBanDo &&
-          row.soThuTuThua === selectedRowData.soThuTuThua,
+          row.soThuTuThua === selectedRowData.soThuTuThua
       );
       setCurrentListTamY(
         currentRow
           .map((row) => `${row.soHieuToBanDo}_${row.soThuTuThua}`)
-          .join(","),
+          .join(",")
       );
     } else {
       reset(emptyFormData());
@@ -133,14 +169,14 @@ export default function MyForm({
           default:
             return [key, value ?? ""];
         }
-      }),
+      })
     );
 
     try {
       if (selectedRowData) {
         if (oldKey !== newKey) {
           toast.error(
-            "Bạn không thể thay đổi số hiệu tờ bản đồ và số thứ tự thửa",
+            "Bạn không thể thay đổi số hiệu tờ bản đồ và số thứ tự thửa"
           );
           return;
         }
@@ -210,73 +246,84 @@ export default function MyForm({
             <Tab label="Giấy chứng nhận" {...a11yProps(2)} />
           </Tabs>
         </Box>
-
-        <DialogContent
-          sx={{
-            p: 2,
-            height: "calc(100vh - 235px)",
-          }}
-        >
-          <CustomTabPanel value={value} index={0}>
-            <CurrentDataForm
-              control={control}
-              register={register}
-              watch={watch}
-              resetField={resetField}
-              setSearchKey={setSearchKey}
-              setFormValue={setFormValue}
-            />
-          </CustomTabPanel>
-          <CustomTabPanel value={value} index={1}>
-            <OldDataForm
-              control={control}
-              register={register}
-              watch={watch}
-              resetField={resetField}
-              setFormValue={setFormValue}
-            />
-          </CustomTabPanel>
-          <CustomTabPanel value={value} index={2}>
-            <CertificateForm control={control} />
-          </CustomTabPanel>
-        </DialogContent>
-        <DialogActions>
+        {gettingData ? (
           <Box
-            display="flex"
-            justifyContent="space-between"
             width="100%"
-            mt={3}
+            height="100%"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
           >
-            <Box display="flex" alignItems="center" gap={1}>
-              <Button
-                variant="contained"
-                color="primary"
-                type="submit"
-                style={{ marginRight: "10px" }}
-                startIcon={<SaveOutlinedIcon />}
-                disabled={loading}
-              >
-                Lưu dữ liệu
-              </Button>
-
-              {currentListTamY && (
-                <ExportToWordButton
-                  disabled={loading}
-                  fileId={fileId}
-                  sheetName={sheetName}
-                  listTamY={currentListTamY}
-                />
-              )}
-            </Box>
-            <Button
-              disabled={loading}
-              variant="contained"
-              onClick={handleClose}
-            >
-              Thoát
-            </Button>
+            <CircularProgress />
           </Box>
-        </DialogActions>
+        ) : (
+          <>
+            <DialogContent
+              sx={{
+                p: 2,
+                height: "calc(100vh - 235px)",
+              }}
+            >
+              <CustomTabPanel value={value} index={0}>
+                <CurrentDataForm
+                  control={control}
+                  register={register}
+                  watch={watch}
+                  resetField={resetField}
+                  setSearchKey={setSearchKey}
+                  setFormValue={setFormValue}
+                />
+              </CustomTabPanel>
+              <CustomTabPanel value={value} index={1}>
+                <OldDataForm
+                  control={control}
+                  register={register}
+                  watch={watch}
+                  resetField={resetField}
+                  setFormValue={setFormValue}
+                />
+              </CustomTabPanel>
+              <CustomTabPanel value={value} index={2}>
+                <CertificateForm control={control} />
+              </CustomTabPanel>
+            </DialogContent>
+            <DialogActions>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                width="100%"
+                mt={3}
+              >
+                <Box display="flex" alignItems="center" gap={1}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                    style={{ marginRight: "10px" }}
+                    startIcon={<SaveOutlinedIcon />}
+                    disabled={loading}
+                  >
+                    Lưu dữ liệu
+                  </Button>
+
+                  {currentListTamY && (
+                    <ExportToWordButton
+                      disabled={loading}
+                      listTamY={currentListTamY}
+                    />
+                  )}
+                </Box>
+                <Button
+                  disabled={loading}
+                  variant="contained"
+                  onClick={handleClose}
+                >
+                  Thoát
+                </Button>
+              </Box>
+            </DialogActions>
+          </>
+        )}
       </form>
     </Dialog>
   );

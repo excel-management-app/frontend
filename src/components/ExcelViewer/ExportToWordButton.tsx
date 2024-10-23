@@ -5,6 +5,7 @@ import { makeStyles } from "tss-react/mui";
 import axiosClient from "../../apis/axiosClient";
 import { API_URL } from "../../utils/consts";
 import { AxiosError } from "axios";
+import { useSheetContext } from "./contexts/SheetContext";
 
 const useStyles = makeStyles()(() => ({
   button: {
@@ -12,19 +13,13 @@ const useStyles = makeStyles()(() => ({
   },
 }));
 interface Props {
-  fileId: string;
-  sheetName: string;
   disabled: boolean;
   listTamY: string;
 }
 
-export function ExportToWordButton({
-  fileId,
-  sheetName,
-  disabled,
-  listTamY,
-}: Props) {
+export function ExportToWordButton({ disabled, listTamY }: Props) {
   const { classes } = useStyles();
+  const { fileId, sheetName } = useSheetContext();
 
   const isSingleRow = listTamY.split(",").length === 1;
 

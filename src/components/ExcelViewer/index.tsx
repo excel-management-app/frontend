@@ -1,10 +1,11 @@
 import { Box, Theme } from "@mui/material";
 import { DataGrid, GridRowSelectionModel } from "@mui/x-data-grid";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { makeStyles } from "tss-react/mui";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
 import { FileListOption, SheetRowData } from "../../utils/types";
 import { UserInfo } from "../UserInfo";
+import { SheetContextProvider } from "./contexts/SheetContext";
 import { EditRowDialogButton } from "./EditRowDialogButton";
 import { ExportToWordButton } from "./ExportToWordButton";
 import { FileExportButton } from "./FileExportButton";
@@ -15,8 +16,6 @@ import { useGetTableData } from "./hooks/useTableData";
 import { SheetNameSelect } from "./SheetNamesSelector";
 import { StatisticButton } from "./StatisticButton";
 import { TemplateUploadButton } from "./TemplateUploadButton";
-import { toast } from "react-toastify";
-import { SheetContextProvider } from "./contexts/SheetContext";
 
 const useStyles = makeStyles()((theme: Theme) => ({
   root: {
@@ -78,21 +77,6 @@ export const ExcelViewer = () => {
   const paginationModel = { page: 0, pageSize: 20 };
   const getRowId = (row: SheetRowData) => sheetRows.indexOf(row);
 
-  const [searchKey, setSearchKey] = useState<string>("");
-
-  const selectedRowData = useMemo(() => {
-    if (searchKey) {
-      const searchResult =
-        sheetRows.find(
-          (row) => searchKey === `${row.soHieuToBanDo}_${row.soThuTuThua}`,
-        ) || null;
-      return searchResult;
-    }
-    return rowSelectionModel.length > 0
-      ? sheetRows[rowSelectionModel[0] as number]
-      : null;
-  }, [rowSelectionModel, sheetRows.length, searchKey, loading]);
-
   // return tamY = soHieuToBanDo_soThuTuThua from rowSelectionModel
   const listTamY = useMemo(() => {
     return rowSelectionModel
@@ -102,12 +86,6 @@ export const ExcelViewer = () => {
       })
       .join(",");
   }, [rowSelectionModel, sheetRows]);
-
-  useEffect(() => {
-    if (searchKey && !selectedRowData) {
-      toast.error("Không tìm thấy kết quả");
-    }
-  }, [searchKey, selectedRowData]);
 
   const clearSelection = () => {
     setRowSelectionModel([]);
@@ -170,11 +148,7 @@ export const ExcelViewer = () => {
               selectedSheetName &&
               rowSelectionModel.length < 2 && (
                 <EditRowDialogButton
-                  fileId={fileId}
-                  sheetName={selectedSheetName}
                   refetch={refetch}
-                  selectedRowData={selectedRowData}
-                  setSearchKey={setSearchKey}
                   clearSelection={clearSelection}
                   title={
                     rowSelectionModel.length
@@ -182,16 +156,12 @@ export const ExcelViewer = () => {
                       : "Thêm mới đơn đăng ký"
                   }
                   listTamY={listTamY}
+                  isAddForm={rowSelectionModel.length === 0}
                 />
               )}
 
             {rowSelectionModel.length > 1 && (
-              <ExportToWordButton
-                disabled={!selectedRowData}
-                fileId={fileId}
-                sheetName={selectedSheetName}
-                listTamY={listTamY}
-              />
+              <ExportToWordButton disabled={loading} listTamY={listTamY} />
             )}
           </Box>
         </Box>
