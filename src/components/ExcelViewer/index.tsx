@@ -16,6 +16,7 @@ import { useGetTableData } from "./hooks/useTableData";
 import { SheetNameSelect } from "./SheetNamesSelector";
 import { StatisticButton } from "./StatisticButton";
 import { TemplateUploadButton } from "./TemplateUploadButton";
+import { UploadMapButton } from "./TemplateMapButton";
 
 const useStyles = makeStyles()((theme: Theme) => ({
   root: {
@@ -153,7 +154,9 @@ export const ExcelViewer = () => {
                   listTamY={listTamY}
                 />
               )}
-
+            {isAdmin && (
+              <UploadMapButton />
+            )}
             {rowSelectionModel.length > 1 && (
               <ExportToWordButton disabled={loading} listTamY={listTamY} />
             )}

@@ -53,6 +53,14 @@ export const uploadWordFile = async (formData: FormData): Promise<void> => {
   });
 };
 
+export const uploadMapFile = async (formData: FormData): Promise<void> => {
+  await axiosClient.post("/files/uploadTemplateMapFile", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
 export const countRowsByDeviceId = async ({
   fileId,
   sheetName,
