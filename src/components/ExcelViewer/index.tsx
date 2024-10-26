@@ -154,9 +154,8 @@ export const ExcelViewer = () => {
                   listTamY={listTamY}
                 />
               )}
-            {isAdmin && (
-              <UploadMapButton />
-            )}
+            {isAdmin && <UploadMapButton isAdmin={isAdmin} />}
+            {!isAdmin && <UploadMapButton isAdmin={isAdmin} />}
             {rowSelectionModel.length > 1 && (
               <ExportToWordButton disabled={loading} listTamY={listTamY} />
             )}

@@ -34,8 +34,11 @@ const useStyles = makeStyles()(() => ({
     color: colors.grey["900"],
   },
 }));
+interface UploadMapButtonProps {
+  isAdmin: boolean;
+}
 
-export const UploadMapButton = () => {
+export const UploadMapButton = ({ isAdmin }: UploadMapButtonProps) => {
   const { classes } = useStyles();
   const [loading, setLoading] = useState(false);
   const { mutate, isPending } = useUploadFileMap();
@@ -82,24 +85,25 @@ export const UploadMapButton = () => {
 
   return (
     <>
-      <LoadingButton
-        className={classes.button1}
-        loadingPosition="start"
-        loading={isPending}
-        component="label"
-        role={undefined}
-        variant="contained"
-        tabIndex={-1}
-        startIcon={<FileUploadOutlinedIcon />}
-      >
-        Tải lên bản đồ
-        <VisuallyHiddenInput
-          id="fileInput"
-          type="file"
-          onChange={uploadFile}
-          accept=".DGN"
-        />
-      </LoadingButton>
+        {isAdmin && (
+        <LoadingButton
+          className={classes.button1}
+          loadingPosition="start"
+          loading={isPending}
+          component="label"
+          variant="contained"
+          startIcon={<FileUploadOutlinedIcon />}
+        >
+          Tải lên bản đồ
+          <input
+            id="fileInput"
+            type="file"
+            onChange={uploadFile}
+            accept=".DGN"
+            style={{ display: "none" }}
+          />
+        </LoadingButton>
+      )}
       <LoadingButton
         className={classes.button2}
         role={undefined}
