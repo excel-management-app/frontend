@@ -2,6 +2,7 @@ import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import { API_URL } from "../../utils/consts";
 import { AxiosError } from "axios";
+import axiosClient from "../../apis/axiosClient";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { colors } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -63,11 +64,11 @@ export const UploadMapButton = () => {
   const downloadFile = async (): Promise<void> => {
     try {
       setLoading(true);
+      await axiosClient.get(`/files/downloadMap`); 
       window.location.href = `${API_URL}/files/downloadMap`;
       toast.success("Xuất file thành công");
       
     } catch (error) {
-      setLoading(false);
       if (error instanceof AxiosError) {
         toast.error(error.response?.data);
       } else {
