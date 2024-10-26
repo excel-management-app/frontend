@@ -9,7 +9,7 @@ import { styled } from "@mui/material/styles";
 import { ChangeEvent, useState } from "react";
 import { toast } from "react-toastify";
 import { makeStyles } from "tss-react/mui";
-import { useUploadFileMap, useUploadFileWord } from "./hooks/useUploadFile";
+import { useUploadFileMap } from "./hooks/useUploadFile";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
