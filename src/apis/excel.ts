@@ -22,7 +22,7 @@ interface AddRowProps {
     [k: string]: FormDataEntryValue | number;
   };
 }
-export const addRowToSheet = async ({
+export const updateOrAddRow = async ({
   fileId,
   sheetName,
   newRow,
@@ -36,20 +36,6 @@ export const addRowToSheet = async ({
 
   return response;
 };
-type UpdateRowProps = AddRowProps;
-export const editRow = async ({
-  fileId,
-  sheetName,
-  newRow,
-}: UpdateRowProps): Promise<FileData> => {
-  const response = await axiosClient.put(
-    `/files/${fileId}/sheets/${sheetName}/rows`,
-    {
-      data: newRow,
-    },
-  );
-  return response.data;
-};
 
 export const uploadExcelFile = async (formData: FormData): Promise<void> => {
   await axiosClient.post("/files/upload", formData, {
@@ -61,6 +47,14 @@ export const uploadExcelFile = async (formData: FormData): Promise<void> => {
 
 export const uploadWordFile = async (formData: FormData): Promise<void> => {
   await axiosClient.post("/files/uploadTemplateWord", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
+export const uploadMapFile = async (formData: FormData): Promise<void> => {
+  await axiosClient.post("/files/uploadTemplateMapFile", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },

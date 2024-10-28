@@ -15,7 +15,7 @@ export const PERSONAL_INFO_FIELDS = [
   "soGiayTo2",
   "ngayCap2",
   "noiCap2",
-  "hoTenCu",
+  "tenChuCu",
   "namSinhCu",
   "diaChiChuCu",
   "gioiTinhCu",

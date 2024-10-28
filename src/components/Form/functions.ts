@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { SheetRowData } from "../../utils/types";
+import { DATE_FIELD_NAMES } from "./consts";
 export const fieldNames = [
   "tamX",
   "hoTen",
@@ -89,13 +90,6 @@ export const fieldNames = [
   "ghiChuDonDangKy",
 ];
 
-const DATE_FIELD_NAMES = [
-  "ngayCap",
-  "ngayCap2",
-  "ngayCapCu",
-  "ngayCapCu2",
-  "ngayCapGiayCu",
-];
 const format = "DD/MM/YYYY";
 dayjs.extend(customParseFormat);
 interface FormData {
@@ -105,31 +99,32 @@ interface FormData {
 interface ConvertToFormDataProps {
   data?: SheetRowData;
 }
+
 export function convertToFormData({ data }: ConvertToFormDataProps): FormData {
   if (!data) return {};
-  const formData: FormData = {};
 
-  fieldNames.forEach((fieldName) => {
+  return fieldNames.reduce((formData, fieldName) => {
     if (DATE_FIELD_NAMES.includes(fieldName)) {
-      // Check if data[fieldName] is valid
-      if (data[fieldName]) {
-        // Ensure the input date is parsed with the expected format
-        const parsedDate = dayjs(data[fieldName], format); // Adjust format as per actual data
-        formData[fieldName] = parsedDate.isValid()
-          ? parsedDate.format(format)
-          : "";
-      } else {
-        formData[fieldName] = "";
-      }
+      const parsedDate = dayjs(data[fieldName], format);
+      formData[fieldName] = parsedDate.isValid()
+        ? parsedDate.format(format)
+        : "";
     } else {
       formData[fieldName] = data[fieldName] ? String(data[fieldName]) : "";
     }
-  });
-  return formData;
+    return formData;
+  }, {} as FormData);
 }
 
-export const formatDate = (date: any) =>
-  dayjs(date).isValid() ? dayjs(date).format(format) : "";
+// Function to format date
+export const formatDate = (date: any): string => {
+  if (dayjs.isDayjs(date)) {
+    return date.format(format);
+  } else if (typeof date === "string" && /^\d{2}\/\d{2}\/\d{4}$/.test(date)) {
+    return date;
+  }
+  return dayjs(date).isValid() ? dayjs(date).format(format) : "";
+};
 
 export function emptyFormData(): FormData {
   return fieldNames.reduce((formData, fieldName) => {

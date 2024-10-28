@@ -17,7 +17,11 @@ export const ControlledDatePicker = ({ control, name, label }: any) => (
           value={field.value ? dayjs(field.value, "DD/MM/YYYY") : null}
           format="DD/MM/YYYY"
           slotProps={{
-            textField: { fullWidth: true, variant: "outlined", size: "small" },
+            textField: {
+              fullWidth: true,
+              variant: "outlined",
+              size: "small",
+            },
           }}
         />
       );

@@ -111,10 +111,10 @@ export const SearchDialog = ({ watch, setFormValue }: Props) => {
 
       const dataObj = PERSONAL_INFO_FIELDS.reduce(
         (acc, field) => {
-          acc[field] = formData[field];
+          acc[field] = formData[field] || "";
           return acc;
         },
-        {} as Record<string, any>,
+        {} as Record<string, any>
       );
 
       // Preserve specific fields from the form
@@ -132,9 +132,7 @@ export const SearchDialog = ({ watch, setFormValue }: Props) => {
       });
 
       const convertedData = convertToFormData({
-        data: {
-          ...dataObj,
-        },
+        data: dataObj,
       });
 
       Object.entries(convertedData).forEach(([key, value]) => {

@@ -10,6 +10,9 @@ export default tseslint.config(
     extends: [
       js.configs.recommended,
       ...tseslint.configs.recommended,
+      "eslint:recommended",
+      "plugin:react/recommended",
+      "plugin:@typescript-eslint/recommended",
       "plugin:react-hooks/recommended",
     ],
     files: ["**/*.{ts,tsx}"],
@@ -17,10 +20,7 @@ export default tseslint.config(
       ecmaVersion: 2020,
       globals: globals.browser,
     },
-    plugins: {
-      "react-hooks": reactHooks,
-      "react-refresh": reactRefresh,
-    },
+    plugins: ["react", "@typescript-eslint", "react-hooks"],
     rules: {
       ...reactHooks.configs.recommended.rules,
       "react-refresh/only-export-components": [
@@ -30,6 +30,13 @@ export default tseslint.config(
       "unused-imports/no-unused-imports": "error",
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
+    },
+    settings: {
+      react: {
+        version: "detect",
+      },
     },
   },
 );
