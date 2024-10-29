@@ -12,8 +12,9 @@ export function useGetFileData(fileId: string) {
     queryKey: ["fileData", fileId],
     queryFn: () => fetchFileData(fileId),
     enabled: !!fileId,
-    refetchInterval: 1000 * 60,
+    refetchInterval: 1000 * 60 * 5,
     refetchOnWindowFocus: true,
+    gcTime: 1000 * 60 * 5,
   });
 
   return {

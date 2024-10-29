@@ -136,7 +136,7 @@ export default function CurrentDataForm({
               }))}
             />
           </Grid2>
-          <Grid2 size={1}>
+          <Grid2 size={2}>
             <ControlledNumberField
               control={control}
               name="soGiayTo"
