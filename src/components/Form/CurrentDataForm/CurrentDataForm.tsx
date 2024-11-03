@@ -368,6 +368,16 @@ export default function CurrentDataForm({
               maxRows={3}
             />
           </Grid2>
+          <Grid2 size={3}>
+            <ControlledTextField
+              control={control}
+              name="soThuaTam"
+              label="Số thửa tạm"
+              fullWidth
+              multiline
+              maxRows={3}
+            />
+          </Grid2>
         </Grid2>
 
         {/* Mục đích sử dụng */}

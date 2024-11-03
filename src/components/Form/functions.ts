@@ -31,6 +31,7 @@ export const fieldNames = [
 
   "xuDong",
   "ghiChuThuaDat",
+  "soThuaTam",
   "loaiDat1",
   "dienTichMDSD1",
   "nguonGocSuDung1",
