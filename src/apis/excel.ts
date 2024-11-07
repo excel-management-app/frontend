@@ -1,16 +1,29 @@
+import { FileListOption } from "../utils/types";
 import axiosClient from "./axiosClient";
 import { FileData } from "./types";
 
-interface Props {
+export interface GetFileDataProps {
   fileId: string;
+  sheetName: string;
+  pagination: Pagination;
+}
+export interface Pagination {
+  page: number;
+  pageSize: number;
 }
 // files/:fileId
-export const getFileData = async ({ fileId }: Props): Promise<FileData> => {
-  const response = await axiosClient.get(`/files/${fileId}`);
+export const getFileData = async ({
+  fileId,
+  sheetName,
+  pagination,
+}: GetFileDataProps): Promise<FileData> => {
+  const response = await axiosClient.get(
+    `/files/${fileId}/sheets/${sheetName}?page=${pagination.page}&pageSize=${pagination.pageSize}`
+  );
   return response.data;
 };
 
-export const getAllFiles = async (): Promise<FileData[]> => {
+export const getAllFiles = async (): Promise<FileListOption[]> => {
   const response = await axiosClient.get("/files");
   return response.data;
 };
@@ -31,7 +44,7 @@ export const updateOrAddRow = async ({
     `/files/${fileId}/sheets/${sheetName}/rows`,
     {
       data: newRow,
-    },
+    }
   );
 
   return response;
@@ -69,7 +82,7 @@ export const countRowsByDeviceId = async ({
   sheetName: string;
 }): Promise<number> => {
   const response = await axiosClient.get(
-    `/files/${fileId}/sheets/${sheetName}/count`,
+    `/files/${fileId}/sheets/${sheetName}/count`
   );
   return response.data;
 };

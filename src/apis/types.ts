@@ -5,6 +5,7 @@ export interface FileData {
   fileName: string;
   uploadedAt: string;
   sheets: SheetData[];
+  totalRows: number;
 }
 
 export interface SheetData {

@@ -1,18 +1,27 @@
 import { useQuery } from "@tanstack/react-query";
 import { FileData } from "../../../apis/types";
-import { getFileData } from "../../../apis/excel";
+import { getFileData, GetFileDataProps } from "../../../apis/excel";
 
-const fetchFileData = async (fileId: string): Promise<FileData> => {
-  if (!fileId) throw new Error("File ID is required");
-  return getFileData({ fileId });
+const fetchFileData = async (props: GetFileDataProps): Promise<FileData> => {
+  return getFileData(props);
 };
 
-export function useGetFileData(fileId: string) {
+export function useGetFileData({
+  fileId,
+  sheetName,
+  pagination,
+}: GetFileDataProps) {
   const { data, isLoading, refetch } = useQuery<FileData>({
-    queryKey: ["fileData", fileId],
-    queryFn: () => fetchFileData(fileId),
+    queryKey: [
+      "fileData",
+      fileId,
+      sheetName,
+      pagination.page,
+      pagination.pageSize,
+    ],
+    queryFn: () => fetchFileData({ fileId, sheetName, pagination }),
     enabled: !!fileId,
-    refetchInterval: 1000 * 60 * 5,
+    refetchInterval: 1000 * 60 * 10,
     refetchOnWindowFocus: true,
     gcTime: 1000 * 60 * 5,
   });
