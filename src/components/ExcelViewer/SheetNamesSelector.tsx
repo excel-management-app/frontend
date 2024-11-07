@@ -2,15 +2,14 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { SheetData } from "../../apis/types";
 
 interface Props {
-  sheets: Pick<SheetData, "sheetName" | "id">[];
+  options: string[];
   onChange: (sheetName: string) => void;
   value: string;
 }
 
-export const SheetNameSelect = ({ sheets, onChange, value }: Props) => {
+export const SheetNameSelect = ({ options, onChange, value }: Props) => {
   const handleChange = (event: SelectChangeEvent) => {
     onChange(event.target.value);
   };
@@ -25,12 +24,9 @@ export const SheetNameSelect = ({ sheets, onChange, value }: Props) => {
         label="Chọn Sheet"
         onChange={handleChange}
       >
-        {sheets.map((sheet, index) => (
-          <MenuItem
-            key={`${sheet.sheetName}-${sheet.id}-${index}`}
-            value={sheet.sheetName}
-          >
-            {sheet.sheetName}
+        {options.map((opt, index) => (
+          <MenuItem key={`${opt}-${index}`} value={opt}>
+            {opt}
           </MenuItem>
         ))}
       </Select>
