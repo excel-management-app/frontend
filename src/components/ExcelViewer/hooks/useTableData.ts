@@ -9,6 +9,17 @@ export function useGetTableData({
   sheetName,
   pagination,
 }: GetFileDataProps) {
+  if (!sheetName) {
+    return {
+      sheetRows: [],
+      sheetColumns: [],
+      sheetHeaders: [],
+      loading: false,
+      refetch: () => {},
+      totalRows: 0,
+    };
+  }
+
   const { data, loading, refetch } = useGetFileData({
     fileId,
     sheetName,
@@ -36,7 +47,7 @@ export function useGetTableData({
         headerName: header,
         width: 200,
       })),
-    [sheetHeaders],
+    [sheetHeaders]
   );
 
   return {
