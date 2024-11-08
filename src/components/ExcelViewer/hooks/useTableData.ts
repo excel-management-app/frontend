@@ -11,7 +11,7 @@ export function useGetTableData({
 }: GetFileDataProps) {
   if (!sheetName) {
     return {
-      sheetRows: [],
+      sheetRows: [] as SheetRowData[],
       sheetColumns: [],
       sheetHeaders: [],
       loading: false,
