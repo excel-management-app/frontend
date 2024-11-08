@@ -11,7 +11,6 @@ import { ExportToWordButton } from "./ExportToWordButton";
 import { FileExportButton } from "./FileExportButton";
 import { FileListSelect } from "./FileListSelect";
 import FileUploadButton from "./FileUploadButton";
-import { useGetAllFiles } from "./hooks/useGetAllFiles";
 import { useGetTableData } from "./hooks/useTableData";
 import { SheetNameSelect } from "./SheetNamesSelector";
 import { StatisticButton } from "./StatisticButton";
@@ -54,28 +53,39 @@ const useStyles = makeStyles()((theme: Theme) => ({
   },
 }));
 
-export const ExcelViewer = () => {
+interface Props {
+  files: FileListOption[];
+}
+
+export const ExcelViewer = ({ files }: Props) => {
   const { classes } = useStyles();
 
-  const [selectedFile, setSelectedFile] = useState<FileListOption | null>(null);
+  const [selectedFile, setSelectedFile] = useState<FileListOption | null>(
+    files[0] || null,
+  );
   const fileId = useMemo(() => selectedFile?.id || "", [selectedFile]);
-  const [selectedSheetName, setSelectedSheetName] = useState("");
+  const [selectedSheetName, setSelectedSheetName] = useState(
+    selectedFile?.sheetNames[0] || "",
+  );
+
   const [rowSelectionModel, setRowSelectionModel] =
     useState<GridRowSelectionModel>([]);
+  const [paginationModel, setPaginationModel] = useState({
+    pageSize: 50,
+    page: 0,
+  });
 
-  const { files } = useGetAllFiles();
-
-  const { sheets, sheetRows, sheetColumns, loading, sheetHeaders, refetch } =
+  const { sheetRows, sheetColumns, loading, sheetHeaders, totalRows, refetch } =
     useGetTableData({
       fileId,
       sheetName: selectedSheetName,
+      pagination: paginationModel,
     });
 
   const onSelectFile = (fileId: string) => {
     setSelectedFile(files.find((file) => file.id === fileId) || null);
   };
 
-  const paginationModel = { page: 0, pageSize: 20 };
   const getRowId = (row: SheetRowData) => sheetRows.indexOf(row);
 
   // return tamY = soHieuToBanDo_soThuTuThua from rowSelectionModel
@@ -136,7 +146,7 @@ export const ExcelViewer = () => {
             {selectedFile && (
               <Box className={classes.selector}>
                 <SheetNameSelect
-                  sheets={sheets}
+                  options={selectedFile.sheetNames}
                   onChange={setSelectedSheetName}
                   value={selectedSheetName}
                 />
@@ -169,9 +179,18 @@ export const ExcelViewer = () => {
             loading={loading}
             rows={sheetRows}
             columns={sheetColumns}
-            initialState={{ pagination: { paginationModel } }}
-            pageSizeOptions={[5, 10, 20]}
+            paginationModel={paginationModel}
+            onPaginationModelChange={(props) => {
+              if (loading) {
+                return;
+              }
+              setPaginationModel(props);
+            }}
+            pagination
+            pageSizeOptions={[50]}
             getRowId={getRowId}
+            paginationMode="server"
+            rowCount={totalRows}
             localeText={{
               noRowsLabel: "Không có dữ liệu",
               footerRowSelected(count) {
@@ -184,6 +203,7 @@ export const ExcelViewer = () => {
               setRowSelectionModel(newRowSelectionModel);
             }}
             rowSelectionModel={rowSelectionModel}
+            keepNonExistentRowsSelected
           />
         </Box>
       </Box>

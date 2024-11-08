@@ -11,8 +11,6 @@ import { toast } from "react-toastify";
 import { makeStyles } from "tss-react/mui";
 import { useUploadFileMap } from "./hooks/useUploadFile";
 
-
-
 const useStyles = makeStyles()(() => ({
   button1: {
     height: 40,
@@ -57,25 +55,23 @@ export const UploadMapButton = ({ isAdmin }: UploadMapButtonProps) => {
   const downloadFile = async (): Promise<void> => {
     try {
       setLoading(true);
-      await axiosClient.get(`/files/downloadMap`); 
+      await axiosClient.get(`/files/downloadMap`);
       window.location.href = `${API_URL}/files/downloadMap`;
       toast.success("Xuất file thành công");
-      
     } catch (error) {
       if (error instanceof AxiosError) {
         toast.error(error.response?.data);
       } else {
         toast.error("Không có file Bản đồ. Hãy tải lên file bản đồ");
       }
-    }
-     finally {
-        setLoading(false);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <>
-        {isAdmin && (
+      {isAdmin && (
         <LoadingButton
           className={classes.button1}
           loadingPosition="start"
