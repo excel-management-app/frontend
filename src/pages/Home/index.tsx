@@ -8,7 +8,7 @@ export const Home = () => {
   const { currentUser } = useCurrentUser();
   const isAuth = currentUser._id && currentUser.name;
 
-  const { files, isLoading } = useGetAllFiles();
+  const { files, isLoading, refetch } = useGetAllFiles();
 
   if (!isAuth) {
     return <Navigate to="/login" />;
@@ -18,7 +18,7 @@ export const Home = () => {
   }
   return (
     <Box>
-      <ExcelViewer files={files} />
+      <ExcelViewer files={files} refetch={refetch} />
     </Box>
   );
 };

@@ -55,17 +55,18 @@ const useStyles = makeStyles()((theme: Theme) => ({
 
 interface Props {
   files: FileListOption[];
+  refetch: () => void;
 }
 
-export const ExcelViewer = ({ files }: Props) => {
+export const ExcelViewer = ({ files, refetch: refetchFilesData }: Props) => {
   const { classes } = useStyles();
 
   const [selectedFile, setSelectedFile] = useState<FileListOption | null>(
-    files[0] || null,
+    files[0] || null
   );
   const fileId = useMemo(() => selectedFile?.id || "", [selectedFile]);
   const [selectedSheetName, setSelectedSheetName] = useState(
-    selectedFile?.sheetNames[0] || "",
+    selectedFile?.sheetNames[0] || ""
   );
 
   const [rowSelectionModel, setRowSelectionModel] =
@@ -117,7 +118,7 @@ export const ExcelViewer = ({ files }: Props) => {
           <Box sx={{ display: "flex", gap: "10px" }}>
             {isAdmin && (
               <>
-                <FileUploadButton />
+                <FileUploadButton onUploadSuccess={refetchFilesData} />
                 <TemplateUploadButton />
                 {selectedFile && selectedSheetName && (
                   <FileExportButton
