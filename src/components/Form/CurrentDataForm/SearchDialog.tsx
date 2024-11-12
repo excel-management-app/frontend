@@ -24,7 +24,6 @@ import { useSheetContext } from "../../ExcelViewer/contexts/SheetContext";
 import { convertToFormData } from "../functions";
 import { IFormData } from "../types";
 import { HEADERS_NAME, PERSONAL_INFO_FIELDS } from "./consts";
-import { removeVietnameseAccents } from "./functions";
 import axiosClient from "../../../apis/axiosClient";
 import { useQuery } from "@tanstack/react-query";
 
@@ -87,7 +86,7 @@ export const SearchDialog = ({ watch, setFormValue }: Props) => {
       "rowsData",
       fileId,
       sheetName,
-      removeVietnameseAccents(value.hoTen.trim().toLowerCase()),
+      encodeURIComponent(value.hoTen.trim().toLowerCase()),
       value.namSinh.trim(),
     ],
     queryFn: fetchRows,
