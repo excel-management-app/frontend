@@ -270,14 +270,14 @@ export default function OldDataForm({
         </Grid2>
         <Grid2 container size={12} spacing={2}>
           <Grid2 size={1}>
-            <ControlledNumberField
+            <ControlledTextField
               control={control}
               name="soToCu"
               label="Số tờ cũ"
             />
           </Grid2>
           <Grid2 size={1}>
-            <ControlledNumberField
+            <ControlledTextField
               control={control}
               name="soThuaCu"
               label="Số thửa cũ"
