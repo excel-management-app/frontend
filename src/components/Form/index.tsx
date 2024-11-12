@@ -16,7 +16,7 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import { AxiosError } from "axios";
 import * as React from "react";
-import { useForm, useFormState } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { makeStyles } from "tss-react/mui";
 import axiosClient from "../../apis/axiosClient";
@@ -76,7 +76,6 @@ export default function MyForm({ onClose, refetch, listTamY }: Props) {
     resetField,
     setValue: setFormValue,
   } = useForm<IFormData>();
-  const { dirtyFields } = useFormState({ control });
 
   const [soHieuToBanDo, soThuTuThua] = watch(["soHieuToBanDo", "soThuTuThua"]);
 
@@ -152,10 +151,6 @@ export default function MyForm({ onClose, refetch, listTamY }: Props) {
   }, [reset, selectedRowData]);
 
   const onSubmit = async (data: IFormData) => {
-    if (Object.keys(dirtyFields).length === 0) {
-      toast.info("Bạn chưa thay đổi gì cả");
-      return;
-    }
     setLoading(true);
 
     const newRow = Object.fromEntries(
