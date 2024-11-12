@@ -27,10 +27,11 @@ export function useGetTableData({
     sheetName,
     pagination,
   });
-  const { data: allFileRowsData } = useGetAllFileRowsData({
-    fileId,
-    sheetName,
-  });
+  const { data: allFileRowsData, refetch: refetchAllFileRowsData } =
+    useGetAllFileRowsData({
+      fileId,
+      sheetName,
+    });
 
   const {
     rows: sheetRows,
@@ -63,13 +64,18 @@ export function useGetTableData({
     [sheetHeaders]
   );
 
+  const handleRefetch = () => {
+    refetch();
+    refetchAllFileRowsData();
+  };
+
   return {
     sheetRows,
     allRows,
     sheetColumns: columns,
     sheetHeaders,
     loading,
-    refetch,
+    refetch: handleRefetch,
     totalRows: data?.totalRows || 0,
   };
 }
