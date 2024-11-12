@@ -67,11 +67,6 @@ export default function MyForm({ onClose, refetch, listTamY }: Props) {
   const [selectedRowData, setSelectedRowData] =
     React.useState<SheetRowData | null>(null);
 
-  const tamY = React.useMemo(
-    () => (searchKey ? searchKey : currentListTamY),
-    [searchKey, currentListTamY],
-  );
-
   const {
     control,
     handleSubmit,
@@ -83,11 +78,34 @@ export default function MyForm({ onClose, refetch, listTamY }: Props) {
   } = useForm<IFormData>();
   const { dirtyFields } = useFormState({ control });
 
+  const [soHieuToBanDo, soThuTuThua] = watch(["soHieuToBanDo", "soThuTuThua"]);
+
+  const tamY = React.useMemo(
+    () => (searchKey ? searchKey : currentListTamY),
+    [searchKey, currentListTamY]
+  );
+
+  const listTamYInForm = React.useMemo(() => {
+    if (!soHieuToBanDo || !soThuTuThua) {
+      return "";
+    }
+    if (soHieuToBanDo && soThuTuThua) {
+      return `${soHieuToBanDo}_${soThuTuThua}`;
+    }
+    const currentRow = rows.filter(
+      (row) =>
+        row.soHieuToBanDo === soHieuToBanDo && row.soThuTuThua === soThuTuThua
+    );
+    return currentRow
+      .map((row) => `${row.soHieuToBanDo}_${row.soThuTuThua}`)
+      .join(",");
+  }, [soHieuToBanDo, soThuTuThua, rows]);
+
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     if (!tamY) {
       return;
     }
@@ -95,7 +113,7 @@ export default function MyForm({ onClose, refetch, listTamY }: Props) {
     const fetchData = async () => {
       setGettingData(true);
       const res = await axiosClient.get(
-        `files/${fileId}/sheets/${sheetName}/rows/${tamY}`,
+        `files/${fileId}/sheets/${sheetName}/rows/${tamY}`
       );
       setSelectedRowData(res.data);
       reset(convertToFormData({ data: res.data }));
@@ -121,12 +139,12 @@ export default function MyForm({ onClose, refetch, listTamY }: Props) {
       const currentRow = rows.filter(
         (row) =>
           row.soHieuToBanDo === selectedRowData.soHieuToBanDo &&
-          row.soThuTuThua === selectedRowData.soThuTuThua,
+          row.soThuTuThua === selectedRowData.soThuTuThua
       );
       setCurrentListTamY(
         currentRow
           .map((row) => `${row.soHieuToBanDo}_${row.soThuTuThua}`)
-          .join(","),
+          .join(",")
       );
     } else {
       reset(emptyFormData());
@@ -157,7 +175,7 @@ export default function MyForm({ onClose, refetch, listTamY }: Props) {
           default:
             return [key, value ?? ""];
         }
-      }),
+      })
     );
 
     try {
@@ -280,10 +298,10 @@ export default function MyForm({ onClose, refetch, listTamY }: Props) {
                     Lưu dữ liệu
                   </Button>
 
-                  {currentListTamY && (
+                  {listTamYInForm && (
                     <ExportToWordButton
                       disabled={loading}
-                      listTamY={currentListTamY}
+                      listTamY={listTamYInForm}
                     />
                   )}
                 </Box>
