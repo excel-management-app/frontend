@@ -15,7 +15,7 @@ import {
   Typography,
 } from "@mui/material";
 import { DataGrid, GridRowSelectionModel } from "@mui/x-data-grid";
-import { useCallback, useState } from "react";
+import { useCallback, useLayoutEffect, useState } from "react";
 import { UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 import { makeStyles } from "tss-react/mui";
@@ -24,7 +24,8 @@ import { useSheetContext } from "../../ExcelViewer/contexts/SheetContext";
 import { convertToFormData } from "../functions";
 import { IFormData } from "../types";
 import { HEADERS_NAME, PERSONAL_INFO_FIELDS } from "./consts";
-import { removeVietnameseAccents } from "./functions";
+import axiosClient from "../../../apis/axiosClient";
+import { useQuery } from "@tanstack/react-query";
 
 const useStyles = makeStyles()(() => ({
   exitButton: {
@@ -51,7 +52,7 @@ interface Props {
 
 export const SearchDialog = ({ watch, setFormValue }: Props) => {
   const { classes } = useStyles();
-  const { rows } = useSheetContext();
+  const { sheetName, fileId } = useSheetContext();
 
   const [openSearch, setOpenSearch] = useState(false);
   const [value, setValue] = useState({
@@ -73,8 +74,29 @@ export const SearchDialog = ({ watch, setFormValue }: Props) => {
     setRowsData([]);
   };
 
+  const fetchRows = useCallback(async ({ queryKey }: { queryKey: any[] }) => {
+    const [_, fileId, sheetName, hoten, namSinh] = queryKey;
+    const url = `/files/${fileId}/sheets/${sheetName}/rows?name=${hoten}&date=${namSinh}`;
+    const response = await axiosClient.get(url);
+    return response.data;
+  }, []);
+
+  const { refetch, data, isFetching } = useQuery({
+    queryKey: [
+      "rowsData",
+      fileId,
+      sheetName,
+      encodeURIComponent(value.hoTen.trim().toLowerCase()),
+      value.namSinh.trim(),
+    ],
+    queryFn: fetchRows,
+    enabled: false,
+    gcTime: 1000 * 60 * 30, // Cache for 30 minutes
+    staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
+  });
+
   const filterRows = useCallback(() => {
-    const hoten = removeVietnameseAccents(value.hoTen.trim().toLowerCase());
+    const hoten = value.hoTen.trim();
     const namSinh = value.namSinh.trim();
 
     if (!hoten && !namSinh) {
@@ -82,24 +104,16 @@ export const SearchDialog = ({ watch, setFormValue }: Props) => {
       return;
     }
 
-    const filteredRows = rows.filter((row) => {
-      const rowHoTen = removeVietnameseAccents(String(row.hoTen).toLowerCase());
-      const rowNamSinh = String(row.namSinh);
+    refetch();
+  }, [value.hoTen, value.namSinh, refetch]);
 
-      const matchesHoTen = hoten ? rowHoTen.includes(hoten) : true;
-      const matchesNamSinh = namSinh ? rowNamSinh === namSinh : true;
-
-      return matchesHoTen && matchesNamSinh;
-    });
-
-    if (!filteredRows.length) {
-      toast.error("Không tìm được kết quả");
+  useLayoutEffect(() => {
+    if (data) {
+      setRowsData(data);
     }
+  }, [data]);
 
-    setRowsData(filteredRows);
-  }, [rows, value.hoTen, value.namSinh, setRowsData, setRowSelectionModel]);
-
-  const getRowId = (row: SheetRowData) => rows.indexOf(row);
+  const getRowId = (row: SheetRowData) => rowsData.indexOf(row);
 
   const handleFillForm = () => {
     try {
@@ -107,14 +121,14 @@ export const SearchDialog = ({ watch, setFormValue }: Props) => {
         toast.error("Vui lòng chọn dòng để điền");
         return;
       }
-      const formData = rows[rowSelectionModel[0] as number];
+      const formData = rowsData[rowSelectionModel[0] as number];
 
       const dataObj = PERSONAL_INFO_FIELDS.reduce(
         (acc, field) => {
           acc[field] = formData[field] || "";
           return acc;
         },
-        {} as Record<string, any>
+        {} as Record<string, any>,
       );
 
       // Preserve specific fields from the form
@@ -213,8 +227,12 @@ export const SearchDialog = ({ watch, setFormValue }: Props) => {
                   </Grid2>
                   <Grid2 container size={12} mt={2} gap={1}>
                     <Grid2 size={5}>
-                      <Button variant="contained" onClick={() => filterRows()}>
-                        Tìm kiếm
+                      <Button
+                        variant="contained"
+                        onClick={() => filterRows()}
+                        disabled={isFetching}
+                      >
+                        {isFetching ? "Đang tìm..." : "Tìm kiếm"}
                       </Button>
                     </Grid2>
                     <Grid2 size={5}>

@@ -1,6 +1,9 @@
-import { FileData } from "../apis/types";
-
-export type FileListOption = Pick<FileData, "id" | "fileName">;
+export type FileListOption = {
+  id: string;
+  fileName: string;
+  uploadedAt: string;
+  sheetNames: string[];
+};
 
 export type SheetRowData = Record<string, string>;
 

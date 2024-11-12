@@ -26,7 +26,11 @@ const useStyles = makeStyles()(() => ({
   },
 }));
 
-export default function FileUploadButton() {
+interface Props {
+  onUploadSuccess: () => void;
+}
+
+export default function FileUploadButton({ onUploadSuccess }: Props) {
   const { classes } = useStyles();
 
   const { mutate, isPending } = useUploadFile();
@@ -40,6 +44,7 @@ export default function FileUploadButton() {
         onSuccess: () => {
           toast.success("Tải file thành công");
           (document.getElementById("fileInput") as HTMLInputElement).value = "";
+          onUploadSuccess();
         },
         onError: () => {
           toast.error("Tải file lỗi, vui lòng thử lại");

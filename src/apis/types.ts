@@ -4,7 +4,8 @@ export interface FileData {
   id: string;
   fileName: string;
   uploadedAt: string;
-  sheets: SheetData[];
+  sheet: SheetData;
+  totalRows: number;
 }
 
 export interface SheetData {
