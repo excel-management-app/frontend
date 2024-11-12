@@ -62,11 +62,11 @@ export const ExcelViewer = ({ files, refetch: refetchFilesData }: Props) => {
   const { classes } = useStyles();
 
   const [selectedFile, setSelectedFile] = useState<FileListOption | null>(
-    files[0] || null
+    files[0] || null,
   );
   const fileId = useMemo(() => selectedFile?.id || "", [selectedFile]);
   const [selectedSheetName, setSelectedSheetName] = useState(
-    selectedFile?.sheetNames[0] || ""
+    selectedFile?.sheetNames[0] || "",
   );
 
   const [rowSelectionModel, setRowSelectionModel] =
@@ -76,19 +76,12 @@ export const ExcelViewer = ({ files, refetch: refetchFilesData }: Props) => {
     page: 0,
   });
 
-  const {
-    sheetRows,
-    sheetColumns,
-    loading,
-    sheetHeaders,
-    totalRows,
-    allRows,
-    refetch,
-  } = useGetTableData({
-    fileId,
-    sheetName: selectedSheetName,
-    pagination: paginationModel,
-  });
+  const { sheetRows, sheetColumns, loading, sheetHeaders, totalRows, refetch } =
+    useGetTableData({
+      fileId,
+      sheetName: selectedSheetName,
+      pagination: paginationModel,
+    });
 
   const onSelectFile = (fileId: string) => {
     setSelectedFile(files.find((file) => file.id === fileId) || null);
@@ -117,7 +110,6 @@ export const ExcelViewer = ({ files, refetch: refetchFilesData }: Props) => {
       fileId={fileId}
       sheetHeaders={sheetHeaders}
       rows={sheetRows}
-      allRows={allRows}
     >
       <Box className={classes.root}>
         <Box className={classes.header}>

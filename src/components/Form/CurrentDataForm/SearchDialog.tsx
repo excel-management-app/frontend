@@ -25,6 +25,7 @@ import { convertToFormData } from "../functions";
 import { IFormData } from "../types";
 import { HEADERS_NAME, PERSONAL_INFO_FIELDS } from "./consts";
 import { removeVietnameseAccents } from "./functions";
+import axiosClient from "../../../apis/axiosClient";
 
 const useStyles = makeStyles()(() => ({
   exitButton: {
@@ -51,7 +52,7 @@ interface Props {
 
 export const SearchDialog = ({ watch, setFormValue }: Props) => {
   const { classes } = useStyles();
-  const { allRows } = useSheetContext();
+  const { sheetName, fileId } = useSheetContext();
 
   const [openSearch, setOpenSearch] = useState(false);
   const [value, setValue] = useState({
@@ -73,37 +74,26 @@ export const SearchDialog = ({ watch, setFormValue }: Props) => {
     setRowsData([]);
   };
 
-  const filterRows = useCallback(() => {
-    const hoten = removeVietnameseAccents(value.hoTen.trim().toLowerCase());
-    const namSinh = value.namSinh.trim();
+  const filterRows = useCallback(async () => {
+    try {
+      const hoten = removeVietnameseAccents(value.hoTen.trim().toLowerCase());
+      const namSinh = value.namSinh.trim();
 
-    if (!hoten && !namSinh) {
-      toast.error("Vui lòng nhập từ khóa để tìm kiếm");
-      return;
+      if (!hoten && !namSinh) {
+        toast.error("Vui lòng nhập từ khóa để tìm kiếm");
+        return;
+      }
+
+      let url = `/files/${fileId}/sheets/${sheetName}/rows?name=${hoten}&date=${namSinh}`;
+
+      const response = await axiosClient.get(url);
+      setRowsData(response.data);
+    } catch (error) {
+      toast.error("Có lỗi xảy ra, xin vui lòng thử lại");
     }
+  }, [value.hoTen, value.namSinh, setRowsData, setRowSelectionModel]);
 
-    if (!Array.isArray(allRows)) {
-      toast.error("Dữ liệu không hợp lệ");
-      return;
-    }
-    const filteredRows = allRows.filter((row) => {
-      const rowHoTen = removeVietnameseAccents(String(row.hoTen).toLowerCase());
-      const rowNamSinh = String(row.namSinh);
-
-      const matchesHoTen = hoten ? rowHoTen.includes(hoten) : true;
-      const matchesNamSinh = namSinh ? rowNamSinh === namSinh : true;
-
-      return matchesHoTen && matchesNamSinh;
-    });
-
-    if (!filteredRows.length) {
-      toast.error("Không tìm được kết quả");
-    }
-
-    setRowsData(filteredRows);
-  }, [allRows, value.hoTen, value.namSinh, setRowsData, setRowSelectionModel]);
-
-  const getRowId = (row: SheetRowData) => allRows.indexOf(row);
+  const getRowId = (row: SheetRowData) => rowsData.indexOf(row);
 
   const handleFillForm = () => {
     try {
@@ -111,14 +101,14 @@ export const SearchDialog = ({ watch, setFormValue }: Props) => {
         toast.error("Vui lòng chọn dòng để điền");
         return;
       }
-      const formData = allRows[rowSelectionModel[0] as number];
+      const formData = rowsData[rowSelectionModel[0] as number];
 
       const dataObj = PERSONAL_INFO_FIELDS.reduce(
         (acc, field) => {
           acc[field] = formData[field] || "";
           return acc;
         },
-        {} as Record<string, any>
+        {} as Record<string, any>,
       );
 
       // Preserve specific fields from the form

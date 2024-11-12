@@ -81,7 +81,7 @@ export default function MyForm({ onClose, refetch, listTamY }: Props) {
 
   const tamY = React.useMemo(
     () => (searchKey ? searchKey : currentListTamY),
-    [searchKey, currentListTamY]
+    [searchKey, currentListTamY],
   );
 
   const listTamYInForm = React.useMemo(() => {
@@ -93,7 +93,7 @@ export default function MyForm({ onClose, refetch, listTamY }: Props) {
     }
     const currentRow = rows.filter(
       (row) =>
-        row.soHieuToBanDo === soHieuToBanDo && row.soThuTuThua === soThuTuThua
+        row.soHieuToBanDo === soHieuToBanDo && row.soThuTuThua === soThuTuThua,
     );
     return currentRow
       .map((row) => `${row.soHieuToBanDo}_${row.soThuTuThua}`)
@@ -112,7 +112,7 @@ export default function MyForm({ onClose, refetch, listTamY }: Props) {
     const fetchData = async () => {
       setGettingData(true);
       const res = await axiosClient.get(
-        `files/${fileId}/sheets/${sheetName}/rows/${tamY}`
+        `files/${fileId}/sheets/${sheetName}/rows/${tamY}`,
       );
       setSelectedRowData(res.data);
       reset(convertToFormData({ data: res.data }));
@@ -138,12 +138,12 @@ export default function MyForm({ onClose, refetch, listTamY }: Props) {
       const currentRow = rows.filter(
         (row) =>
           row.soHieuToBanDo === selectedRowData.soHieuToBanDo &&
-          row.soThuTuThua === selectedRowData.soThuTuThua
+          row.soThuTuThua === selectedRowData.soThuTuThua,
       );
       setCurrentListTamY(
         currentRow
           .map((row) => `${row.soHieuToBanDo}_${row.soThuTuThua}`)
-          .join(",")
+          .join(","),
       );
     } else {
       reset(emptyFormData());
@@ -170,7 +170,7 @@ export default function MyForm({ onClose, refetch, listTamY }: Props) {
           default:
             return [key, value ?? ""];
         }
-      })
+      }),
     );
 
     try {
