@@ -6,6 +6,7 @@ import axiosClient from "../../apis/axiosClient";
 import { API_URL } from "../../utils/consts";
 import { AxiosError } from "axios";
 import { useSheetContext } from "./contexts/SheetContext";
+import { useState } from "react";
 
 const useStyles = makeStyles()(() => ({
   button: {
@@ -23,7 +24,10 @@ export function ExportToWordButton({ disabled, listTamY }: Props) {
 
   const isSingleRow = listTamY.split(",").length === 1;
 
+  const [loading, setLoading] = useState(false);
+
   const exportToWord = async (): Promise<void> => {
+    setLoading(true);
     try {
       await axiosClient.get(`/words/${fileId}/sheets/${sheetName}/${listTamY}`);
 
@@ -35,10 +39,13 @@ export function ExportToWordButton({ disabled, listTamY }: Props) {
       } else {
         toast.error("Không có file template word. Hãy tải lên file word");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
   const exportManyToWord = async (): Promise<void> => {
+    setLoading(true);
     try {
       await axiosClient.post(`/words/${fileId}/sheets/${sheetName}`, {
         data: listTamY,
@@ -50,6 +57,8 @@ export function ExportToWordButton({ disabled, listTamY }: Props) {
     } catch (error) {
       console.error("Error during file download:", error);
       toast.error(" Không có file template word. Hãy tải lên file word");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -62,7 +71,7 @@ export function ExportToWordButton({ disabled, listTamY }: Props) {
         color="primary"
         startIcon={<FileDownloadOutlinedIcon />}
         onClick={isSingleRow ? exportToWord : exportManyToWord}
-        disabled={disabled}
+        disabled={disabled || loading}
       >
         Xuất đơn
       </Button>

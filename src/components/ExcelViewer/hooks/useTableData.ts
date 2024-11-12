@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { GetFileDataProps } from "../../../apis/excel";
 import { SheetRowData } from "../../../utils/types";
 import { useGetFileData } from "./useGetFileData";
+import { useGetAllFileRowsData } from "./useGetAllFileRowsData";
 
 export function useGetTableData({
   fileId,
@@ -17,6 +18,7 @@ export function useGetTableData({
       loading: false,
       refetch: () => {},
       totalRows: 0,
+      allRows: [] as SheetRowData[],
     };
   }
 
@@ -25,20 +27,31 @@ export function useGetTableData({
     sheetName,
     pagination,
   });
+  const { data: allFileRowsData } = useGetAllFileRowsData({
+    fileId,
+    sheetName,
+  });
 
-  const { rows: sheetRows, headers: sheetHeaders } = useMemo<{
+  const {
+    rows: sheetRows,
+    headers: sheetHeaders,
+    allRows,
+  } = useMemo<{
     rows: SheetRowData[];
+    allRows: SheetRowData[];
     headers: string[];
   }>(() => {
     const currentSheet = data?.sheet;
     const headers = currentSheet?.headers || [];
     const rows = currentSheet?.rows || [];
+    const allRows = allFileRowsData || [];
 
     return {
       rows,
+      allRows,
       headers,
     };
-  }, [data?.sheet, sheetName]);
+  }, [data?.sheet, sheetName, allFileRowsData?.length]);
 
   const columns: GridColDef[] = useMemo(
     () =>
@@ -52,6 +65,7 @@ export function useGetTableData({
 
   return {
     sheetRows,
+    allRows,
     sheetColumns: columns,
     sheetHeaders,
     loading,

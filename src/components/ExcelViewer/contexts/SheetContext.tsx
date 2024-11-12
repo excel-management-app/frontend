@@ -6,6 +6,7 @@ interface SheetContext {
   fileId: string;
   sheetHeaders: string[];
   rows: SheetRowData[];
+  allRows: SheetRowData[];
 }
 
 const SheetContext = createContext<SheetContext | undefined>(undefined);
@@ -23,6 +24,7 @@ interface Props {
   fileId: string;
   sheetHeaders: string[];
   rows: SheetRowData[];
+  allRows: SheetRowData[];
   children: React.ReactNode;
 }
 export const SheetContextProvider = ({
@@ -30,11 +32,12 @@ export const SheetContextProvider = ({
   fileId,
   sheetHeaders,
   rows,
+  allRows,
   children,
 }: Props) => {
   const contextValue = useMemo(
-    () => ({ sheetName, fileId, sheetHeaders, rows }),
-    [sheetName, fileId, sheetHeaders, rows],
+    () => ({ sheetName, fileId, sheetHeaders, rows, allRows }),
+    [sheetName, fileId, sheetHeaders, rows, allRows]
   );
 
   return (

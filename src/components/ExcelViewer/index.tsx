@@ -76,12 +76,19 @@ export const ExcelViewer = ({ files, refetch: refetchFilesData }: Props) => {
     page: 0,
   });
 
-  const { sheetRows, sheetColumns, loading, sheetHeaders, totalRows, refetch } =
-    useGetTableData({
-      fileId,
-      sheetName: selectedSheetName,
-      pagination: paginationModel,
-    });
+  const {
+    sheetRows,
+    sheetColumns,
+    loading,
+    sheetHeaders,
+    totalRows,
+    allRows,
+    refetch,
+  } = useGetTableData({
+    fileId,
+    sheetName: selectedSheetName,
+    pagination: paginationModel,
+  });
 
   const onSelectFile = (fileId: string) => {
     setSelectedFile(files.find((file) => file.id === fileId) || null);
@@ -110,6 +117,7 @@ export const ExcelViewer = ({ files, refetch: refetchFilesData }: Props) => {
       fileId={fileId}
       sheetHeaders={sheetHeaders}
       rows={sheetRows}
+      allRows={allRows}
     >
       <Box className={classes.root}>
         <Box className={classes.header}>

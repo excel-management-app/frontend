@@ -51,7 +51,7 @@ interface Props {
 
 export const SearchDialog = ({ watch, setFormValue }: Props) => {
   const { classes } = useStyles();
-  const { rows } = useSheetContext();
+  const { allRows } = useSheetContext();
 
   const [openSearch, setOpenSearch] = useState(false);
   const [value, setValue] = useState({
@@ -82,7 +82,11 @@ export const SearchDialog = ({ watch, setFormValue }: Props) => {
       return;
     }
 
-    const filteredRows = rows.filter((row) => {
+    if (!Array.isArray(allRows)) {
+      toast.error("Dữ liệu không hợp lệ");
+      return;
+    }
+    const filteredRows = allRows.filter((row) => {
       const rowHoTen = removeVietnameseAccents(String(row.hoTen).toLowerCase());
       const rowNamSinh = String(row.namSinh);
 
@@ -97,9 +101,9 @@ export const SearchDialog = ({ watch, setFormValue }: Props) => {
     }
 
     setRowsData(filteredRows);
-  }, [rows, value.hoTen, value.namSinh, setRowsData, setRowSelectionModel]);
+  }, [allRows, value.hoTen, value.namSinh, setRowsData, setRowSelectionModel]);
 
-  const getRowId = (row: SheetRowData) => rows.indexOf(row);
+  const getRowId = (row: SheetRowData) => allRows.indexOf(row);
 
   const handleFillForm = () => {
     try {
@@ -107,14 +111,14 @@ export const SearchDialog = ({ watch, setFormValue }: Props) => {
         toast.error("Vui lòng chọn dòng để điền");
         return;
       }
-      const formData = rows[rowSelectionModel[0] as number];
+      const formData = allRows[rowSelectionModel[0] as number];
 
       const dataObj = PERSONAL_INFO_FIELDS.reduce(
         (acc, field) => {
           acc[field] = formData[field] || "";
           return acc;
         },
-        {} as Record<string, any>,
+        {} as Record<string, any>
       );
 
       // Preserve specific fields from the form
