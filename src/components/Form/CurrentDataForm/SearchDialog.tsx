@@ -15,7 +15,7 @@ import {
   Typography,
 } from "@mui/material";
 import { DataGrid, GridRowSelectionModel } from "@mui/x-data-grid";
-import { useCallback, useState } from "react";
+import { useCallback, useLayoutEffect, useState } from "react";
 import { UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 import { makeStyles } from "tss-react/mui";
@@ -26,6 +26,7 @@ import { IFormData } from "../types";
 import { HEADERS_NAME, PERSONAL_INFO_FIELDS } from "./consts";
 import { removeVietnameseAccents } from "./functions";
 import axiosClient from "../../../apis/axiosClient";
+import { useQuery } from "@tanstack/react-query";
 
 const useStyles = makeStyles()(() => ({
   exitButton: {
@@ -74,24 +75,44 @@ export const SearchDialog = ({ watch, setFormValue }: Props) => {
     setRowsData([]);
   };
 
-  const filterRows = useCallback(async () => {
-    try {
-      const hoten = removeVietnameseAccents(value.hoTen.trim().toLowerCase());
-      const namSinh = value.namSinh.trim();
+  const fetchRows = useCallback(async ({ queryKey }: { queryKey: any[] }) => {
+    const [_, fileId, sheetName, hoten, namSinh] = queryKey;
+    const url = `/files/${fileId}/sheets/${sheetName}/rows?name=${hoten}&date=${namSinh}`;
+    const response = await axiosClient.get(url);
+    return response.data;
+  }, []);
 
-      if (!hoten && !namSinh) {
-        toast.error("Vui lòng nhập từ khóa để tìm kiếm");
-        return;
-      }
+  const { refetch, data, isFetching } = useQuery({
+    queryKey: [
+      "rowsData",
+      fileId,
+      sheetName,
+      removeVietnameseAccents(value.hoTen.trim().toLowerCase()),
+      value.namSinh.trim(),
+    ],
+    queryFn: fetchRows,
+    enabled: false,
+    gcTime: 1000 * 60 * 30, // Cache for 30 minutes
+    staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
+  });
 
-      let url = `/files/${fileId}/sheets/${sheetName}/rows?name=${hoten}&date=${namSinh}`;
+  const filterRows = useCallback(() => {
+    const hoten = value.hoTen.trim();
+    const namSinh = value.namSinh.trim();
 
-      const response = await axiosClient.get(url);
-      setRowsData(response.data);
-    } catch (error) {
-      toast.error("Có lỗi xảy ra, xin vui lòng thử lại");
+    if (!hoten && !namSinh) {
+      toast.error("Vui lòng nhập từ khóa để tìm kiếm");
+      return;
     }
-  }, [value.hoTen, value.namSinh, setRowsData, setRowSelectionModel]);
+
+    refetch();
+  }, [value.hoTen, value.namSinh, refetch]);
+
+  useLayoutEffect(() => {
+    if (data) {
+      setRowsData(data);
+    }
+  }, [data]);
 
   const getRowId = (row: SheetRowData) => rowsData.indexOf(row);
 
@@ -207,8 +228,12 @@ export const SearchDialog = ({ watch, setFormValue }: Props) => {
                   </Grid2>
                   <Grid2 container size={12} mt={2} gap={1}>
                     <Grid2 size={5}>
-                      <Button variant="contained" onClick={() => filterRows()}>
-                        Tìm kiếm
+                      <Button
+                        variant="contained"
+                        onClick={() => filterRows()}
+                        disabled={isFetching}
+                      >
+                        {isFetching ? "Đang tìm..." : "Tìm kiếm"}
                       </Button>
                     </Grid2>
                     <Grid2 size={5}>
