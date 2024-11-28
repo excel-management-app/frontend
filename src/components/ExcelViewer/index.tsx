@@ -15,6 +15,7 @@ import { useGetTableData } from "./hooks/useTableData";
 import { SheetNameSelect } from "./SheetNamesSelector";
 import { StatisticButton } from "./StatisticButton";
 import { TemplateUploadButton } from "./TemplateUploadButton";
+import { ManageFilesButton } from "./ManageFilesButton";
 // import { UploadMapButton } from "./TemplateMapButton";
 
 const useStyles = makeStyles()((theme: Theme) => ({
@@ -118,6 +119,10 @@ export const ExcelViewer = ({ files, refetch: refetchFilesData }: Props) => {
           <Box sx={{ display: "flex", gap: "10px" }}>
             {isAdmin && (
               <>
+                <ManageFilesButton
+                  files={files}
+                  refetchFilesData={refetchFilesData}
+                />
                 <FileUploadButton onUploadSuccess={refetchFilesData} />
                 <TemplateUploadButton />
                 {selectedFile && selectedSheetName && (
