@@ -3,6 +3,7 @@ export type FileListOption = {
   fileName: string;
   uploadedAt: string;
   sheetNames: string[];
+  deletedAt: string | null;
 };
 
 export type SheetRowData = Record<string, string>;

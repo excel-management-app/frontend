@@ -12,10 +12,12 @@ import { useState } from "react";
 import { makeStyles } from "tss-react/mui";
 import { CurrentUser } from "../../utils/types";
 import axiosClient from "../../apis/axiosClient";
-import { useLocalStorage } from "react-use";
+import { useLocalStorage, useTitle } from "react-use";
 import { Link, useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
+import { ROUTES } from "../../routes/consts";
+import { useAuth } from "../../hooks/useAuth";
 
 const useStyles = makeStyles()(() => ({
   updateButton: {
@@ -26,6 +28,7 @@ const useStyles = makeStyles()(() => ({
 }));
 
 export const SignUp = () => {
+  useTitle("Đăng ký");
   const { classes } = useStyles();
   const [, setCurrentUser] = useLocalStorage<CurrentUser>("currentUser", {
     _id: "",
@@ -42,11 +45,13 @@ export const SignUp = () => {
   });
 
   const navigate = useNavigate();
+  const { setIsAuth } = useAuth();
   const handleSignUp = async () => {
     try {
       const res = await axiosClient.post("/accounts/signup", { data: user });
       setCurrentUser(res.data);
-      navigate("/");
+      setIsAuth(true);
+      navigate(ROUTES.HOME);
     } catch (error) {
       if (error instanceof AxiosError) {
         toast.error(error.response?.data);

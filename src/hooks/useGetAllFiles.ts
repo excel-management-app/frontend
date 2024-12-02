@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"; // Import React Query's useQuery
-import { FileListOption } from "../../../utils/types";
-import { getAllFiles } from "../../../apis/excel";
+import { FileListOption } from "../utils/types";
+import { getAllFiles } from "../apis/excel";
 
 const fetchAllFiles = async (): Promise<FileListOption[]> => {
   return getAllFiles();

@@ -1,11 +1,11 @@
 import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { colors } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { ChangeEvent } from "react";
 import { toast } from "react-toastify";
 import { makeStyles } from "tss-react/mui";
-import { useUploadFile } from "./hooks/useUploadFile";
+import { useUploadFile } from "../hooks/useUploadFile";
+import { colors } from "@mui/material";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -22,7 +22,8 @@ const VisuallyHiddenInput = styled("input")({
 const useStyles = makeStyles()(() => ({
   button: {
     height: 40,
-    backgroundColor: colors.grey["900"],
+    backgroundColor: colors.grey["100"],
+    color: colors.grey["900"],
   },
 }));
 

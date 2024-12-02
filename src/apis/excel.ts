@@ -26,7 +26,10 @@ export const getAllFiles = async (): Promise<FileListOption[]> => {
   const response = await axiosClient.get("/files");
   return response.data;
 };
-
+export const getDeletedFiles = async (): Promise<FileListOption[]> => {
+  const response = await axiosClient.get("/files/deleted");
+  return response.data;
+};
 interface AddRowProps {
   fileId: string;
   sheetName: string;

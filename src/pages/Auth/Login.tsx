@@ -12,10 +12,12 @@ import { useState } from "react";
 import { makeStyles } from "tss-react/mui";
 import { CurrentUser } from "../../utils/types";
 import axiosClient from "../../apis/axiosClient";
-import { useLocalStorage } from "react-use";
+import { useLocalStorage, useTitle } from "react-use";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import { ROUTES } from "../../routes/consts";
+import { useAuth } from "../../hooks/useAuth";
 
 const useStyles = makeStyles()(() => ({
   updateButton: {
@@ -26,10 +28,11 @@ const useStyles = makeStyles()(() => ({
 }));
 
 export const Login = () => {
+  useTitle("Đăng nhập");
   const { classes } = useStyles();
 
   const navigate = useNavigate();
-
+  const { setIsAuth } = useAuth();
   const [, setCurrentUser] = useLocalStorage<CurrentUser>("currentUser", {
     _id: "",
     name: "",
@@ -50,7 +53,9 @@ export const Login = () => {
         data: user,
       });
       setCurrentUser(res.data);
-      navigate("/");
+      toast.success("Đăng nhập thành công");
+      setIsAuth(true);
+      navigate(ROUTES.HOME);
     } catch (error) {
       if (error instanceof AxiosError) {
         toast.error(error.response?.data);
