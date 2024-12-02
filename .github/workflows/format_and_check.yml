@@ -1,0 +1,18 @@
+name: Format and Check
+
+on:
+  push:
+    branches:
+      - all
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: npm install
+      - name: Format code
+        run: npm run prettier:fix
+      - name: Type check
+        run: npx tsc --noEmit
