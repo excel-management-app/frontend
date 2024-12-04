@@ -59,11 +59,11 @@ export const ExcelViewer = ({ files }: Props) => {
   const { classes } = useStyles();
 
   const [selectedFile, setSelectedFile] = useState<FileListOption | null>(
-    files[0] || null,
+    files[0] || null
   );
   const fileId = useMemo(() => selectedFile?.id || "", [selectedFile]);
   const [selectedSheetName, setSelectedSheetName] = useState(
-    selectedFile?.sheetNames[0] || "",
+    selectedFile?.sheetNames[0] || ""
   );
 
   const [rowSelectionModel, setRowSelectionModel] =
@@ -151,7 +151,7 @@ export const ExcelViewer = ({ files }: Props) => {
           </Box>
 
           <Box sx={{ display: "flex", gap: "10px" }}>
-            <AppendRowsButton />
+            {selectedFile && selectedSheetName && <AppendRowsButton />}
             {selectedFile &&
               selectedSheetName &&
               rowSelectionModel.length < 2 && (
