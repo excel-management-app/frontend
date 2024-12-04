@@ -4,4 +4,5 @@ export const ROUTES = {
   SIGNUP: "/signup",
   USERS: "/users",
   FILES: "/files",
+  ERROR: "/error",
 };

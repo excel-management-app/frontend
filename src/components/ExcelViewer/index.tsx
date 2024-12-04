@@ -2,9 +2,10 @@ import { Box, Theme } from "@mui/material";
 import { DataGrid, GridRowSelectionModel } from "@mui/x-data-grid";
 import { useMemo, useState } from "react";
 import { makeStyles } from "tss-react/mui";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
+import { useAuthContext } from "../../contexts/AuthContext";
 import { FileListOption, SheetRowData } from "../../utils/types";
 import { UserInfo } from "../UserInfo";
+import { AppendRowsButton } from "./AppendData/AppendRowsButton";
 import { SheetContextProvider } from "./contexts/SheetContext";
 import { EditRowDialogButton } from "./EditRowDialogButton";
 import { ExportToWordButton } from "./ExportToWordButton";
@@ -13,7 +14,6 @@ import { FileListSelect } from "./FileListSelect";
 import { useGetTableData } from "./hooks/useTableData";
 import { SheetNameSelect } from "./SheetNamesSelector";
 import { StatisticButton } from "./StatisticButton";
-import { AppendRowsButton } from "./AppendData/AppendRowsButton";
 
 const useStyles = makeStyles()((theme: Theme) => ({
   root: {
@@ -59,11 +59,11 @@ export const ExcelViewer = ({ files }: Props) => {
   const { classes } = useStyles();
 
   const [selectedFile, setSelectedFile] = useState<FileListOption | null>(
-    files[0] || null
+    files[0] || null,
   );
   const fileId = useMemo(() => selectedFile?.id || "", [selectedFile]);
   const [selectedSheetName, setSelectedSheetName] = useState(
-    selectedFile?.sheetNames[0] || ""
+    selectedFile?.sheetNames[0] || "",
   );
 
   const [rowSelectionModel, setRowSelectionModel] =
@@ -100,7 +100,8 @@ export const ExcelViewer = ({ files }: Props) => {
     setRowSelectionModel([]);
   };
 
-  const { isAdmin } = useCurrentUser();
+  const { isAdmin } = useAuthContext();
+
   return (
     <SheetContextProvider
       sheetName={selectedSheetName}

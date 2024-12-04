@@ -8,16 +8,15 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
-import { makeStyles } from "tss-react/mui";
-import { CurrentUser } from "../../utils/types";
-import axiosClient from "../../apis/axiosClient";
-import { useLocalStorage, useTitle } from "react-use";
-import { Link, useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useTitle } from "react-use";
+import { makeStyles } from "tss-react/mui";
+import axiosClient from "../../apis/axiosClient";
+import { useAuthContext } from "../../contexts/AuthContext";
 import { ROUTES } from "../../routes/consts";
-import { useAuth } from "../../hooks/useAuth";
 
 const useStyles = makeStyles()(() => ({
   updateButton: {
@@ -30,11 +29,7 @@ const useStyles = makeStyles()(() => ({
 export const SignUp = () => {
   useTitle("Đăng ký");
   const { classes } = useStyles();
-  const [, setCurrentUser] = useLocalStorage<CurrentUser>("currentUser", {
-    _id: "",
-    name: "",
-    role: "user",
-  });
+  const { setToken } = useAuthContext();
 
   const [user, setUser] = useState<{
     name: string;
@@ -45,12 +40,11 @@ export const SignUp = () => {
   });
 
   const navigate = useNavigate();
-  const { setIsAuth } = useAuth();
+
   const handleSignUp = async () => {
     try {
       const res = await axiosClient.post("/accounts/signup", { data: user });
-      setCurrentUser(res.data);
-      setIsAuth(true);
+      setToken(res.data.token);
       navigate(ROUTES.HOME);
     } catch (error) {
       if (error instanceof AxiosError) {

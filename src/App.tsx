@@ -3,6 +3,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AppRoutes } from "./routes";
 import { FilesProvider } from "./contexts/FilesContext";
+import { AuthProvider } from "./contexts/AuthContext";
 
 function App() {
   return (
@@ -12,9 +13,11 @@ function App() {
         autoClose={2000}
         pauseOnHover={false}
       />
-      <FilesProvider>
-        <AppRoutes />
-      </FilesProvider>
+      <AuthProvider>
+        <FilesProvider>
+          <AppRoutes />
+        </FilesProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

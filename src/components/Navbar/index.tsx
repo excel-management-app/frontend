@@ -1,21 +1,17 @@
 import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
 import { ROUTES } from "../../routes/consts";
+import { useAuthContext } from "../../contexts/AuthContext";
+import axiosClient from "../../apis/axiosClient";
 
 export const Navbar = () => {
   const navigate = useNavigate();
-  const { isAuth } = useAuth();
-  const { setCurrentUser } = useCurrentUser();
+  const { isAuth, setToken } = useAuthContext();
   const location = useLocation();
 
   const handleLogout = async () => {
-    setCurrentUser({
-      _id: "",
-      name: "",
-      role: "user",
-    });
+    axiosClient.post("/accounts/logout");
+    setToken("");
     navigate("/login");
   };
 

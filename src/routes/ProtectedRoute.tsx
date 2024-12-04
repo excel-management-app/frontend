@@ -1,11 +1,35 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { ROUTES } from "./consts";
+import { ErrorBoundary } from "../components/ErrorBoundary";
 
-type ProtectedRouteProps = {
+interface ProtectedRouteProps {
   isAuth: boolean;
-  children: JSX.Element;
-};
+  isLoading?: boolean;
+  children: React.ReactNode;
+  fallback?: React.ReactNode;
+  redirectPath?: string;
+}
 
-export const ProtectedRoute = ({ isAuth, children }: ProtectedRouteProps) => {
-  return isAuth ? children : <Navigate to={ROUTES.LOGIN} />;
+export const ProtectedRoute = ({
+  isAuth,
+  isLoading = false,
+  children,
+  fallback = <div>Loading...</div>,
+  redirectPath = ROUTES.LOGIN,
+}: ProtectedRouteProps) => {
+  const location = useLocation();
+
+  if (isLoading) {
+    return <>{fallback}</>;
+  }
+
+  if (!isAuth) {
+    return <Navigate to={redirectPath} state={{ from: location }} replace />;
+  }
+
+  return (
+    <ErrorBoundary fallback={<Navigate to={ROUTES.ERROR} replace />}>
+      {children}
+    </ErrorBoundary>
+  );
 };

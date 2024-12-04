@@ -4,13 +4,14 @@ import { Login } from "../pages/Auth/Login";
 import { SignUp } from "../pages/Auth/SignUp";
 import { ROUTES } from "./consts";
 import { ProtectedRoute } from "./ProtectedRoute";
-import { useAuth } from "../hooks/useAuth";
 import { FileManagement } from "../pages/FileManagement";
 import { UserManagement } from "../pages/UserManagement";
 import { Navbar } from "../components/Navbar";
+import { useAuthContext } from "../contexts/AuthContext";
 
 export const AppRoutes = () => {
-  const { isAuth } = useAuth();
+  const { isAuth } = useAuthContext();
+
   return (
     <Router>
       <Navbar />
