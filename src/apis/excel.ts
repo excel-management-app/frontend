@@ -1,4 +1,4 @@
-import { FileListOption } from "../utils/types";
+import { FileListOption, SheetRowData } from "../utils/types";
 import axiosClient from "./axiosClient";
 import { FileData } from "./types";
 export interface GetFileDataProps {
@@ -30,12 +30,13 @@ export const getDeletedFiles = async (): Promise<FileListOption[]> => {
   const response = await axiosClient.get("/files/deleted");
   return response.data;
 };
+type RowData = {
+  [k: string]: FormDataEntryValue | number;
+};
 interface AddRowProps {
   fileId: string;
   sheetName: string;
-  newRow: {
-    [k: string]: FormDataEntryValue | number;
-  };
+  newRow: RowData;
 }
 export const updateOrAddRow = async ({
   fileId,
@@ -46,6 +47,24 @@ export const updateOrAddRow = async ({
     `/files/${fileId}/sheets/${sheetName}/rows`,
     {
       data: newRow,
+    },
+  );
+
+  return response;
+};
+export const appendRowsToSheet = async ({
+  fileId,
+  sheetName,
+  newRows,
+}: {
+  fileId: string;
+  sheetName: string;
+  newRows: SheetRowData[];
+}): Promise<any> => {
+  const response = await axiosClient.post(
+    `/files/${fileId}/sheets/${sheetName}/rows/bulk`,
+    {
+      data: newRows,
     },
   );
 

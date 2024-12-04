@@ -13,6 +13,7 @@ import { FileListSelect } from "./FileListSelect";
 import { useGetTableData } from "./hooks/useTableData";
 import { SheetNameSelect } from "./SheetNamesSelector";
 import { StatisticButton } from "./StatisticButton";
+import { AppendRowsButton } from "./AppendData/AppendRowsButton";
 
 const useStyles = makeStyles()((theme: Theme) => ({
   root: {
@@ -150,6 +151,7 @@ export const ExcelViewer = ({ files }: Props) => {
           </Box>
 
           <Box sx={{ display: "flex", gap: "10px" }}>
+            <AppendRowsButton />
             {selectedFile &&
               selectedSheetName &&
               rowSelectionModel.length < 2 && (
@@ -166,7 +168,7 @@ export const ExcelViewer = ({ files }: Props) => {
           </Box>
         </Box>
 
-        <Box sx={{ height: "calc(100vh - 220px)", p: 1 }}>
+        <Box sx={{ height: "calc(100vh - 260px)", p: 1 }}>
           <DataGrid
             scrollbarSize={2}
             rowHeight={40}

@@ -32,7 +32,8 @@
     "react-router-dom": "^6.26.2",
     "react-toastify": "^10.0.5",
     "react-use": "^17.5.1",
-    "tss-react": "^4.9.13"
+    "tss-react": "^4.9.13",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.11.1",
