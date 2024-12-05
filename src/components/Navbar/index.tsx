@@ -38,9 +38,9 @@ export const Navbar = () => {
               <Button color="inherit" component={Link} to={ROUTES.FILES}>
                 Quản lý file
               </Button>
-              <Button color="inherit" component={Link} to={ROUTES.USERS}>
+              {/* <Button color="inherit" component={Link} to={ROUTES.USERS}>
                 Quản lý người dùng
-              </Button>
+              </Button> */}
               </>
           )}
           <Button color="inherit" onClick={handleLogout}>
