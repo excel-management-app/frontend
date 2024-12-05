@@ -6,7 +6,7 @@ import axiosClient from "../../apis/axiosClient";
 
 export const Navbar = () => {
   const navigate = useNavigate();
-  const { isAuth, setToken } = useAuthContext();
+  const { isAuth, setToken, isAdmin } = useAuthContext();
   const location = useLocation();
 
   const handleLogout = async () => {
@@ -33,12 +33,16 @@ export const Navbar = () => {
           <Button color="inherit" component={Link} to={ROUTES.HOME}>
             Trang chủ
           </Button>
-          <Button color="inherit" component={Link} to={ROUTES.FILES}>
-            Quản lý file
-          </Button>
-          <Button color="inherit" component={Link} to={ROUTES.USERS}>
-            Quản lý người dùng
-          </Button>
+          {isAdmin && (
+              <>
+              <Button color="inherit" component={Link} to={ROUTES.FILES}>
+                Quản lý file
+              </Button>
+              <Button color="inherit" component={Link} to={ROUTES.USERS}>
+                Quản lý người dùng
+              </Button>
+              </>
+          )}
           <Button color="inherit" onClick={handleLogout}>
             Đăng xuất
           </Button>

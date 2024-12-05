@@ -4,6 +4,7 @@ import { ErrorBoundary } from "../components/ErrorBoundary";
 
 interface ProtectedRouteProps {
   isAuth: boolean;
+  isAdmin: boolean;
   isLoading?: boolean;
   children: React.ReactNode;
   fallback?: React.ReactNode;
@@ -12,6 +13,7 @@ interface ProtectedRouteProps {
 
 export const ProtectedRoute = ({
   isAuth,
+  isAdmin,
   isLoading = false,
   children,
   fallback = <div>Loading...</div>,
@@ -21,6 +23,10 @@ export const ProtectedRoute = ({
 
   if (isLoading) {
     return <>{fallback}</>;
+  }
+
+  if (!isAdmin) {
+    return <Navigate to={ROUTES.ERROR} replace />;
   }
 
   if (!isAuth) {

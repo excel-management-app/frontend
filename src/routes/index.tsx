@@ -10,7 +10,7 @@ import { Navbar } from "../components/Navbar";
 import { useAuthContext } from "../contexts/AuthContext";
 
 export const AppRoutes = () => {
-  const { isAuth } = useAuthContext();
+  const { isAuth, isAdmin } = useAuthContext();
 
   return (
     <Router>
@@ -19,7 +19,7 @@ export const AppRoutes = () => {
         <Route
           path={ROUTES.HOME}
           element={
-            <ProtectedRoute isAuth={isAuth}>
+            <ProtectedRoute isAuth={isAuth}  isAdmin={true}>
               <Home />
             </ProtectedRoute>
           }
@@ -29,7 +29,7 @@ export const AppRoutes = () => {
         <Route
           path={ROUTES.FILES}
           element={
-            <ProtectedRoute isAuth={isAuth}>
+            <ProtectedRoute isAuth={isAuth} isAdmin ={isAdmin}>
               <FileManagement />
             </ProtectedRoute>
           }
@@ -37,7 +37,7 @@ export const AppRoutes = () => {
         <Route
           path={ROUTES.USERS}
           element={
-            <ProtectedRoute isAuth={isAuth}>
+            <ProtectedRoute isAuth={isAuth} isAdmin={isAdmin}>
               <UserManagement />
             </ProtectedRoute>
           }
