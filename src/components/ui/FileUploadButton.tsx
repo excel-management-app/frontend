@@ -2,10 +2,8 @@ import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { colors } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { ChangeEvent } from "react";
-import { toast } from "react-toastify";
+import { ChangeEvent, useState } from "react";
 import { makeStyles } from "tss-react/mui";
-import { useUploadFile } from "./hooks/useUploadFile";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -22,35 +20,35 @@ const VisuallyHiddenInput = styled("input")({
 const useStyles = makeStyles()(() => ({
   button: {
     height: 40,
-    backgroundColor: colors.grey["900"],
+    backgroundColor: colors.grey["100"],
+    color: colors.grey["900"],
   },
 }));
 
 interface Props {
-  onUploadSuccess: () => void;
+  title: string;
+  isPending?: boolean;
+  onUpload: (file: File) => void;
 }
 
-export default function FileUploadButton({ onUploadSuccess }: Props) {
+export const FileUploadButton = ({
+  title,
+  isPending = false,
+  onUpload,
+}: Props) => {
   const { classes } = useStyles();
-
-  const { mutate, isPending } = useUploadFile();
-
-  const uploadFile = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const formData = new FormData();
-      formData.append("file", file);
-      mutate(formData, {
-        onSuccess: () => {
-          toast.success("Tải file thành công");
-          (document.getElementById("fileInput") as HTMLInputElement).value = "";
-          onUploadSuccess();
-        },
-        onError: () => {
-          toast.error("Tải file lỗi, vui lòng thử lại");
-          (document.getElementById("fileInput") as HTMLInputElement).value = "";
-        },
-      });
+  const [loading, setLoading] = useState(false);
+  const handleUpload = (event: ChangeEvent<HTMLInputElement>) => {
+    setLoading(true);
+    try {
+      const file = event.target.files?.[0];
+      if (file) {
+        onUpload(file);
+      }
+    } catch (error) {
+      throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -58,20 +56,20 @@ export default function FileUploadButton({ onUploadSuccess }: Props) {
     <LoadingButton
       className={classes.button}
       loadingPosition="start"
-      loading={isPending}
+      loading={loading || isPending}
       component="label"
       role={undefined}
       variant="contained"
       tabIndex={-1}
       startIcon={<FileUploadOutlinedIcon />}
     >
-      Tải file mới
+      {title}
       <VisuallyHiddenInput
         id="fileInput"
         type="file"
-        onChange={uploadFile}
+        onChange={handleUpload}
         accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
       />
     </LoadingButton>
   );
-}
+};

@@ -1,11 +1,11 @@
 import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { colors } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { ChangeEvent } from "react";
 import { toast } from "react-toastify";
 import { makeStyles } from "tss-react/mui";
-import { useUploadFileWord } from "./hooks/useUploadFile";
+import { useUploadWordTemplate } from "../hooks/useUploadWordTemplate";
+import { colors } from "@mui/material";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -20,21 +20,17 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 const useStyles = makeStyles()(() => ({
-  button1: {
-    height: 40,
-    backgroundColor: colors.grey["900"],
-  },
-  button2: {
+  button: {
     height: 40,
     backgroundColor: colors.grey["100"],
     color: colors.grey["900"],
   },
 }));
 
-export const TemplateUploadButton = () => {
+export const TemplateUploadButtons = () => {
   const { classes } = useStyles();
 
-  const { mutate, isPending } = useUploadFileWord();
+  const { mutate, isPending } = useUploadWordTemplate();
 
   const uploadFile = (event: ChangeEvent<HTMLInputElement>, type: number) => {
     const file = event.target.files?.[0];
@@ -58,7 +54,7 @@ export const TemplateUploadButton = () => {
   return (
     <>
       <LoadingButton
-        className={classes.button1}
+        className={classes.button}
         loadingPosition="start"
         loading={isPending}
         component="label"
@@ -76,7 +72,7 @@ export const TemplateUploadButton = () => {
         />
       </LoadingButton>
       <LoadingButton
-        className={classes.button1}
+        className={classes.button}
         loadingPosition="start"
         loading={isPending}
         component="label"

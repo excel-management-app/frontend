@@ -1,24 +1,18 @@
 import { Box } from "@mui/material";
-import { Navigate } from "react-router-dom";
 import { ExcelViewer } from "../../components/ExcelViewer";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
-import { useGetAllFiles } from "../../components/ExcelViewer/hooks/useGetAllFiles";
+import { useFilesContext } from "../../contexts/FilesContext";
+import { useTitle } from "react-use";
 
 export const Home = () => {
-  const { currentUser } = useCurrentUser();
-  const isAuth = currentUser._id && currentUser.name;
+  useTitle("Trang chủ");
+  const { files, loading } = useFilesContext();
 
-  const { files, isLoading, refetch } = useGetAllFiles();
-
-  if (!isAuth) {
-    return <Navigate to="/login" />;
-  }
-  if (isLoading) {
+  if (loading) {
     return <Box>Loading...</Box>;
   }
   return (
     <Box>
-      <ExcelViewer files={files} refetch={refetch} />
+      <ExcelViewer files={files} />
     </Box>
   );
 };

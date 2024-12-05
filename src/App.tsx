@@ -1,10 +1,9 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Home } from "./pages/Home";
-import { Login } from "./pages/Auth/Login";
-import { SignUp } from "./pages/Auth/SignUp";
+import { AppRoutes } from "./routes";
+import { FilesProvider } from "./contexts/FilesContext";
+import { AuthProvider } from "./contexts/AuthContext";
 
 function App() {
   return (
@@ -14,13 +13,11 @@ function App() {
         autoClose={2000}
         pauseOnHover={false}
       />
-      <Router>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-        </Routes>
-      </Router>
+      <AuthProvider>
+        <FilesProvider>
+          <AppRoutes />
+        </FilesProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

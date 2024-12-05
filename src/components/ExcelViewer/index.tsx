@@ -2,21 +2,18 @@ import { Box, Theme } from "@mui/material";
 import { DataGrid, GridRowSelectionModel } from "@mui/x-data-grid";
 import { useMemo, useState } from "react";
 import { makeStyles } from "tss-react/mui";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
+import { useAuthContext } from "../../contexts/AuthContext";
 import { FileListOption, SheetRowData } from "../../utils/types";
 import { UserInfo } from "../UserInfo";
+import { AppendRowsButton } from "./AppendData/AppendRowsButton";
 import { SheetContextProvider } from "./contexts/SheetContext";
 import { EditRowDialogButton } from "./EditRowDialogButton";
 import { ExportToWordButton } from "./ExportToWordButton";
 import { FileExportButton } from "./FileExportButton";
 import { FileListSelect } from "./FileListSelect";
-import FileUploadButton from "./FileUploadButton";
 import { useGetTableData } from "./hooks/useTableData";
 import { SheetNameSelect } from "./SheetNamesSelector";
 import { StatisticButton } from "./StatisticButton";
-import { TemplateUploadButton } from "./TemplateUploadButton";
-import { ManageFilesButton } from "./ManageFilesButton";
-// import { UploadMapButton } from "./TemplateMapButton";
 
 const useStyles = makeStyles()((theme: Theme) => ({
   root: {
@@ -56,10 +53,9 @@ const useStyles = makeStyles()((theme: Theme) => ({
 
 interface Props {
   files: FileListOption[];
-  refetch: () => void;
 }
 
-export const ExcelViewer = ({ files, refetch: refetchFilesData }: Props) => {
+export const ExcelViewer = ({ files }: Props) => {
   const { classes } = useStyles();
 
   const [selectedFile, setSelectedFile] = useState<FileListOption | null>(
@@ -104,7 +100,8 @@ export const ExcelViewer = ({ files, refetch: refetchFilesData }: Props) => {
     setRowSelectionModel([]);
   };
 
-  const { isAdmin } = useCurrentUser();
+  const { isAdmin } = useAuthContext();
+
   return (
     <SheetContextProvider
       sheetName={selectedSheetName}
@@ -119,12 +116,6 @@ export const ExcelViewer = ({ files, refetch: refetchFilesData }: Props) => {
           <Box sx={{ display: "flex", gap: "10px" }}>
             {isAdmin && (
               <>
-                <ManageFilesButton
-                  files={files}
-                  refetchFilesData={refetchFilesData}
-                />
-                <FileUploadButton onUploadSuccess={refetchFilesData} />
-                <TemplateUploadButton />
                 {selectedFile && selectedSheetName && (
                   <FileExportButton
                     fileId={fileId}
@@ -161,6 +152,7 @@ export const ExcelViewer = ({ files, refetch: refetchFilesData }: Props) => {
           </Box>
 
           <Box sx={{ display: "flex", gap: "10px" }}>
+            {selectedFile && selectedSheetName && <AppendRowsButton />}
             {selectedFile &&
               selectedSheetName &&
               rowSelectionModel.length < 2 && (
@@ -170,15 +162,14 @@ export const ExcelViewer = ({ files, refetch: refetchFilesData }: Props) => {
                   listTamY={listTamY}
                 />
               )}
-            {/* {isAdmin && <UploadMapButton isAdmin={isAdmin} />}
-            {!isAdmin && <UploadMapButton isAdmin={isAdmin} />} */}
+
             {rowSelectionModel.length > 1 && (
               <ExportToWordButton disabled={loading} listTamY={listTamY} />
             )}
           </Box>
         </Box>
 
-        <Box sx={{ height: "calc(100vh - 220px)", p: 1 }}>
+        <Box sx={{ height: "calc(100vh - 260px)", p: 1 }}>
           <DataGrid
             scrollbarSize={2}
             rowHeight={40}

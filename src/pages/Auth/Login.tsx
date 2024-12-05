@@ -8,14 +8,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
-import { makeStyles } from "tss-react/mui";
-import { CurrentUser } from "../../utils/types";
-import axiosClient from "../../apis/axiosClient";
-import { useLocalStorage } from "react-use";
-import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useTitle } from "react-use";
+import { makeStyles } from "tss-react/mui";
+import axiosClient from "../../apis/axiosClient";
+import { useAuthContext } from "../../contexts/AuthContext";
 
 const useStyles = makeStyles()(() => ({
   updateButton: {
@@ -26,15 +26,10 @@ const useStyles = makeStyles()(() => ({
 }));
 
 export const Login = () => {
+  useTitle("Đăng nhập");
   const { classes } = useStyles();
 
-  const navigate = useNavigate();
-
-  const [, setCurrentUser] = useLocalStorage<CurrentUser>("currentUser", {
-    _id: "",
-    name: "",
-    role: "user",
-  });
+  const { setToken } = useAuthContext();
 
   const [user, setUser] = useState<{
     name: string;
@@ -49,8 +44,9 @@ export const Login = () => {
       const res = await axiosClient.post("/accounts/login", {
         data: user,
       });
-      setCurrentUser(res.data);
-      navigate("/");
+      window.location.href = "/";
+      setToken(res.data.token);
+      toast.success("Đăng nhập thành công");
     } catch (error) {
       if (error instanceof AxiosError) {
         toast.error(error.response?.data);

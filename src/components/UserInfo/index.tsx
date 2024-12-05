@@ -20,9 +20,9 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { makeStyles } from "tss-react/mui";
 import axiosClient from "../../apis/axiosClient";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../../contexts/AuthContext";
 
 const useStyles = makeStyles()(() => ({
   addButton: {
@@ -48,7 +48,7 @@ export const UserInfo = () => {
   const navigate = useNavigate();
 
   const [editing, setEditing] = useState(false);
-  const { currentUser, setCurrentUser } = useCurrentUser();
+  const { currentUser, getUser } = useAuthContext();
   const [name, setName] = useState(currentUser.name);
   const [password, setPassword] = useState("");
 
@@ -76,11 +76,10 @@ export const UserInfo = () => {
     }
 
     try {
-      const res = await axiosClient.put("/accounts", {
+      await axiosClient.put("/accounts", {
         data: newData,
       });
-      setCurrentUser(res.data);
-
+      getUser();
       onClose();
       toast.success("Cập nhật thành công");
     } catch (error: unknown) {
@@ -93,11 +92,7 @@ export const UserInfo = () => {
   };
 
   const handleLogout = async () => {
-    setCurrentUser({
-      _id: "",
-      name: "",
-      role: "user",
-    });
+    await axiosClient.post("/accounts/logout");
     navigate("/login");
   };
 
